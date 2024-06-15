@@ -1,0 +1,47 @@
+version: "3.6"
+
+services:
+
+  app:
+    build: 
+      context: ./dev
+    ports:
+      - 8000:8000
+      - 4318:4318
+    volumes:
+      - ./..:/app  
+    environment:
+      ENVIRONMENT: dev
+      APP_PORT: 8000
+      OTLP_METRICS_PORT: 4318
+      LOG_LEVEL: debug
+      LOG_FORMAT: console
+      DB_HOST: postgres
+      DB_NAME: main
+      DB_PASSWORD: root
+      DB_PORT: 5432
+      DB_USER: root
+      TZ: Europe/Moscow
+
+  postgres:
+    image: postgres:14-bullseye
+    environment:
+      POSTGRES_DB: main
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      TZ: Europe/Moscow
+
+  redis:
+    image: redis:5.0.7
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=root@mail.ru
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - 8002:80
+    logging:
+      driver: none      
+    depends_on:
+      - postgres      
