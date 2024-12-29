@@ -9,18 +9,10 @@ services:
       - 8000:8000
       - 4318:4318
     volumes:
-      - ./..:/app  
+      - ./..:/app
     environment:
       ENVIRONMENT: dev
-      APP_PORT: 8000
-      OTLP_METRICS_PORT: 4318
-      LOG_LEVEL: debug
-      LOG_FORMAT: console
-      DB_HOST: postgres
-      DB_NAME: main
-      DB_PASSWORD: root
-      DB_PORT: 5432
-      DB_USER: root
+      CONFIG_FILE: /app/config.dev.yaml
       TZ: Europe/Moscow
 
   postgres:

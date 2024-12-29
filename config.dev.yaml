@@ -1,13 +1,13 @@
 app:
-  name: otus-highload
-  shutdown_timeout: 5
+  name: social-network
+  shutdown_timeout_sec: 5
   web:
-    port: 8080
-    read_timeout: 5
-    write_timeout: 5
+    port: 8000
+    read_timeout_sec: 5
+    write_timeout_sec: 5
   token:
     secret: secret
-    expire: 43200
+    expire_sec: 43200
 
 log:
   level: debug
@@ -23,7 +23,6 @@ db:
 otlp:
   metrics_port: 4318
   traces_url: http://localhost:4317
-  service_name: social-network
   traces_enabled: false
 
 redis:

@@ -29,7 +29,7 @@ func Test_parseArgs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			got, err := parseArgs(&Config{}, tt.args)
+			got, err := parseArgs(tt.args)
 
 			require.NoError(t, err)
 			require.Equal(t, tt.want, got)

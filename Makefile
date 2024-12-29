@@ -1,8 +1,8 @@
 LOCAL_BIN:=$(CURDIR)/bin
 
 install-deps:
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(LOCAL_BIN) v1.54.2
-	GOBIN=$(LOCAL_BIN) go install github.com/vektra/mockery/v2@v2.40.1
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(LOCAL_BIN) v1.62.2
+	GOBIN=$(LOCAL_BIN) go install github.com/vektra/mockery/v2@v2.50.1
 
 # ---------------
 # docker-compose
@@ -12,7 +12,7 @@ PROJECT_NAME=social-network
 COMPOSE_DEV=./docker/docker-compose.yaml
 
 up:
-	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d
+	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up -d --build 
 
 down:
 	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) down
@@ -34,10 +34,10 @@ shell:
 # ---------------	
 
 lint: 
-	./bin/golangci-lint run ./... --config=./golangci.yml
+	./bin/golangci-lint run ./... --config=./.golangci.yaml
 
 lint-fast:
-	./bin/golangci-lint run ./... --fast --config=./golangci.yml
+	./bin/golangci-lint run ./... --fast --config=./.golangci.yaml
 
 
 # ---------------

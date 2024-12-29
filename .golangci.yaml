@@ -1,14 +1,12 @@
 linters:
   disable:
-    - makezero
-    - contextcheck
-    - godox # для dev не нужен, а вот для прода лучше включить.
+    - godox
     - funlen
     - exhaustive
-    - perfsprint
-  # enable:
-  #   - gosec
-  #   - wrapcheck
+  enable:
+    - forbidigo
+    - gosec
+    - wrapcheck
   presets:
     - bugs
     - error
@@ -20,52 +18,29 @@ linters:
 
 linters-settings:
   wrapcheck:
-    ignoreSigs:
-      - .Errorf(
-      - errors.New(
-      - errors.Unwrap(
-      - errors.Join(
-      - .Wrap(
-      - .Wrapf(
-      - .WithMessage(
-      - .WithMessagef(
-      - .WithStack(
-      - apierrors.New(
-      - apierrors.NewWithValue(
-      - httperrors.New(
     ignoreSigRegexps:
       - \.Wrap.*Error\(
-    ignorePackageGlobs:
-      - internal/pkg/httperrors
-      - internal/pkg/apierrors
-
+      - \.*errors.NewWithValue\(
+      - \.*errors.New\(
   cyclop:
     max-complexity: 15
-
   errcheck:
     exclude-functions:
       - (net/http.ResponseWriter).Write
-
-  exhaustive:
-    default-signifies-exhaustive: true
-
-run:
-  tests: false
+  forbidigo:
+    forbid:
+      - p: ^fmt\.Print.*$
+        msg: Do not commit print statements.
 
 issues:
   exclude-dirs:
-    # пакет исключен до рефакторинга
-    - internal/pkg/lock
-    # пакеты исключены из проверки, т.к. в настройках линтеров нет возможности настроить исключения.
-    # - internal/pkg/httperrors
-    # - internal/pkg/apierrors
-    # - internal/pkg/tx
-    # моки
-    - internal/mocks
-    # дериктории...
-    - ci
     - docker
     - docs
-    - fixtures
     - migrations
-    - tmp
+    - vendor
+    # дериктории которые надо добавить.
+    - internal/mocks
+    - tests # интеграционные тесты.
+
+run:
+  tests: false

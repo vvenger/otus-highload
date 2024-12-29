@@ -23,8 +23,7 @@ func NewQueryTracer(l *zerolog.Logger) *QueryTracer {
 
 func (t *QueryTracer) TraceQueryStart(ctx context.Context, _ *pgx.Conn, data pgx.TraceQueryStartData) context.Context {
 	if evt := t.logger.Debug(); evt.Enabled() {
-		evt.
-			Str("sql", data.SQL).
+		evt.Str("sql", data.SQL).
 			Any("args", data.Args).
 			Msg("executing query")
 	}

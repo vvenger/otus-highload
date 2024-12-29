@@ -43,7 +43,7 @@ func newConsole(out io.Writer, level zerolog.Level) zerolog.Logger {
 						c = rel
 					}
 				}
-				c = fmt.Sprintf("%s \x1b[36m>\x1b[0m", c)
+				c = fmt.Sprintf("%s \x1b[36m>\x1b[0m", c) //nolint: perfsprint
 			}
 
 			return c

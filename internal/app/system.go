@@ -40,14 +40,12 @@ func NewSystemService(p SystemParams) *SystemService {
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
-	//nolint:gosec  //internal server
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", p.Config.Otlp.MetricsPort),
-		Handler: mux,
-	}
-
+	//nolint:gosec
 	return &SystemService{
-		Server:          srv,
+		Server: &http.Server{
+			Addr:    fmt.Sprintf(":%d", p.Config.Otlp.MetricsPort),
+			Handler: mux,
+		},
 		ShutdownTimeout: time.Duration(p.Config.App.Shutdown) * time.Second,
 	}
 }
