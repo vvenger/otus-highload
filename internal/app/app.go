@@ -16,7 +16,8 @@ const (
 )
 
 func Run() {
-	NewApp().Run()
+	srv := NewApp()
+	srv.Run()
 }
 
 func NewApp() *fx.App {

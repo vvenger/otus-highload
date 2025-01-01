@@ -5,6 +5,5 @@ import (
 )
 
 func main() {
-	srv := app.NewApp()
-	srv.Run()
+	app.Run()
 }
