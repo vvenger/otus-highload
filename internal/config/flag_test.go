@@ -16,9 +16,9 @@ func Test_parseArgs(t *testing.T) {
 	}{
 		{
 			name: "OK",
-			args: []string{"-c", "config.yaml", "-l", "error", "-f", "console"},
+			args: []string{"-c", "./../", "-l", "error", "-f", "console"},
 			want: cmdArgs{
-				ConfigFile: "config.yaml",
+				ConfigPath: "./../",
 				LogLevel:   "error",
 				LogFormat:  "console",
 			},
