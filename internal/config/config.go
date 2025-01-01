@@ -70,7 +70,7 @@ func New() (*Config, error) {
 	if args.Environment != "" {
 		os.Setenv(appEnvironment, args.Environment)
 	}
-	if args.ConfigPath == "" {
+	if args.ConfigPath != "" {
 		os.Setenv("CONFIG_PATH", args.ConfigPath)
 	}
 	if args.LogLevel != "" {
