@@ -99,7 +99,7 @@ func New() (*Config, error) {
 func newViperInstance() *viper.Viper {
 	v := viper.New()
 
-	cfgPath := os.Getenv("CONFIG_FILE")
+	cfgPath := os.Getenv("CONFIG_PATH")
 	if cfgPath == "" {
 		cfgPath = "."
 	}
