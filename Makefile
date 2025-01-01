@@ -12,7 +12,7 @@ PROJECT_NAME=social-network
 COMPOSE_DEV=./docker/docker-compose.yaml
 
 up:
-	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up -d --build 
+	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d
 
 down:
 	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) down
@@ -24,7 +24,10 @@ test:
 	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./..."	
 
 logs:
-	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100	
+	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100
+
+debug:
+	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "dlv debug --headless --log --api-version 2 --listen :2345 ./cmd/socialnetwork/main.go"	
 
 shell:
 	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app bash	
@@ -63,4 +66,4 @@ cover-html:
 # ---------------
 
 mocks: 
-	rm -rf /internal/mocks && ./bin/mockery --all
+	rm -rf ./internal/mocks/ && ./bin/mockery --all

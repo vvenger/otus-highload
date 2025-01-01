@@ -6,6 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/tracelog"
 	"github.com/rs/zerolog"
 )
 
@@ -17,8 +18,8 @@ type Config struct {
 	Password string
 	MaxConns int
 	MinConns int
-	Logger   *zerolog.Logger
 	ExecMode pgx.QueryExecMode
+	Logger   *zerolog.Logger
 }
 
 func New(c *Config) (*pgxpool.Pool, error) {
@@ -28,7 +29,10 @@ func New(c *Config) (*pgxpool.Pool, error) {
 	}
 
 	if c.Logger != nil {
-		cfg.ConnConfig.Tracer = NewQueryTracer(c.Logger)
+		cfg.ConnConfig.Tracer = &tracelog.TraceLog{
+			LogLevel: dbLogLevel(c.Logger.GetLevel()),
+			Logger:   NewQueryTracer(c.Logger),
+		}
 	}
 	if c.MaxConns != 0 {
 		cfg.MaxConns = int32(c.MaxConns) //nolint: gosec
@@ -45,4 +49,12 @@ func New(c *Config) (*pgxpool.Pool, error) {
 	}
 
 	return db, nil
+}
+
+func dbLogLevel(lvl zerolog.Level) tracelog.LogLevel {
+	if lvl != zerolog.DebugLevel {
+		return tracelog.LogLevelWarn
+	}
+
+	return tracelog.LogLevelDebug
 }

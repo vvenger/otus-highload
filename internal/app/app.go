@@ -3,10 +3,16 @@ package app
 import (
 	"context"
 	"fmt"
+	"time"
 
-	"github.com/vvenger/otus-highload/internal/httproute"
-	"github.com/vvenger/otus-highload/internal/user"
+	app "github.com/vvenger/otus-highload/internal/app/module"
 	"go.uber.org/fx"
+)
+
+const (
+	defaultShutdown     = 5 * time.Second
+	defaultReadTimeout  = 5 * time.Second
+	defaultWriteTimeout = defaultReadTimeout
 )
 
 func Run() {
@@ -27,9 +33,9 @@ func AppModules() []fx.Option {
 		WebModule(),
 		SystemModule(),
 		//
-		httproute.Module(),
+		app.HttpService(),
 		//
-		user.Module(),
+		app.User(),
 	}
 }
 

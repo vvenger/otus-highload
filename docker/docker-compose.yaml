@@ -1,19 +1,26 @@
 version: "3.6"
 
 services:
-
   app:
     build: 
       context: ./dev
     ports:
       - 8000:8000
       - 4318:4318
+      - 2345:2345
     volumes:
       - ./..:/app
     environment:
       ENVIRONMENT: dev
-      CONFIG_FILE: /app/config.dev.yaml
+      CONFIG_FILE: config.dev.yaml
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: main
+      DB_USER: root
+      DB_PASSWORD: root
       TZ: Europe/Moscow
+    depends_on:
+      - postgres          
 
   postgres:
     image: postgres:14-bullseye
@@ -25,6 +32,13 @@ services:
 
   redis:
     image: redis:5.0.7
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - 8003:8080
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
 
   pgadmin:
     image: dpage/pgadmin4

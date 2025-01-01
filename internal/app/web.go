@@ -6,32 +6,48 @@ import (
 	"time"
 
 	"github.com/vvenger/otus-highload/internal/config"
+	"github.com/vvenger/otus-highload/internal/web"
 	"go.uber.org/fx"
 )
 
-type WebService struct {
+var (
+	_ http.Handler = (*web.HttpService)(nil)
+)
+
+type WebServer struct {
 	*http.Server
 	ShutdownTimeout time.Duration
 }
 
-type WebServiceParams struct {
+type WebServerParams struct {
 	fx.In
-	Config *config.Config
-	Route  http.Handler
+	Config     *config.Config
+	WebService *web.HttpService
 }
 
-func NewWebService(params WebServiceParams) *WebService {
-	p := params.Config.App.Web
-
-	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", p.Port),
-		ReadTimeout:  time.Duration(p.ReadTimeout) * time.Second,
-		WriteTimeout: time.Duration(p.WriteTimeout) * time.Second,
-		Handler:      params.Route,
+func NewWebServer(params WebServerParams) *WebServer {
+	read := defaultReadTimeout
+	if params.Config.App.Web.ReadTimeout != 0 {
+		read = time.Duration(params.Config.App.Web.ReadTimeout) * time.Second
 	}
 
-	return &WebService{
-		Server:          srv,
-		ShutdownTimeout: time.Duration(params.Config.App.Shutdown) * time.Second,
+	write := defaultWriteTimeout
+	if params.Config.App.Web.ReadTimeout != 0 {
+		write = time.Duration(params.Config.App.Web.WriteTimeout) * time.Second
+	}
+
+	shutdown := defaultShutdown
+	if params.Config.App.Shutdown != 0 {
+		write = time.Duration(params.Config.App.Shutdown) * time.Second
+	}
+
+	return &WebServer{
+		Server: &http.Server{
+			Addr:         fmt.Sprintf(":%d", params.Config.App.Web.Port),
+			ReadTimeout:  read,
+			WriteTimeout: write,
+			Handler:      http.Handler(params.WebService),
+		},
+		ShutdownTimeout: shutdown,
 	}
 }

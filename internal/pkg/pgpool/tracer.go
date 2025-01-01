@@ -3,7 +3,7 @@ package pgpool
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/tracelog"
 	"github.com/rs/zerolog"
 )
 
@@ -21,15 +21,25 @@ func NewQueryTracer(l *zerolog.Logger) *QueryTracer {
 	}
 }
 
-func (t *QueryTracer) TraceQueryStart(ctx context.Context, _ *pgx.Conn, data pgx.TraceQueryStartData) context.Context {
-	if evt := t.logger.Debug(); evt.Enabled() {
-		evt.Str("sql", data.SQL).
-			Any("args", data.Args).
-			Msg("executing query")
+func (t *QueryTracer) Log(ctx context.Context, level tracelog.LogLevel, msg string, data map[string]interface{}) {
+	var evt *zerolog.Event
+
+	switch level {
+	case tracelog.LogLevelWarn:
+		evt = t.logger.Warn()
+	case tracelog.LogLevelError:
+		evt = t.logger.Error()
+	default:
+		evt = t.logger.Debug()
 	}
 
-	return ctx
-}
+	if !evt.Enabled() {
+		return
+	}
 
-func (t *QueryTracer) TraceQueryEnd(ctx context.Context, _ *pgx.Conn, data pgx.TraceQueryEndData) {
+	for k, v := range data {
+		evt = evt.Any(k, v)
+	}
+
+	evt.Msg(msg)
 }

@@ -55,11 +55,10 @@ func DBModule() fx.Option {
 func WebModule() fx.Option {
 	opt := fx.Module("web",
 		fx.Provide(
-			NewWebService,
-			NewRoute,
+			NewWebServer,
 			jwt.New,
 		),
-		fx.Invoke(func(lc fx.Lifecycle, srv *WebService) {
+		fx.Invoke(func(lc fx.Lifecycle, srv *WebServer) {
 			lc.Append(fx.Hook{
 				OnStart: func(ctx context.Context) error {
 					go func() {

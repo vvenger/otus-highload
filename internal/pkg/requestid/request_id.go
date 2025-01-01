@@ -10,12 +10,11 @@ import (
 type reqID struct{}
 
 func Get(ctx context.Context) string {
-	v, ok := ctx.Value(reqID{}).(string)
-	if !ok {
-		return ""
+	if v, ok := ctx.Value(reqID{}).(string); ok {
+		return v
 	}
 
-	return v
+	return ""
 }
 
 func New(ctx context.Context, sc trace.SpanContext) (context.Context, string) {

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0a3e9880-ef46-4cfe-b7e4-22de29032e6a",
+		"_postman_id": "05a9a1b6-769f-4543-881f-242634301ec8",
 		"name": "OTUS Highload",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -39,7 +39,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"97e64c85-1836-4d1c-866e-2ff990815985\",\n    \"password\":\"123456\"\n}",
+					"raw": "{\n    \"id\": \"{{userId}}\",\n    \"password\":\"123456\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -60,30 +60,18 @@
 		},
 		{
 			"name": "/user/get/{id}",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"97e64c85-1836-4d1c-866e-2ff990815985\",\n    \"password\":\"123456\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "{{localhost}}/user/get/97e64c85-1836-4d1c-866e-2ff990815985",
+					"raw": "{{localhost}}/user/get/{{userId}}",
 					"host": [
 						"{{localhost}}"
 					],
 					"path": [
 						"user",
 						"get",
-						"97e64c85-1836-4d1c-866e-2ff990815985"
+						"{{userId}}"
 					]
 				}
 			},
@@ -114,6 +102,11 @@
 		{
 			"key": "localhost",
 			"value": "http://localhost:8000",
+			"type": "default"
+		},
+		{
+			"key": "userId",
+			"value": "",
 			"type": "default"
 		}
 	]

@@ -3,6 +3,6 @@ output: ./internal/mocks
 keeptree: true
 include-auto-generated: false
 exclude:
-  - internal/api
   - internal/app
   - internal/pkg
+  - internal/web/api

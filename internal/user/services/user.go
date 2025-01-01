@@ -1,22 +1,20 @@
-package services
+package user
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/rs/zerolog"
-	"github.com/vvenger/otus-highload/internal/domain"
-	"github.com/vvenger/otus-highload/internal/errs"
 	"github.com/vvenger/otus-highload/internal/pkg/jwt"
+	model "github.com/vvenger/otus-highload/internal/user/model"
 	"go.uber.org/fx"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRepository interface {
 	FindLogin(ctx context.Context, login string) (string, error)
-	Register(ctx context.Context, user *domain.RegisterRequest) (string, error)
-	User(ctx context.Context, id string) (domain.User, error)
+	Register(ctx context.Context, user model.RegisterUser) (string, error)
+	User(ctx context.Context, id string) (model.User, error)
 }
 
 type ServiceParams struct {
@@ -42,20 +40,11 @@ func (s *UserService) Login(ctx context.Context, login, password string) error {
 
 	p, err := s.userRepo.FindLogin(ctx, login)
 	if err != nil {
-		if errors.Is(err, errs.ErrNotFound) {
-			return fmt.Errorf("could not find user: %w", err)
-		}
-
-		zerolog.Ctx(ctx).Error().
-			Str("op", op).
-			Err(err).
-			Msg("could not repository login")
-
-		return errs.ErrInternalServerError
+		return fmt.Errorf("could not find user: %w", err)
 	}
 
 	if err := checkPassword(password, p); err != nil {
-		return errs.ErrInvalidParams
+		return model.ErrNotFound
 	}
 
 	zerolog.Ctx(ctx).Debug().
@@ -66,33 +55,24 @@ func (s *UserService) Login(ctx context.Context, login, password string) error {
 	return nil
 }
 
-func (s *UserService) Register(ctx context.Context, user *domain.RegisterRequest) (string, error) {
+func (s *UserService) Register(ctx context.Context, user model.RegisterUser) (string, error) {
 	op := "user.UserService.Register"
+
+	zerolog.Ctx(ctx).Debug().
+		Str("op", op).
+		Any("user", user).
+		Send()
 
 	p, err := hashPassword(user.Password)
 	if err != nil {
-		zerolog.Ctx(ctx).Error().
-			Str("op", op).
-			Err(err).
-			Msg("could not hash password")
-
-		return "", errs.ErrInternalServerError
+		return "", fmt.Errorf("could not hash password: %w", err)
 	}
 
 	user.Password = p
 
 	id, err := s.userRepo.Register(ctx, user)
 	if err != nil {
-		zerolog.Ctx(ctx).Error().
-			Str("op", op).
-			Err(err).
-			Msg("could not repository register")
-
-		if errors.Is(err, errs.ErrConflict) {
-			return "", errs.ErrConflict
-		}
-
-		return "", errs.ErrInternalServerError
+		return "", fmt.Errorf("could not register user: %w", err)
 	}
 
 	zerolog.Ctx(ctx).Debug().
@@ -103,21 +83,12 @@ func (s *UserService) Register(ctx context.Context, user *domain.RegisterRequest
 	return id, nil
 }
 
-func (s *UserService) User(ctx context.Context, id string) (domain.User, error) {
+func (s *UserService) User(ctx context.Context, id string) (model.User, error) {
 	op := "user.UserService.User"
 
 	u, err := s.userRepo.User(ctx, id)
 	if err != nil {
-		if !errors.Is(err, errs.ErrNotFound) {
-			zerolog.Ctx(ctx).Error().
-				Str("op", op).
-				Err(err).
-				Msg("could not get repository user")
-
-			return domain.User{}, errs.ErrInternalServerError
-		}
-
-		return domain.User{}, errs.ErrNotFound
+		return model.User{}, fmt.Errorf("could not get user: %w", err)
 	}
 
 	zerolog.Ctx(ctx).Debug().

@@ -6,13 +6,12 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/vvenger/otus-highload/internal/config"
-	model "github.com/vvenger/otus-highload/internal/domain"
 	"go.uber.org/fx"
 )
 
 type Manager interface {
-	NewToken(val model.JwtToken) (string, error)
-	Validate(token string) (model.JwtToken, error)
+	NewToken(val Token) (string, error)
+	Validate(token string) (Token, error)
 }
 
 type JWTParams struct {
@@ -37,7 +36,7 @@ type tokenClaims struct {
 	UserID string `json:"user_id,omitempty"`
 }
 
-func (s *managerImp) NewToken(val model.JwtToken) (string, error) {
+func (s *managerImp) NewToken(val Token) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		UserID: val.UserID,
 		StandardClaims: jwt.StandardClaims{
@@ -54,7 +53,7 @@ func (s *managerImp) NewToken(val model.JwtToken) (string, error) {
 	return accesValue, nil
 }
 
-func (s *managerImp) Validate(token string) (model.JwtToken, error) {
+func (s *managerImp) Validate(token string) (Token, error) {
 	t, err := jwt.ParseWithClaims(token, &tokenClaims{},
 		func(tok *jwt.Token) (interface{}, error) {
 			if _, ok := tok.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -64,17 +63,15 @@ func (s *managerImp) Validate(token string) (model.JwtToken, error) {
 			return []byte(s.secret), nil
 		})
 	if err != nil {
-		return model.JwtToken{}, fmt.Errorf("could not parse token: %w", err)
+		return Token{}, fmt.Errorf("could not parse token: %w", err)
 	}
 
 	claims, ok := t.Claims.(*tokenClaims)
 	if !ok || !t.Valid {
-		return model.JwtToken{}, jwt.ErrInvalidKey
+		return Token{}, jwt.ErrInvalidKey
 	}
 
-	res := model.JwtToken{
+	return Token{
 		UserID: claims.UserID,
-	}
-
-	return res, nil
+	}, nil
 }

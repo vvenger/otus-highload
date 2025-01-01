@@ -3,8 +3,8 @@ package app
 import (
 	"net/http"
 
-	apihttp "github.com/vvenger/otus-highload/internal/httproute"
 	"github.com/vvenger/otus-highload/internal/pkg/requestid"
+	"github.com/vvenger/otus-highload/internal/web"
 
 	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -16,7 +16,7 @@ import (
 type RouteParams struct {
 	fx.In
 	Logger         *zerolog.Logger
-	Handler        *apihttp.HttpRoute
+	Handler        *web.HttpService
 	TracerProvider trace.TracerProvider
 }
 
