@@ -8,7 +8,6 @@ import (
 	"github.com/vvenger/otus-highload/internal/pkg/jwt"
 	model "github.com/vvenger/otus-highload/internal/user/model"
 	"go.uber.org/fx"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRepository interface {
@@ -43,7 +42,7 @@ func (s *UserService) Login(ctx context.Context, login, password string) error {
 		return fmt.Errorf("could not find user: %w", err)
 	}
 
-	if err := checkPassword(password, p); err != nil {
+	if err := model.CheckPassword(password, p); err != nil {
 		return model.ErrNotFound
 	}
 
@@ -63,7 +62,7 @@ func (s *UserService) Register(ctx context.Context, user model.RegisterUser) (st
 		Any("user", user).
 		Send()
 
-	p, err := hashPassword(user.Password)
+	p, err := model.HashPassword(user.Password)
 	if err != nil {
 		return "", fmt.Errorf("could not hash password: %w", err)
 	}
@@ -97,15 +96,4 @@ func (s *UserService) User(ctx context.Context, id string) (model.User, error) {
 		Send()
 
 	return u, nil
-}
-
-//nolint:wrapcheck
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	return string(bytes), err
-}
-
-//nolint:wrapcheck
-func checkPassword(password, hash string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }

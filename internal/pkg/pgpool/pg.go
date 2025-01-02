@@ -16,8 +16,8 @@ type Config struct {
 	Database string
 	User     string
 	Password string
-	MaxConns int
-	MinConns int
+	MaxConns int32
+	MinConns int32
 	ExecMode pgx.QueryExecMode
 	Logger   *zerolog.Logger
 }
@@ -35,10 +35,10 @@ func New(c *Config) (*pgxpool.Pool, error) {
 		}
 	}
 	if c.MaxConns != 0 {
-		cfg.MaxConns = int32(c.MaxConns) //nolint: gosec
+		cfg.MaxConns = c.MaxConns
 	}
 	if c.MinConns != 0 {
-		cfg.MinConns = int32(c.MinConns) //nolint: gosec
+		cfg.MinConns = c.MinConns
 	}
 
 	cfg.ConnConfig.DefaultQueryExecMode = c.ExecMode

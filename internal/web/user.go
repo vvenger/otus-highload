@@ -3,7 +3,6 @@ package web
 import (
 	"context"
 	"errors"
-	"net/http"
 	"time"
 
 	"github.com/google/uuid"
@@ -25,8 +24,7 @@ func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.L
 		return &api.LoginPostNotFound{}, nil
 	}
 
-	err := s.user.Login(ctx, login, pass)
-	if err != nil {
+	if err := s.user.Login(ctx, login, pass); err != nil {
 		if errors.Is(err, model.ErrNotFound) {
 			return &api.LoginPostNotFound{}, nil
 		}
@@ -37,15 +35,14 @@ func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.L
 			Err(err).
 			Msg("could not login")
 
-		v := &api.LoginPostInternalServerError{
+		return &api.LoginPostInternalServerError{
 			Response: api.R5xx{
-				Code:      api.NewOptInt(http.StatusInternalServerError),
-				Message:   "Failed to login",
-				RequestID: api.NewOptString(requestid.Get(ctx)),
+				Code:      optErrorCode(ErrInternalServer),
+				Message:   ErrorMessage[ErrInternalServer],
+				RequestID: optString(requestid.Get(ctx)),
 			},
-		}
-
-		return v, nil
+			RetryAfter: api.NewOptInt(s.retryAfter),
+		}, nil
 	}
 
 	tok, err := s.sec.NewToken(jwt.Token{
@@ -57,7 +54,14 @@ func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.L
 			Err(err).
 			Msg("could not create token")
 
-		return &api.LoginPostInternalServerError{}, nil
+		return &api.LoginPostInternalServerError{
+			Response: api.R5xx{
+				Code:      optErrorCode(ErrInternalServer),
+				Message:   ErrorMessage[ErrInternalServer],
+				RequestID: optString(requestid.Get(ctx)),
+			},
+			RetryAfter: api.NewOptInt(s.retryAfter),
+		}, nil
 	}
 
 	zerolog.Ctx(ctx).Debug().Str("tok", tok).Send()
@@ -88,7 +92,14 @@ func (s *handler) UserRegisterPost(ctx context.Context, req api.OptUserRegisterP
 			return &api.UserRegisterPostBadRequest{}, nil
 		}
 
-		return &api.UserRegisterPostInternalServerError{}, nil
+		return &api.UserRegisterPostInternalServerError{
+			Response: api.R5xx{
+				Code:      optErrorCode(ErrInternalServer),
+				Message:   ErrorMessage[ErrInternalServer],
+				RequestID: optString(requestid.Get(ctx)),
+			},
+			RetryAfter: api.NewOptInt(s.retryAfter),
+		}, nil
 	}
 
 	return &api.UserRegisterPostOK{
@@ -115,7 +126,14 @@ func (s *handler) UserGetIDGet(ctx context.Context, params api.UserGetIDGetParam
 			Err(err).
 			Msg("could not get user")
 
-		return &api.UserGetIDGetInternalServerError{}, nil
+		return &api.UserGetIDGetInternalServerError{
+			Response: api.R5xx{
+				Code:      optErrorCode(ErrInternalServer),
+				Message:   ErrorMessage[ErrInternalServer],
+				RequestID: optString(requestid.Get(ctx)),
+			},
+			RetryAfter: api.NewOptInt(s.retryAfter),
+		}, nil
 	}
 
 	return &api.User{

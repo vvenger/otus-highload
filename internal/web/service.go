@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/vvenger/otus-highload/internal/config"
 	user "github.com/vvenger/otus-highload/internal/user/model"
 
 	"github.com/ogen-go/ogen/ogenerrors"
@@ -25,8 +26,9 @@ type UserService interface {
 
 type handler struct {
 	api.UnimplementedHandler
-	user UserService
-	sec  jwt.Manager
+	user       UserService
+	sec        jwt.Manager
+	retryAfter int
 }
 
 type ServiceParams struct {
@@ -35,6 +37,7 @@ type ServiceParams struct {
 	MetricProvider metric.MeterProvider
 	JWTService     jwt.Manager
 	UserService    UserService
+	Config         *config.Config
 }
 
 type HttpService struct {
@@ -43,8 +46,9 @@ type HttpService struct {
 
 func NewHttpService(p ServiceParams) (*HttpService, error) {
 	h := &handler{
-		user: p.UserService,
-		sec:  p.JWTService,
+		user:       p.UserService,
+		sec:        p.JWTService,
+		retryAfter: p.Config.App.Web.RetryAfter,
 	}
 
 	sec := &securityHandler{
@@ -66,32 +70,25 @@ func NewHttpService(p ServiceParams) (*HttpService, error) {
 func errorHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
 	// TODO: Разобраться с ошибками.
 	// В swagger только на 500 отдается ошибка, а остальное код.
+	zerolog.Ctx(ctx).Error().Err(err).Send()
 
 	var pErr *ogenerrors.DecodeParamError
 	if errors.As(err, &pErr) {
-		zerolog.Ctx(ctx).Debug().Err(err).Send()
-
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	var dErr *ogenerrors.DecodeRequestError
 	if errors.As(err, &dErr) {
-		zerolog.Ctx(ctx).Debug().Err(err).Send()
-
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	var sErr *ogenerrors.SecurityError
 	if errors.As(err, &sErr) {
-		zerolog.Ctx(ctx).Debug().Err(err).Send()
-
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-
-	zerolog.Ctx(ctx).Error().Err(err).Send()
 
 	w.WriteHeader(http.StatusInternalServerError)
 }

@@ -32,6 +32,7 @@ type AppWebConfig struct {
 	Port         int `mapstructure:"port"`
 	ReadTimeout  int `mapstructure:"read_timeout_sec"`
 	WriteTimeout int `mapstructure:"write_timeout_sec"`
+	RetryAfter   int `mapstructure:"retry_after_sec"`
 }
 
 type LogConfig struct {
@@ -41,12 +42,12 @@ type LogConfig struct {
 
 type DBConfig struct {
 	Host      string        `mapstructure:"host"`
-	Port      int           `mapstructure:"port"`
+	Port      uint16        `mapstructure:"port"`
 	Database  string        `mapstructure:"database"`
 	User      string        `mapstructure:"user"`
 	Password  string        `mapstructure:"password"`
-	MaxConns  int           `mapstructure:"max_conns"`
-	MinConns  int           `mapstructure:"min_conns"`
+	MaxConns  int32         `mapstructure:"max_conns"`
+	MinConns  int32         `mapstructure:"min_conns"`
 	QueryMode QueryExecMode `mapstructure:"exec_mode"`
 }
 
@@ -99,6 +100,7 @@ func newViperInstance() *viper.Viper {
 	v.SetDefault("app.web_port", 8000)
 	v.SetDefault("app.web_read_timeout_sec", 5)
 	v.SetDefault("app.web_write_timeout_sec", 5)
+	v.SetDefault("app.retry_after_sec", 5)
 	// Log.
 	v.SetDefault("log.level", "info")
 	v.SetDefault("log.format", "json")

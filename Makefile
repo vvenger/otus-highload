@@ -26,6 +26,9 @@ test:
 logs:
 	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100
 
+integration-test:
+	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./e2e/..."		
+
 # debug:
 # 	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "dlv debug --headless --log --api-version 2 --listen :2345 ./cmd/socialnetwork/main.go"	
 

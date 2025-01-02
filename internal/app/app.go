@@ -40,28 +40,28 @@ func AppModules() []fx.Option {
 	}
 }
 
-func Populate(targets ...interface{}) error {
+func Populate(targets ...interface{}) (stop func(context.Context), err error) {
 	return PopulateWith(nil, targets...)
 }
 
-func PopulateWith(option fx.Option, targets ...interface{}) error {
+func PopulateWith(option fx.Option, targets ...interface{}) (stop func(context.Context), err error) {
 	modules := AppModules()
 	modules = append(modules, fx.Populate(targets...))
 	if option != nil {
 		modules = append(modules, option)
 	}
 
-	app := fx.New(
-		modules...,
-	)
+	app := fx.New(modules...)
 
-	if err := app.Start(context.Background()); err != nil {
-		return fmt.Errorf("could not start app: %w", err)
+	if err = app.Start(context.Background()); err != nil {
+		err = fmt.Errorf("could not start app: %w", err)
+
+		return
 	}
 
-	defer func(app *fx.App, ctx context.Context) {
+	stop = func(ctx context.Context) {
 		_ = app.Stop(ctx)
-	}(app, context.Background())
+	}
 
-	return nil
+	return
 }

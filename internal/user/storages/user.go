@@ -39,19 +39,13 @@ func (s *UserStorage) FindLogin(ctx context.Context, login string) (string, erro
 		FROM
 			users
 		WHERE
-			id = @id`
-
-	args := pgx.NamedArgs{
-		"id": login,
-	}
+			id = $1`
 
 	var password string
-	err := s.db.QueryRow(ctx, sql, args).Scan(&password)
-	if err != nil {
+	if err := s.db.QueryRow(ctx, sql, login).Scan(&password); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return "", model.ErrNotFound
 		}
-
 		return "", fmt.Errorf("could not get user: %w", err)
 	}
 

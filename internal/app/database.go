@@ -20,7 +20,7 @@ type DBParams struct {
 func NewDB(params DBParams) (*pgxpool.Pool, error) {
 	c := pgpool.Config{
 		Host:     params.Config.DB.Host,
-		Port:     uint16(params.Config.DB.Port), //nolint: gosec
+		Port:     params.Config.DB.Port,
 		Database: params.Config.DB.Database,
 		User:     params.Config.DB.User,
 		Password: params.Config.DB.Password,

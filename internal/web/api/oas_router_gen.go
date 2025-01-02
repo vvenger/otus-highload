@@ -594,10 +594,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 
 						if len(elem) == 0 {
+							// Leaf node.
 							switch method {
 							case "GET":
-								// Leaf: DialogUserIDListGet
-								r.name = "DialogUserIDListGet"
+								r.name = DialogUserIDListGetOperation
 								r.summary = ""
 								r.operationID = ""
 								r.pathPattern = "/dialog/{user_id}/list"
@@ -619,10 +619,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 
 						if len(elem) == 0 {
+							// Leaf node.
 							switch method {
 							case "POST":
-								// Leaf: DialogUserIDSendPost
-								r.name = "DialogUserIDSendPost"
+								r.name = DialogUserIDSendPostOperation
 								r.summary = ""
 								r.operationID = ""
 								r.pathPattern = "/dialog/{user_id}/send"
@@ -667,10 +667,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					elem = ""
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "PUT":
-							// Leaf: FriendDeleteUserIDPut
-							r.name = "FriendDeleteUserIDPut"
+							r.name = FriendDeleteUserIDPutOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/friend/delete/{user_id}"
@@ -697,10 +697,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					elem = ""
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "PUT":
-							// Leaf: FriendSetUserIDPut
-							r.name = "FriendSetUserIDPut"
+							r.name = FriendSetUserIDPutOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/friend/set/{user_id}"
@@ -725,10 +725,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch method {
 					case "POST":
-						// Leaf: LoginPost
-						r.name = "LoginPost"
+						r.name = LoginPostOperation
 						r.summary = ""
 						r.operationID = ""
 						r.pathPattern = "/login"
@@ -762,10 +762,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "POST":
-							// Leaf: PostCreatePost
-							r.name = "PostCreatePost"
+							r.name = PostCreatePostOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/post/create"
@@ -792,10 +792,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					elem = ""
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "PUT":
-							// Leaf: PostDeleteIDPut
-							r.name = "PostDeleteIDPut"
+							r.name = PostDeleteIDPutOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/post/delete/{id}"
@@ -817,10 +817,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "GET":
-							// Leaf: PostFeedGet
-							r.name = "PostFeedGet"
+							r.name = PostFeedGetOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/post/feed"
@@ -847,10 +847,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					elem = ""
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "GET":
-							// Leaf: PostGetIDGet
-							r.name = "PostGetIDGet"
+							r.name = PostGetIDGetOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/post/get/{id}"
@@ -872,10 +872,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "PUT":
-							// Leaf: PostUpdatePut
-							r.name = "PostUpdatePut"
+							r.name = PostUpdatePutOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/post/update"
@@ -917,10 +917,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					elem = ""
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "GET":
-							// Leaf: UserGetIDGet
-							r.name = "UserGetIDGet"
+							r.name = UserGetIDGetOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/user/get/{id}"
@@ -942,10 +942,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "POST":
-							// Leaf: UserRegisterPost
-							r.name = "UserRegisterPost"
+							r.name = UserRegisterPostOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/user/register"
@@ -967,10 +967,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "GET":
-							// Leaf: UserSearchGet
-							r.name = "UserSearchGet"
+							r.name = UserSearchGetOperation
 							r.summary = ""
 							r.operationID = ""
 							r.pathPattern = "/user/search"

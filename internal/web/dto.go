@@ -11,3 +11,7 @@ func optString(s string) api.OptString {
 
 	return api.NewOptString(s)
 }
+
+func optErrorCode(v ErrorCode) api.OptInt {
+	return api.NewOptInt(int(v))
+}

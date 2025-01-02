@@ -17,7 +17,7 @@ type SecurityHandler interface {
 	// HandleBearerAuth handles bearerAuth security.
 	// Авторизация по токену, который был получен в методе
 	// /login.
-	HandleBearerAuth(ctx context.Context, operationName string, t BearerAuth) (context.Context, error)
+	HandleBearerAuth(ctx context.Context, operationName OperationName, t BearerAuth) (context.Context, error)
 }
 
 func findAuthorization(h http.Header, prefix string) (string, bool) {
@@ -35,7 +35,7 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 	return "", false
 }
 
-func (s *Server) securityBearerAuth(ctx context.Context, operationName string, req *http.Request) (context.Context, bool, error) {
+func (s *Server) securityBearerAuth(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {
 	var t BearerAuth
 	token, ok := findAuthorization(req.Header, "Bearer")
 	if !ok {
