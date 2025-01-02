@@ -62,24 +62,6 @@ type OtlpConfig struct {
 }
 
 func New() (*Config, error) {
-	args, err := parseArgs(os.Args[1:])
-	if err != nil {
-		return nil, fmt.Errorf("could not parse args: %w", err)
-	}
-
-	if args.Environment != "" {
-		os.Setenv(appEnvironment, args.Environment)
-	}
-	if args.ConfigPath != "" {
-		os.Setenv("CONFIG_PATH", args.ConfigPath)
-	}
-	if args.LogLevel != "" {
-		os.Setenv("LOG_LEVEL", args.LogLevel)
-	}
-	if args.LogFormat != "" {
-		os.Setenv("LOG_FORMAT", args.LogFormat)
-	}
-
 	v := newViperInstance()
 
 	v.AutomaticEnv()
@@ -99,7 +81,7 @@ func New() (*Config, error) {
 func newViperInstance() *viper.Viper {
 	v := viper.New()
 
-	cfgPath := os.Getenv("CONFIG_PATH")
+	cfgPath := os.Getenv(CmdPath)
 	if cfgPath == "" {
 		cfgPath = "."
 	}
@@ -123,7 +105,7 @@ func newViperInstance() *viper.Viper {
 	// DB.
 	v.SetDefault("db.max_conns", 4)
 	v.SetDefault("db.min_conns", 1)
-	v.SetDefault("db.exec_mode", "SIMPLE_PROTOCOL")
+	v.SetDefault("db.exec_mode", QueryExecModeSimple)
 	// OTLP.
 	v.SetDefault("otlp.metrics_port", 4318)
 

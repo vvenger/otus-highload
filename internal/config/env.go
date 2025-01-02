@@ -6,7 +6,10 @@ import (
 )
 
 const (
-	appEnvironment = "ENVIRONMENT"
+	CmdEnvironment = "ENVIRONMENT"
+	CmdPath        = "CONFIG_PATH"
+	CmdLogLevel    = "LOG_LEVEL"
+	CmdLogFormat   = "LOG_FORMAT"
 )
 
 const (
@@ -22,7 +25,7 @@ var envList = map[string]struct{}{
 }
 
 func GetEnvironment() string {
-	env := strings.ToLower(os.Getenv(appEnvironment))
+	env := strings.ToLower(os.Getenv(CmdEnvironment))
 	if _, ok := envList[env]; ok {
 		return env
 	}

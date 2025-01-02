@@ -3,7 +3,30 @@ package config
 import (
 	"flag"
 	"fmt"
+	"os"
 )
+
+func ParseArgs() error {
+	args, err := parseArgs(os.Args[1:])
+	if err != nil {
+		return fmt.Errorf("could not parse args: %w", err)
+	}
+
+	if args.Environment != "" {
+		os.Setenv(CmdEnvironment, args.Environment)
+	}
+	if args.ConfigPath != "" {
+		os.Setenv(CmdPath, args.ConfigPath)
+	}
+	if args.LogLevel != "" {
+		os.Setenv(CmdLogLevel, args.LogLevel)
+	}
+	if args.LogFormat != "" {
+		os.Setenv(CmdLogFormat, args.LogFormat)
+	}
+
+	return nil
+}
 
 // Command line arguments.
 type cmdArgs struct {
@@ -16,7 +39,7 @@ type cmdArgs struct {
 func parseArgs(args []string) (cmdArgs, error) {
 	var res cmdArgs
 
-	fSet := flag.CommandLine
+	fSet := flag.NewFlagSet("service", flag.ExitOnError)
 
 	fSet.StringVar(&res.ConfigPath, "c", "", "Path to configuration file")
 	fSet.StringVar(&res.LogLevel, "l", "", "Log Level: debug, info, warn, error")
