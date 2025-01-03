@@ -20,9 +20,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{localhost}}/user/register",
+					"raw": "{{baseURL}}/user/register",
 					"host": [
-						"{{localhost}}"
+						"{{baseURL}}"
 					],
 					"path": [
 						"user",
@@ -47,9 +47,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{localhost}}/login",
+					"raw": "{{baseURL}}/login",
 					"host": [
-						"{{localhost}}"
+						"{{baseURL}}"
 					],
 					"path": [
 						"login"
@@ -64,9 +64,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{localhost}}/user/get/{{userId}}",
+					"raw": "{{baseURL}}/user/get/{{userId}}",
 					"host": [
-						"{{localhost}}"
+						"{{baseURL}}"
 					],
 					"path": [
 						"user",
@@ -100,7 +100,7 @@
 	],
 	"variable": [
 		{
-			"key": "localhost",
+			"key": "baseURL",
 			"value": "http://localhost:8000",
 			"type": "default"
 		},
