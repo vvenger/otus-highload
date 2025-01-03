@@ -27,7 +27,7 @@ func NewTracerProvider(params Config) (trace.TracerProvider, error) {
 		otlptracehttp.WithInsecure(),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("could not create trace exporter: %w", err)
+		return nil, fmt.Errorf("can't create trace exporter: %w", err)
 	}
 
 	otel.SetTextMapPropagator(newPropagator())
