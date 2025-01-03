@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/vvenger/otus-highload/internal/config"
 	"github.com/vvenger/otus-highload/internal/pkg/tracer"
 
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/fx"
 
@@ -50,7 +50,7 @@ func NewTracerProvider(params TraceParams) (*TracerProvider, error) {
 
 	tp, err := tracer.NewTracerProvider(p)
 	if err != nil {
-		return nil, fmt.Errorf("could not create tracer provider: %w", err)
+		return nil, fmt.Errorf("can't create tracer provider: %w", err)
 	}
 
 	return &TracerProvider{
@@ -71,11 +71,19 @@ type MeterProvider struct {
 }
 
 func NewMeterProvider(p MeterParams) (metric.MeterProvider, error) {
+	const (
+		namespace = "otus"
+	)
+
 	exporter, err := prometheus.New(
+		prometheus.WithNamespace(namespace),
 		prometheus.WithRegisterer(p.Registry),
+		prometheus.WithoutUnits(),
+		prometheus.WithoutScopeInfo(),
+		prometheus.WithoutTargetInfo(),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("could not create prometheus exporter: %w", err)
+		return nil, fmt.Errorf("can't create prometheus exporter: %w", err)
 	}
 
 	provider := sdk.NewMeterProvider(sdk.WithReader(exporter))

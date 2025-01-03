@@ -3,95 +3,113 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 
-	"github.com/ilyakaznacheev/cleanenv"
-)
-
-const (
-	defaultConfig = "/app/config.%s.yaml"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
-	App   AppConfig   `yaml:"app"`
-	Log   LogConfig   `yaml:"log"`
-	DB    DBConfig    `yaml:"db"`
-	Redis RedisConfig `yaml:"redis"`
-	Otlp  OtlpConfig  `yaml:"otlp"`
-}
-
-func New() (*Config, error) {
-	c := &Config{}
-
-	args, err := parseArgs(c, os.Args[1:])
-	if err != nil {
-		return nil, fmt.Errorf("could not parse args: %w", err)
-	}
-
-	if args.Environment != "" {
-		os.Setenv("ENVIRONMENT", args.Environment)
-	}
-
-	if args.ConfigFile == "" {
-		args.ConfigFile = fmt.Sprintf(defaultConfig, GetEnvironment())
-	}
-
-	if args.LogLevel != "" {
-		os.Setenv("LOG_LEVEL", args.LogLevel)
-	}
-
-	if args.LogFormat != "" {
-		os.Setenv("LOG_FORMAT", args.LogFormat)
-	}
-
-	err = cleanenv.ReadConfig(args.ConfigFile, c)
-	if err != nil {
-		return nil, fmt.Errorf("could not read config: %w", err)
-	}
-
-	return c, nil
+	App   AppConfig   `mapstructure:"app"`
+	Log   LogConfig   `mapstructure:"log"`
+	DB    DBConfig    `mapstructure:"db"`
+	Redis RedisConfig `mapstructure:"redis"`
+	Otlp  OtlpConfig  `mapstructure:"otlp"`
 }
 
 type AppConfig struct {
-	Name     string         `yaml:"name" env:"APP_NAME" env-description:"Name of the service"`
-	Shutdown int            `yaml:"shutdown_timeout" env-default:"5" env-description:"Timeout for the server to shutdown gracefully"`
-	Web      AppWebConfig   `yaml:"web"`
-	Token    AppTokenConfig `yaml:"token"`
+	Name     string         `mapstructure:"name"`
+	Shutdown int            `mapstructure:"shutdown_timeout_sec"`
+	Web      AppWebConfig   `mapstructure:"web"`
+	Token    AppTokenConfig `mapstructure:"token"`
 }
 
 type AppTokenConfig struct {
-	Secret string `yaml:"secret" env:"TOKEN_SECRET"`
-	Expire int    `yaml:"expire" env:"TOKEN_EXPIRE" env-default:"1440"`
+	Secret string `mapstructure:"secret"`
+	Expire int    `mapstructure:"expire_sec"`
 }
 
 type AppWebConfig struct {
-	Port         int `yaml:"port" env:"APP_PORT" env-default:"8080"`
-	ReadTimeout  int `yaml:"read_timeout" env-default:"5" env-description:"Read timeout"`
-	WriteTimeout int `yaml:"write_timeout" env-default:"5" env-description:"Write timeout"`
+	Port         int `mapstructure:"port"`
+	ReadTimeout  int `mapstructure:"read_timeout_sec"`
+	WriteTimeout int `mapstructure:"write_timeout_sec"`
+	RetryAfter   int `mapstructure:"retry_after_sec"`
 }
 
 type LogConfig struct {
-	Level  string `yaml:"level" env:"LOG_LEVEL" env-default:"info" env-description:"Log level: debug, info, warn, error"`
-	Format string `yaml:"format" env:"LOG_FORMAT" env-default:"json" env-description:"Log format: json or console"`
+	Level  string `mapstructure:"level"`
+	Format string `mapstructure:"format"`
 }
 
 type DBConfig struct {
-	Host     string `yaml:"host" env:"DB_HOST"`
-	Port     int    `yaml:"port" env:"DB_PORT"`
-	Database string `yaml:"database" env:"DB_NAME"`
-	User     string `yaml:"user" env:"DB_USER"`
-	Password string `yaml:"password" env:"DB_PASSWORD"`
-	MaxConns int    `yaml:"max_conns" env:"DB_MAX_CONNS" env-default:"4"`
-	MinConns int    `yaml:"min_conns" env:"DB_MIN_CONNS" env-default:"0"`
+	Host      string        `mapstructure:"host"`
+	Port      uint16        `mapstructure:"port"`
+	Database  string        `mapstructure:"database"`
+	User      string        `mapstructure:"user"`
+	Password  string        `mapstructure:"password"`
+	MaxConns  int32         `mapstructure:"max_conns"`
+	MinConns  int32         `mapstructure:"min_conns"`
+	QueryMode QueryExecMode `mapstructure:"exec_mode"`
 }
 
 type RedisConfig struct {
-	Host string `yaml:"host" env:"REDIS_HOST"`
-	Port int    `yaml:"port" env:"REDIS_PORT"`
+	Host string `mapstructure:"host"`
+	Port int    `mapstructure:"port"`
 }
 
 type OtlpConfig struct {
-	MetricsPort int    `yaml:"metrics_port" env:"OTLP_METRICS_PORT" env-default:"4318"`
-	TracesURL   string `yaml:"traces_url" env:"OTLP_TRACES_URL"`
-	ServiceName string `yaml:"service_name" env:"SERVICE_NAME"`
-	Enabled     bool   `yaml:"traces_enabled" env-default:"false"`
+	MetricsPort int    `mapstructure:"metrics_port"`
+	TracesURL   string `mapstructure:"traces_url"`
+	Enabled     bool   `mapstructure:"traces_enabled"`
+}
+
+func New() (*Config, error) {
+	v := newViperInstance()
+
+	v.AutomaticEnv()
+
+	if err := v.ReadInConfig(); err != nil {
+		return &Config{}, fmt.Errorf("can't read config: %w", err)
+	}
+
+	var cfg Config
+	if err := v.Unmarshal(&cfg); err != nil {
+		return nil, fmt.Errorf("can't unmarshal config: %w", err)
+	}
+
+	return &cfg, nil
+}
+
+func newViperInstance() *viper.Viper {
+	v := viper.New()
+
+	cfgPath := os.Getenv(CmdPath)
+	if cfgPath == "" {
+		cfgPath = "."
+	}
+
+	v.AddConfigPath(cfgPath)
+	v.SetConfigType("yaml")
+	v.SetConfigName("config." + GetEnvironment())
+
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	// APP.
+	v.SetDefault("app.name", "app")
+	v.SetDefault("app.shutdown_timeout_sec", 5)
+	v.SetDefault("app.token_expire_sec", 1440)
+	v.SetDefault("app.web_port", 8000)
+	v.SetDefault("app.web_read_timeout_sec", 5)
+	v.SetDefault("app.web_write_timeout_sec", 5)
+	v.SetDefault("app.retry_after_sec", 5)
+	// Log.
+	v.SetDefault("log.level", "info")
+	v.SetDefault("log.format", "json")
+	// DB.
+	v.SetDefault("db.max_conns", 4)
+	v.SetDefault("db.min_conns", 1)
+	v.SetDefault("db.exec_mode", QueryExecModeSimple)
+	// OTLP.
+	v.SetDefault("otlp.metrics_port", 4318)
+
+	return v
 }

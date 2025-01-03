@@ -55,11 +55,10 @@ func DBModule() fx.Option {
 func WebModule() fx.Option {
 	opt := fx.Module("web",
 		fx.Provide(
-			NewWebService,
-			NewRoute,
+			NewWebServer,
 			jwt.New,
 		),
-		fx.Invoke(func(lc fx.Lifecycle, srv *WebService) {
+		fx.Invoke(func(lc fx.Lifecycle, srv *WebServer) {
 			lc.Append(fx.Hook{
 				OnStart: func(ctx context.Context) error {
 					go func() {
@@ -76,7 +75,7 @@ func WebModule() fx.Option {
 					ctx, cancel := context.WithTimeout(context.Background(), srv.ShutdownTimeout)
 					defer cancel()
 
-					err := srv.Shutdown(ctx)
+					err := srv.Shutdown(ctx) //nolint:contextcheck
 					if err != nil && !errors.Is(err, http.ErrServerClosed) {
 						return fmt.Errorf("could not shutdown service: %w", err)
 					}
@@ -119,7 +118,7 @@ func SystemModule() fx.Option {
 					ctx, cancel := context.WithTimeout(context.Background(), srv.ShutdownTimeout)
 					defer cancel()
 
-					err := srv.Shutdown(ctx)
+					err := srv.Shutdown(ctx) //nolint:contextcheck
 					if err != nil && !errors.Is(err, http.ErrServerClosed) {
 						return fmt.Errorf("could not shutdown system service: %w", err)
 					}
@@ -147,8 +146,8 @@ func SystemModule() fx.Option {
 					ctx, cancel := context.WithTimeout(context.Background(), srv.ShutdownTimeout)
 					defer cancel()
 
-					err := tp.Shutdown(ctx)
-					if err != nil {
+					//nolint:contextcheck
+					if err := tp.Shutdown(ctx); err != nil {
 						return fmt.Errorf("could not shutdown trace provider: %w", err)
 					}
 
@@ -175,8 +174,8 @@ func SystemModule() fx.Option {
 					ctx, cancel := context.WithTimeout(context.Background(), srv.ShutdownTimeout)
 					defer cancel()
 
-					err := mp.Shutdown(ctx)
-					if err != nil {
+					//nolint:contextcheck
+					if err := mp.Shutdown(ctx); err != nil {
 						return fmt.Errorf("could not shutdown metric provider: %w", err)
 					}
 

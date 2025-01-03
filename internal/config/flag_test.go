@@ -16,9 +16,9 @@ func Test_parseArgs(t *testing.T) {
 	}{
 		{
 			name: "OK",
-			args: []string{"-c", "config.yaml", "-l", "error", "-f", "console"},
+			args: []string{"-c", "./../", "-l", "error", "-f", "console"},
 			want: cmdArgs{
-				ConfigFile: "config.yaml",
+				ConfigPath: "./../",
 				LogLevel:   "error",
 				LogFormat:  "console",
 			},
@@ -29,7 +29,7 @@ func Test_parseArgs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			got, err := parseArgs(&Config{}, tt.args)
+			got, err := parseArgs(tt.args)
 
 			require.NoError(t, err)
 			require.Equal(t, tt.want, got)

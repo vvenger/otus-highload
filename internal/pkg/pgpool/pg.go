@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/rs/zerolog"
+	"github.com/jackc/pgx/v5/tracelog"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type Config struct {
@@ -14,28 +17,30 @@ type Config struct {
 	Database string
 	User     string
 	Password string
-	MaxConns int
-	MinConns int
-	Logger   *zerolog.Logger
+	MaxConns int32
+	MinConns int32
+	ExecMode pgx.QueryExecMode
+	Logger   *zap.Logger
 }
 
 func New(c *Config) (*pgxpool.Pool, error) {
-	s := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s", c.User, c.Password, c.Host, c.Port, c.Database)
-
-	cfg, err := pgxpool.ParseConfig(s)
+	cfg, err := pgxpool.ParseConfig(fmt.Sprintf("postgresql://%s:%s@%s:%d/%s", c.User, c.Password, c.Host, c.Port, c.Database))
 	if err != nil {
 		return nil, fmt.Errorf("could not parse config: %w", err)
 	}
 
-	if c.Logger != nil {
-		cfg.ConnConfig.Tracer = NewQueryTracer(c.Logger)
+	cfg.ConnConfig.Tracer = &tracelog.TraceLog{
+		LogLevel: dbLogLevel(c.Logger.Level()),
+		Logger:   NewQueryTracer(c.Logger.Named("PGX")),
 	}
 	if c.MaxConns != 0 {
-		cfg.MaxConns = int32(c.MaxConns)
+		cfg.MaxConns = c.MaxConns
 	}
 	if c.MinConns != 0 {
-		cfg.MinConns = int32(c.MinConns)
+		cfg.MinConns = c.MinConns
 	}
+
+	cfg.ConnConfig.DefaultQueryExecMode = c.ExecMode
 
 	db, err := pgxpool.NewWithConfig(context.Background(), cfg)
 	if err != nil {
@@ -43,4 +48,13 @@ func New(c *Config) (*pgxpool.Pool, error) {
 	}
 
 	return db, nil
+}
+
+func dbLogLevel(lvl zapcore.Level) tracelog.LogLevel {
+	switch lvl {
+	case zap.DebugLevel:
+		return tracelog.LogLevelDebug
+	default:
+		return tracelog.LogLevelWarn
+	}
 }

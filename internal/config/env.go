@@ -6,28 +6,33 @@ import (
 )
 
 const (
-	OSEnvironment = "ENVIRONMENT"
+	CmdEnvironment = "ENVIRONMENT"
+	CmdPath        = "CONFIG_PATH"
+	CmdLogLevel    = "LOG_LEVEL"
+	CmdLogFormat   = "LOG_FORMAT"
 )
 
 const (
-	EnvDev  = "dev"
-	EnvTest = "test"
-	EnvProd = "prod"
+	envDev  = "dev"
+	envTest = "test"
+	envProd = "prod"
 )
 
-var envList = []string{
-	EnvTest,
-	EnvDev,
-	EnvProd,
+var envList = map[string]struct{}{
+	envTest: {},
+	envDev:  {},
+	envProd: {},
 }
 
 func GetEnvironment() string {
-	env := strings.ToLower(os.Getenv(OSEnvironment))
-	for _, e := range envList {
-		if e == env {
-			return env
-		}
+	env := strings.ToLower(os.Getenv(CmdEnvironment))
+	if _, ok := envList[env]; ok {
+		return env
 	}
 
-	return EnvDev
+	return envDev
+}
+
+func IsProdaction() bool {
+	return GetEnvironment() == envProd
 }
