@@ -56,7 +56,9 @@ func (suite *UserSuite) SetupSuite() {
 }
 
 func (suite *UserSuite) TearDownSuite() {
-	suite.db.Exec(context.Background(), "DELETE FROM users")
+	if err := suite.db.Ping(context.Background()); err == nil {
+		suite.db.Exec(context.Background(), "DELETE FROM users")
+	}
 
 	suite.fxStop(context.Background())
 }

@@ -4,7 +4,7 @@ app:
   web:
     port: 8000
     read_timeout_sec: 5
-    write_timeout_sec: 5
+    write_timeout_sec: 30
     retry_after_sec: 5
   token:
     secret: secret
