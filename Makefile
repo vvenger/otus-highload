@@ -26,7 +26,7 @@ test:
 logs:
 	docker-compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100
 
-integration-test:
+test/e2e:
 	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./e2e/..."		
 
 # debug:
@@ -54,13 +54,13 @@ COVERAGEFILE = /tmp/coverage.out
 
 # COVER -FUNC
 cover:
-	go test -coverprofile=$(COVERAGEFILE) ./...
+	go test -coverprofile=$(COVERAGEFILE) `go list ./... | grep -v ./internal/mocks`
 	go tool cover -func=$(COVERAGEFILE)
 	rm $(COVERAGEFILE)
 
 # COVER -HTML
-cover-html:
-	go test -coverprofile=$(COVERAGEFILE) ./...
+cover/html:
+	go test -coverprofile=$(COVERAGEFILE) `go list ./... | grep -v ./internal/mocks`
 	go tool cover -html=$(COVERAGEFILE)
 	rm $(COVERAGEFILE)		
 

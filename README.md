@@ -1,8 +1,15 @@
 # otus-highload
 OTUS Highload Architect
 
+## Библиотеки
 
-# Запуск локального окружения
+- HTTP [ogen](https://github.com/ogen-go/ogen)
+- DB [pgxpool](https://github.com/jackc/pgx) 
+- DI Framework [fx](https://github.com/uber-go/fx)
+- Logging [zap](https://github.com/uber-go/zap)
+- Observability [open-telemetry](https://github.com/open-telemetry/opentelemetry-go)
+
+## Запуск локального окружения
 
 Чтобы развернуть локальное окружение:
 
@@ -16,7 +23,7 @@ make up
 make down
 ```
 
-# Запуск сервиса
+## Запуск сервиса
 
 После развертывания локального окружения:
 
@@ -24,20 +31,21 @@ make down
 make run
 ```
 
-# Основные команды Makefile
+## Основные команды Makefile
 
 - `up` - развернуть локальную среду
 - `down` - "убить" локальную среду
 - `run` - запуск приложения внутри контейнера
 - `logs` - просмотр логов 
 - `test` - запуск unit тестов
+- `test/e2e` - запуск интеграционных тестов
 - `shell` - войти в shell контейнера приложения
 - `mocks` - запуск кодогенерации моков
 - `lint` - запуск линтера
 - `cover` - запуск unit тестов с покрытием 
-- `cover-html` - запуск unit тестов с покрытием html
+- `cover/html` - запуск unit тестов с покрытием html
 
-# Конфигурация
+## Конфигурация
 
 Приложение может работать в трех окружениях:
 
