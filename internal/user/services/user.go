@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/rs/zerolog"
 	"github.com/vvenger/otus-highload/internal/pkg/jwt"
+	"github.com/vvenger/otus-highload/internal/pkg/logger"
 	model "github.com/vvenger/otus-highload/internal/user/model"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
 type UserRepository interface {
@@ -35,8 +36,6 @@ func NewUserService(p ServiceParams) *UserService {
 }
 
 func (s *UserService) Login(ctx context.Context, login, password string) error {
-	op := "user.UserService.Login"
-
 	p, err := s.userRepo.FindLogin(ctx, login)
 	if err != nil {
 		return fmt.Errorf("could not find user: %w", err)
@@ -46,22 +45,15 @@ func (s *UserService) Login(ctx context.Context, login, password string) error {
 		return model.ErrNotFound
 	}
 
-	zerolog.Ctx(ctx).Debug().
-		Str("op", op).
-		Str("id", login).
-		Msg("loginned successfully")
+	logger.Ctx(ctx).Debug(
+		"loginned successfully",
+		zap.String("id", login),
+	)
 
 	return nil
 }
 
 func (s *UserService) Register(ctx context.Context, user model.RegisterUser) (string, error) {
-	op := "user.UserService.Register"
-
-	zerolog.Ctx(ctx).Debug().
-		Str("op", op).
-		Any("user", user).
-		Send()
-
 	p, err := model.HashPassword(user.Password)
 	if err != nil {
 		return "", fmt.Errorf("could not hash password: %w", err)
@@ -74,26 +66,24 @@ func (s *UserService) Register(ctx context.Context, user model.RegisterUser) (st
 		return "", fmt.Errorf("could not register user: %w", err)
 	}
 
-	zerolog.Ctx(ctx).Debug().
-		Str("op", op).
-		Str("id", id).
-		Msg("registered successfully")
+	logger.Ctx(ctx).Debug(
+		"registered successfully",
+		zap.String("id", id),
+	)
 
 	return id, nil
 }
 
 func (s *UserService) User(ctx context.Context, id string) (model.User, error) {
-	op := "user.UserService.User"
-
 	u, err := s.userRepo.User(ctx, id)
 	if err != nil {
 		return model.User{}, fmt.Errorf("could not get user: %w", err)
 	}
 
-	zerolog.Ctx(ctx).Debug().
-		Str("op", op).
-		Any("user", u).
-		Send()
+	logger.Ctx(ctx).Debug(
+		"registered successfully",
+		zap.Any("user", u),
+	)
 
 	return u, nil
 }

@@ -1,67 +1,49 @@
 package logger
 
 import (
-	"fmt"
-	"io"
-	"os"
-	"path/filepath"
+	"context"
 
-	"github.com/rs/zerolog"
+	"go.uber.org/zap"
 )
 
-type Config struct {
-	LogLevel  string
-	LogFormat string
+type ctxKey struct{}
+
+func With(ctx context.Context, logger *zap.Logger) context.Context {
+	return context.WithValue(ctx, ctxKey{}, logger)
 }
 
-func New(out io.Writer, c Config) zerolog.Logger {
-	lvl, err := zerolog.ParseLevel(c.LogLevel)
-	if err != nil {
-		lvl = zerolog.ErrorLevel
+func Ctx(ctx context.Context) *zap.Logger {
+	l, ok := ctx.Value(ctxKey{}).(*zap.Logger)
+	if ok {
+		return l
 	}
 
-	if c.LogFormat == "console" {
-		return newConsole(out, lvl)
-	}
-
-	return newJSON(out, lvl)
+	return zap.L()
 }
 
-func newConsole(out io.Writer, level zerolog.Level) zerolog.Logger {
-	w := zerolog.ConsoleWriter{
-		Out:     out,
-		NoColor: false,
-		FormatCaller: func(i interface{}) string {
-			var c string
-			if cc, ok := i.(string); ok {
-				c = cc
-			}
+func WithFields(ctx context.Context, fields ...zap.Field) context.Context {
+	l := Ctx(ctx).With(fields...)
 
-			if len(c) > 0 {
-				if cwd, err := os.Getwd(); err == nil {
-					if rel, err := filepath.Rel(cwd, c); err == nil {
-						c = rel
-					}
-				}
-				c = fmt.Sprintf("%s \x1b[36m>\x1b[0m", c) //nolint: perfsprint
-			}
-
-			return c
-		},
-		PartsExclude: []string{
-			zerolog.TimestampFieldName,
-		},
-	}
-
-	return zerolog.New(w).Level(level)
+	return With(ctx, l)
 }
 
-func newJSON(w io.Writer, level zerolog.Level) zerolog.Logger {
-	l := zerolog.New(w).
-		Level(level).
-		With().
-		Timestamp().
-		Logger()
+func Debug(ctx context.Context, msg string, fields ...zap.Field) {
+	Ctx(ctx).Debug(msg, fields...)
+}
 
-	return l
+func Info(ctx context.Context, msg string, fields ...zap.Field) {
+	Ctx(ctx).Info(msg, fields...)
+}
+
+func Warn(ctx context.Context, msg string, fields ...zap.Field) {
+	Ctx(ctx).Warn(msg, fields...)
+}
+
+func Error(ctx context.Context, msg string, err error) {
+	Ctx(ctx).Error(msg, zap.Error(err))
+}
+
+func HasLogger(ctx context.Context) bool {
+	_, ok := ctx.Value(ctxKey{}).(*zap.Logger)
+	return ok
 }

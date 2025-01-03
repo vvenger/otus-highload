@@ -5,16 +5,16 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/rs/zerolog"
 	"github.com/vvenger/otus-highload/internal/config"
 	"github.com/vvenger/otus-highload/internal/pkg/pgpool"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
 type DBParams struct {
 	fx.In
 	Config *config.Config
-	Logger *zerolog.Logger
+	Logger *zap.Logger
 }
 
 func NewDB(params DBParams) (*pgxpool.Pool, error) {

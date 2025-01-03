@@ -7,7 +7,8 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/tracelog"
-	"github.com/rs/zerolog"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type Config struct {
@@ -19,7 +20,7 @@ type Config struct {
 	MaxConns int32
 	MinConns int32
 	ExecMode pgx.QueryExecMode
-	Logger   *zerolog.Logger
+	Logger   *zap.Logger
 }
 
 func New(c *Config) (*pgxpool.Pool, error) {
@@ -28,11 +29,9 @@ func New(c *Config) (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("could not parse config: %w", err)
 	}
 
-	if c.Logger != nil {
-		cfg.ConnConfig.Tracer = &tracelog.TraceLog{
-			LogLevel: dbLogLevel(c.Logger.GetLevel()),
-			Logger:   NewQueryTracer(c.Logger),
-		}
+	cfg.ConnConfig.Tracer = &tracelog.TraceLog{
+		LogLevel: dbLogLevel(c.Logger.Level()),
+		Logger:   NewQueryTracer(c.Logger.Named("PGX")),
 	}
 	if c.MaxConns != 0 {
 		cfg.MaxConns = c.MaxConns
@@ -51,10 +50,11 @@ func New(c *Config) (*pgxpool.Pool, error) {
 	return db, nil
 }
 
-func dbLogLevel(lvl zerolog.Level) tracelog.LogLevel {
-	if lvl != zerolog.DebugLevel {
+func dbLogLevel(lvl zapcore.Level) tracelog.LogLevel {
+	switch lvl {
+	case zap.DebugLevel:
+		return tracelog.LogLevelDebug
+	default:
 		return tracelog.LogLevelWarn
 	}
-
-	return tracelog.LogLevelDebug
 }

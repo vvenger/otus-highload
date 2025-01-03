@@ -3,16 +3,9 @@ package app
 import (
 	"context"
 	"fmt"
-	"time"
 
 	app "github.com/vvenger/otus-highload/internal/app/module"
 	"go.uber.org/fx"
-)
-
-const (
-	defaultShutdown     = 5 * time.Second
-	defaultReadTimeout  = 5 * time.Second
-	defaultWriteTimeout = defaultReadTimeout
 )
 
 func Run() {

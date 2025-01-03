@@ -6,17 +6,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/rs/zerolog"
 	"github.com/vvenger/otus-highload/internal/pkg/jwt"
+	"github.com/vvenger/otus-highload/internal/pkg/logger"
 	"github.com/vvenger/otus-highload/internal/pkg/requestid"
 	model "github.com/vvenger/otus-highload/internal/user/model"
 	"github.com/vvenger/otus-highload/internal/web/api"
+	"go.uber.org/zap"
 )
 
 //nolint:nilerr
 func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.LoginPostRes, error) {
-	op := "web.user.LoginPost"
-
 	login := string(req.Value.GetID())
 	pass := req.Value.GetPassword()
 
@@ -29,11 +28,11 @@ func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.L
 			return &api.LoginPostNotFound{}, nil
 		}
 
-		zerolog.Ctx(ctx).Error().
-			Str("op", op).
-			Str("login", login).
-			Err(err).
-			Msg("could not login")
+		logger.Ctx(ctx).Error(
+			"could not login",
+			zap.String("login", login),
+			zap.Error(err),
+		)
 
 		return &api.LoginPostInternalServerError{
 			Response: api.R5xx{
@@ -49,10 +48,10 @@ func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.L
 		UserID: login,
 	})
 	if err != nil {
-		zerolog.Ctx(ctx).Error().
-			Str("op", op).
-			Err(err).
-			Msg("could not create token")
+		logger.Ctx(ctx).Error(
+			"LoginPost",
+			zap.Error(err),
+		)
 
 		return &api.LoginPostInternalServerError{
 			Response: api.R5xx{
@@ -64,7 +63,10 @@ func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.L
 		}, nil
 	}
 
-	zerolog.Ctx(ctx).Debug().Str("tok", tok).Send()
+	logger.Ctx(ctx).Debug(
+		"LoginPost",
+		zap.String("token", tok),
+	)
 
 	return &api.LoginPostOK{
 		Token: api.NewOptString(tok),
@@ -72,8 +74,6 @@ func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.L
 }
 
 func (s *handler) UserRegisterPost(ctx context.Context, req api.OptUserRegisterPostReq) (api.UserRegisterPostRes, error) {
-	op := "web.user.UserRegisterPost"
-
 	id, err := s.user.Register(ctx, model.RegisterUser{
 		FirstName:  req.Value.GetFirstName(),
 		SecondName: req.Value.GetSecondName(),
@@ -83,10 +83,10 @@ func (s *handler) UserRegisterPost(ctx context.Context, req api.OptUserRegisterP
 		Password:   req.Value.GetPassword(),
 	})
 	if err != nil {
-		zerolog.Ctx(ctx).Error().
-			Str("op", op).
-			Err(err).
-			Msg("could not register user")
+		logger.Ctx(ctx).Error(
+			"UserRegisterPost",
+			zap.Error(err),
+		)
 
 		if errors.Is(err, model.ErrConflict) {
 			return &api.UserRegisterPostBadRequest{}, nil
@@ -109,8 +109,6 @@ func (s *handler) UserRegisterPost(ctx context.Context, req api.OptUserRegisterP
 
 //nolint:nilerr
 func (s *handler) UserGetIDGet(ctx context.Context, params api.UserGetIDGetParams) (api.UserGetIDGetRes, error) {
-	op := "web.user.UserGetIDGet"
-
 	if _, err := uuid.Parse(string(params.ID)); err != nil {
 		return &api.UserGetIDGetNotFound{}, nil
 	}
@@ -121,10 +119,10 @@ func (s *handler) UserGetIDGet(ctx context.Context, params api.UserGetIDGetParam
 			return &api.UserGetIDGetNotFound{}, nil
 		}
 
-		zerolog.Ctx(ctx).Error().
-			Str("op", op).
-			Err(err).
-			Msg("could not get user")
+		logger.Ctx(ctx).Error(
+			"UserGetIDGet",
+			zap.Error(err),
+		)
 
 		return &api.UserGetIDGetInternalServerError{
 			Response: api.R5xx{

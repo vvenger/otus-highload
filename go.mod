@@ -13,7 +13,6 @@ require (
 	github.com/ogen-go/ogen v1.8.0
 	github.com/prometheus/client_golang v1.19.0
 	github.com/redis/go-redis/v9 v9.5.1
-	github.com/rs/zerolog v1.32.0
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0
@@ -26,6 +25,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.33.0
 	go.uber.org/fx v1.21.0
 	go.uber.org/multierr v1.11.0
+	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.29.0
 )
 
@@ -95,7 +95,6 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.24.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.1.0 // indirect
 	go.uber.org/dig v1.17.1 // indirect
-	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/sync v0.9.0 // indirect

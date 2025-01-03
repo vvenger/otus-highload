@@ -4,42 +4,48 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/tracelog"
-	"github.com/rs/zerolog"
+	"github.com/vvenger/otus-highload/internal/pkg/logger"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type QueryTracerParams struct {
-	Logger *zerolog.Logger
+	Logger *zap.Logger
 }
 
 type QueryTracer struct {
-	logger *zerolog.Logger
+	logger *zap.Logger
 }
 
-func NewQueryTracer(l *zerolog.Logger) *QueryTracer {
+func NewQueryTracer(l *zap.Logger) *QueryTracer {
 	return &QueryTracer{
 		logger: l,
 	}
 }
 
 func (t *QueryTracer) Log(ctx context.Context, level tracelog.LogLevel, msg string, data map[string]interface{}) {
-	var evt *zerolog.Event
+	log := t.logger
+	if logger.HasLogger(ctx) {
+		log = logger.Ctx(ctx)
+	}
+
+	fields := make([]zapcore.Field, len(data))
+	i := 0
+	for k, v := range data {
+		fields[i] = zap.Any(k, v)
+		i++
+	}
 
 	switch level {
+	case tracelog.LogLevelDebug:
+		log.Debug(msg, fields...)
+	case tracelog.LogLevelInfo:
+		log.Info(msg, fields...)
 	case tracelog.LogLevelWarn:
-		evt = t.logger.Warn()
+		log.Warn(msg, fields...)
 	case tracelog.LogLevelError:
-		evt = t.logger.Error()
+		log.Error(msg, fields...)
 	default:
-		evt = t.logger.Debug()
+		log.Error(msg, append(fields, zap.Stringer("PGX_LOG_LEVEL", level))...) //nolint:makezero
 	}
-
-	if !evt.Enabled() {
-		return
-	}
-
-	for k, v := range data {
-		evt = evt.Any(k, v)
-	}
-
-	evt.Msg(msg)
 }

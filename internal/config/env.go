@@ -32,3 +32,7 @@ func GetEnvironment() string {
 
 	return envDev
 }
+
+func IsProdaction() bool {
+	return GetEnvironment() == envProd
+}

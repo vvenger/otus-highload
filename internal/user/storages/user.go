@@ -46,6 +46,7 @@ func (s *UserStorage) FindLogin(ctx context.Context, login string) (string, erro
 		if errors.Is(err, pgx.ErrNoRows) {
 			return "", model.ErrNotFound
 		}
+
 		return "", fmt.Errorf("could not get user: %w", err)
 	}
 

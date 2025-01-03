@@ -10,12 +10,13 @@ import (
 	user "github.com/vvenger/otus-highload/internal/user/model"
 
 	"github.com/ogen-go/ogen/ogenerrors"
-	"github.com/rs/zerolog"
 	"github.com/vvenger/otus-highload/internal/pkg/jwt"
+	"github.com/vvenger/otus-highload/internal/pkg/logger"
 	"github.com/vvenger/otus-highload/internal/web/api"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
 type UserService interface {
@@ -70,7 +71,10 @@ func NewHttpService(p ServiceParams) (*HttpService, error) {
 func errorHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
 	// TODO: Разобраться с ошибками.
 	// В swagger только на 500 отдается ошибка, а остальное код.
-	zerolog.Ctx(ctx).Error().Err(err).Send()
+	logger.Ctx(ctx).Error(
+		"errorHandler",
+		zap.Error(err),
+	)
 
 	var pErr *ogenerrors.DecodeParamError
 	if errors.As(err, &pErr) {

@@ -12,7 +12,7 @@ app:
 
 log:
   level: debug
-  format: console
+  format: json
 
 db:
   host: localhost
