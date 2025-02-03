@@ -15,6 +15,7 @@ type UserRepository interface {
 	FindLogin(ctx context.Context, login string) (string, error)
 	Register(ctx context.Context, user model.RegisterUser) (string, error)
 	User(ctx context.Context, id string) (model.User, error)
+	Search(ctx context.Context, filt model.SearchFilter) ([]model.User, error)
 }
 
 type ServiceParams struct {
@@ -86,4 +87,13 @@ func (s *UserService) User(ctx context.Context, id string) (model.User, error) {
 	)
 
 	return u, nil
+}
+
+func (s *UserService) Search(ctx context.Context, filt model.SearchFilter) ([]model.User, error) {
+	res, err := s.userRepo.Search(ctx, filt)
+	if err != nil {
+		return nil, fmt.Errorf("could not search users: %w", err)
+	}
+
+	return res, nil
 }

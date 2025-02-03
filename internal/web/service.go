@@ -23,6 +23,7 @@ type UserService interface {
 	Login(ctx context.Context, login, password string) error
 	Register(ctx context.Context, req user.RegisterUser) (string, error)
 	User(ctx context.Context, id string) (user.User, error)
+	Search(ctx context.Context, filt user.SearchFilter) ([]user.User, error)
 }
 
 type handler struct {

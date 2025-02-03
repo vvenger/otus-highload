@@ -34,3 +34,8 @@ func HashPassword(password string) (string, error) {
 func CheckPassword(password, hash string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
+
+type SearchFilter struct {
+	FirstName string
+	LastName  string
+}
