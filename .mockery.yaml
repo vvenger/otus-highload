@@ -2,6 +2,7 @@ dir: internal
 output: ./internal/mocks
 keeptree: true
 include-auto-generated: false
+with-expecter: true
 exclude:
   - internal/app
   - internal/pkg

@@ -14,6 +14,14 @@ type UserService struct {
 	mock.Mock
 }
 
+type UserService_Expecter struct {
+	mock *mock.Mock
+}
+
+func (_m *UserService) EXPECT() *UserService_Expecter {
+	return &UserService_Expecter{mock: &_m.Mock}
+}
+
 // Login provides a mock function with given fields: ctx, login, password
 func (_m *UserService) Login(ctx context.Context, login string, password string) error {
 	ret := _m.Called(ctx, login, password)
@@ -30,6 +38,36 @@ func (_m *UserService) Login(ctx context.Context, login string, password string)
 	}
 
 	return r0
+}
+
+// UserService_Login_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Login'
+type UserService_Login_Call struct {
+	*mock.Call
+}
+
+// Login is a helper method to define mock.On call
+//   - ctx context.Context
+//   - login string
+//   - password string
+func (_e *UserService_Expecter) Login(ctx interface{}, login interface{}, password interface{}) *UserService_Login_Call {
+	return &UserService_Login_Call{Call: _e.mock.On("Login", ctx, login, password)}
+}
+
+func (_c *UserService_Login_Call) Run(run func(ctx context.Context, login string, password string)) *UserService_Login_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *UserService_Login_Call) Return(_a0 error) *UserService_Login_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *UserService_Login_Call) RunAndReturn(run func(context.Context, string, string) error) *UserService_Login_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // Register provides a mock function with given fields: ctx, req
@@ -60,6 +98,94 @@ func (_m *UserService) Register(ctx context.Context, req user.RegisterUser) (str
 	return r0, r1
 }
 
+// UserService_Register_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Register'
+type UserService_Register_Call struct {
+	*mock.Call
+}
+
+// Register is a helper method to define mock.On call
+//   - ctx context.Context
+//   - req user.RegisterUser
+func (_e *UserService_Expecter) Register(ctx interface{}, req interface{}) *UserService_Register_Call {
+	return &UserService_Register_Call{Call: _e.mock.On("Register", ctx, req)}
+}
+
+func (_c *UserService_Register_Call) Run(run func(ctx context.Context, req user.RegisterUser)) *UserService_Register_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(user.RegisterUser))
+	})
+	return _c
+}
+
+func (_c *UserService_Register_Call) Return(_a0 string, _a1 error) *UserService_Register_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserService_Register_Call) RunAndReturn(run func(context.Context, user.RegisterUser) (string, error)) *UserService_Register_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Search provides a mock function with given fields: ctx, filt
+func (_m *UserService) Search(ctx context.Context, filt user.SearchFilter) ([]user.User, error) {
+	ret := _m.Called(ctx, filt)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Search")
+	}
+
+	var r0 []user.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, user.SearchFilter) ([]user.User, error)); ok {
+		return rf(ctx, filt)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, user.SearchFilter) []user.User); ok {
+		r0 = rf(ctx, filt)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]user.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, user.SearchFilter) error); ok {
+		r1 = rf(ctx, filt)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UserService_Search_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Search'
+type UserService_Search_Call struct {
+	*mock.Call
+}
+
+// Search is a helper method to define mock.On call
+//   - ctx context.Context
+//   - filt user.SearchFilter
+func (_e *UserService_Expecter) Search(ctx interface{}, filt interface{}) *UserService_Search_Call {
+	return &UserService_Search_Call{Call: _e.mock.On("Search", ctx, filt)}
+}
+
+func (_c *UserService_Search_Call) Run(run func(ctx context.Context, filt user.SearchFilter)) *UserService_Search_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(user.SearchFilter))
+	})
+	return _c
+}
+
+func (_c *UserService_Search_Call) Return(_a0 []user.User, _a1 error) *UserService_Search_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserService_Search_Call) RunAndReturn(run func(context.Context, user.SearchFilter) ([]user.User, error)) *UserService_Search_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // User provides a mock function with given fields: ctx, id
 func (_m *UserService) User(ctx context.Context, id string) (user.User, error) {
 	ret := _m.Called(ctx, id)
@@ -86,6 +212,35 @@ func (_m *UserService) User(ctx context.Context, id string) (user.User, error) {
 	}
 
 	return r0, r1
+}
+
+// UserService_User_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'User'
+type UserService_User_Call struct {
+	*mock.Call
+}
+
+// User is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+func (_e *UserService_Expecter) User(ctx interface{}, id interface{}) *UserService_User_Call {
+	return &UserService_User_Call{Call: _e.mock.On("User", ctx, id)}
+}
+
+func (_c *UserService_User_Call) Run(run func(ctx context.Context, id string)) *UserService_User_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *UserService_User_Call) Return(_a0 user.User, _a1 error) *UserService_User_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserService_User_Call) RunAndReturn(run func(context.Context, string) (user.User, error)) *UserService_User_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // NewUserService creates a new instance of UserService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

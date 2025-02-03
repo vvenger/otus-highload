@@ -14,6 +14,14 @@ type UserRepository struct {
 	mock.Mock
 }
 
+type UserRepository_Expecter struct {
+	mock *mock.Mock
+}
+
+func (_m *UserRepository) EXPECT() *UserRepository_Expecter {
+	return &UserRepository_Expecter{mock: &_m.Mock}
+}
+
 // FindLogin provides a mock function with given fields: ctx, login
 func (_m *UserRepository) FindLogin(ctx context.Context, login string) (string, error) {
 	ret := _m.Called(ctx, login)
@@ -40,6 +48,35 @@ func (_m *UserRepository) FindLogin(ctx context.Context, login string) (string, 
 	}
 
 	return r0, r1
+}
+
+// UserRepository_FindLogin_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindLogin'
+type UserRepository_FindLogin_Call struct {
+	*mock.Call
+}
+
+// FindLogin is a helper method to define mock.On call
+//   - ctx context.Context
+//   - login string
+func (_e *UserRepository_Expecter) FindLogin(ctx interface{}, login interface{}) *UserRepository_FindLogin_Call {
+	return &UserRepository_FindLogin_Call{Call: _e.mock.On("FindLogin", ctx, login)}
+}
+
+func (_c *UserRepository_FindLogin_Call) Run(run func(ctx context.Context, login string)) *UserRepository_FindLogin_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *UserRepository_FindLogin_Call) Return(_a0 string, _a1 error) *UserRepository_FindLogin_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserRepository_FindLogin_Call) RunAndReturn(run func(context.Context, string) (string, error)) *UserRepository_FindLogin_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // Register provides a mock function with given fields: ctx, _a1
@@ -70,6 +107,94 @@ func (_m *UserRepository) Register(ctx context.Context, _a1 model.RegisterUser) 
 	return r0, r1
 }
 
+// UserRepository_Register_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Register'
+type UserRepository_Register_Call struct {
+	*mock.Call
+}
+
+// Register is a helper method to define mock.On call
+//   - ctx context.Context
+//   - _a1 model.RegisterUser
+func (_e *UserRepository_Expecter) Register(ctx interface{}, _a1 interface{}) *UserRepository_Register_Call {
+	return &UserRepository_Register_Call{Call: _e.mock.On("Register", ctx, _a1)}
+}
+
+func (_c *UserRepository_Register_Call) Run(run func(ctx context.Context, _a1 model.RegisterUser)) *UserRepository_Register_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(model.RegisterUser))
+	})
+	return _c
+}
+
+func (_c *UserRepository_Register_Call) Return(_a0 string, _a1 error) *UserRepository_Register_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserRepository_Register_Call) RunAndReturn(run func(context.Context, model.RegisterUser) (string, error)) *UserRepository_Register_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Search provides a mock function with given fields: ctx, filt
+func (_m *UserRepository) Search(ctx context.Context, filt model.SearchFilter) ([]model.User, error) {
+	ret := _m.Called(ctx, filt)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Search")
+	}
+
+	var r0 []model.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, model.SearchFilter) ([]model.User, error)); ok {
+		return rf(ctx, filt)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, model.SearchFilter) []model.User); ok {
+		r0 = rf(ctx, filt)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, model.SearchFilter) error); ok {
+		r1 = rf(ctx, filt)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UserRepository_Search_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Search'
+type UserRepository_Search_Call struct {
+	*mock.Call
+}
+
+// Search is a helper method to define mock.On call
+//   - ctx context.Context
+//   - filt model.SearchFilter
+func (_e *UserRepository_Expecter) Search(ctx interface{}, filt interface{}) *UserRepository_Search_Call {
+	return &UserRepository_Search_Call{Call: _e.mock.On("Search", ctx, filt)}
+}
+
+func (_c *UserRepository_Search_Call) Run(run func(ctx context.Context, filt model.SearchFilter)) *UserRepository_Search_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(model.SearchFilter))
+	})
+	return _c
+}
+
+func (_c *UserRepository_Search_Call) Return(_a0 []model.User, _a1 error) *UserRepository_Search_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserRepository_Search_Call) RunAndReturn(run func(context.Context, model.SearchFilter) ([]model.User, error)) *UserRepository_Search_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // User provides a mock function with given fields: ctx, id
 func (_m *UserRepository) User(ctx context.Context, id string) (model.User, error) {
 	ret := _m.Called(ctx, id)
@@ -96,6 +221,35 @@ func (_m *UserRepository) User(ctx context.Context, id string) (model.User, erro
 	}
 
 	return r0, r1
+}
+
+// UserRepository_User_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'User'
+type UserRepository_User_Call struct {
+	*mock.Call
+}
+
+// User is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+func (_e *UserRepository_Expecter) User(ctx interface{}, id interface{}) *UserRepository_User_Call {
+	return &UserRepository_User_Call{Call: _e.mock.On("User", ctx, id)}
+}
+
+func (_c *UserRepository_User_Call) Run(run func(ctx context.Context, id string)) *UserRepository_User_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *UserRepository_User_Call) Return(_a0 model.User, _a1 error) *UserRepository_User_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserRepository_User_Call) RunAndReturn(run func(context.Context, string) (model.User, error)) *UserRepository_User_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // NewUserRepository creates a new instance of UserRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
