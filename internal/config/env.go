@@ -10,6 +10,7 @@ const (
 	CmdPath        = "CONFIG_PATH"
 	CmdLogLevel    = "LOG_LEVEL"
 	CmdLogFormat   = "LOG_FORMAT"
+	CmdFixtures    = "FIXTURES"
 )
 
 const (

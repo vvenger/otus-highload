@@ -12,6 +12,11 @@ func ParseArgs() error {
 		return fmt.Errorf("could not parse args: %w", err)
 	}
 
+	if args.Fixtures != "" {
+		os.Setenv(CmdFixtures, args.Fixtures)
+		// Не выводим дебаг логи.
+		args.LogLevel = "info"
+	}
 	if args.Environment != "" {
 		os.Setenv(CmdEnvironment, args.Environment)
 	}
@@ -34,6 +39,7 @@ type cmdArgs struct {
 	ConfigPath  string
 	LogLevel    string
 	LogFormat   string
+	Fixtures    string
 }
 
 func parseArgs(args []string) (cmdArgs, error) {
@@ -45,6 +51,7 @@ func parseArgs(args []string) (cmdArgs, error) {
 	fSet.StringVar(&res.LogLevel, "l", "", "Log Level: debug, info, warn, error")
 	fSet.StringVar(&res.LogFormat, "f", "", "Log Format: json or console")
 	fSet.StringVar(&res.Environment, "e", "", "Environment: dev, test or prod")
+	fSet.StringVar(&res.Fixtures, "fixtures", "", "Fixtures: path to fixtures")
 
 	if err := fSet.Parse(args); err != nil {
 		return cmdArgs{}, fmt.Errorf("could not parse args: %w", err)

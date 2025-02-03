@@ -3,6 +3,8 @@ package app
 import (
 	"context"
 	"fmt"
+	"os"
+	"path"
 
 	app "github.com/vvenger/otus-highload/internal/app/module"
 	"go.uber.org/fx"
@@ -57,4 +59,24 @@ func PopulateWith(option fx.Option, targets ...interface{}) (stop func(context.C
 	}
 
 	return
+}
+
+func LoadFixture(dir string) {
+	var f *Fixture
+	stop, err := Populate(&f)
+	if err != nil {
+		panic(err)
+	}
+	defer stop(context.Background())
+
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, file := range files {
+		if err := f.Up(path.Join(dir, file.Name())); err != nil {
+			panic(err)
+		}
+	}
 }

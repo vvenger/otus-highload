@@ -20,6 +20,9 @@ down:
 run:
 	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go run ./cmd/socialnetwork"
 
+fixture:
+	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go run ./cmd/socialnetwork --fixtures ./fixtures"	
+
 test:
 	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./internal/..."	
 
@@ -70,3 +73,5 @@ cover/html:
 
 mocks: 
 	rm -rf ./internal/mocks/ && ./bin/mockery --all
+
+

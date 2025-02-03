@@ -38,6 +38,7 @@ func DBModule() fx.Option {
 	opt := fx.Module("db",
 		fx.Provide(
 			NewDB,
+			NewFixture,
 		),
 		fx.Invoke(func(lc fx.Lifecycle, db *pgxpool.Pool) {
 			lc.Append(fx.Hook{
