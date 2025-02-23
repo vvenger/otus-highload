@@ -157,11 +157,12 @@ func (s *UserStorage) Search(ctx context.Context, filt model.SearchFilter) ([]mo
 			users
 		WHERE
 			first_name LIKE @first_name
-		AND second_name LIKE @second_name`
+		AND second_name LIKE @second_name
+		ORDER BY id`
 
 	args := pgx.NamedArgs{
-		"first_name":  filt.FirstName,
-		"second_name": filt.LastName,
+		"first_name":  filt.FirstName + "%",
+		"second_name": filt.LastName + "%",
 	}
 
 	rows, err := s.db.Query(ctx, sql, args)

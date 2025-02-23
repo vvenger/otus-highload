@@ -3,6 +3,7 @@ package pgpool
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -39,6 +40,8 @@ func New(c *Config) (*pgxpool.Pool, error) {
 	if c.MinConns != 0 {
 		cfg.MinConns = c.MinConns
 	}
+
+	cfg.MaxConnLifetimeJitter = 10 * time.Minute
 
 	cfg.ConnConfig.DefaultQueryExecMode = c.ExecMode
 
