@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS users_second_name_first_name_idx ON users USING BTREE (second_name, first_name);
