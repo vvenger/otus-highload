@@ -1,7 +1,7 @@
-all: tidy gen build lint test spell
+all: tidy gen build lint test
 
 tidy:
-	go mod tidy -v 
+	go mod tidy -v
 	cd _examples && go get -v -u github.com/gavv/httpexpect/v2
 	cd _examples && go mod tidy -v -compat=1.17
 
@@ -38,11 +38,6 @@ else
 	go test -short ./...
 endif
 
-spell:
-ifneq ($(shell which mdspell),)
-	mdspell -a README.md
-	sort .spelling -o .spelling
-endif
-
-toc:
-	markdown-toc --maxdepth 3 -i HACKING.md
+md:
+	markdown-toc --maxdepth 3 --bullets=- -i HACKING.md
+	md-authors --format modern --append AUTHORS.md
