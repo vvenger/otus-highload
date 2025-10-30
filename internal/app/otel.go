@@ -12,6 +12,7 @@ import (
 	"go.uber.org/fx"
 
 	promclient "github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/otlptranslator"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/prometheus"
@@ -78,7 +79,7 @@ func NewMeterProvider(p MeterParams) (metric.MeterProvider, error) {
 	exporter, err := prometheus.New(
 		prometheus.WithNamespace(namespace),
 		prometheus.WithRegisterer(p.Registry),
-		prometheus.WithoutUnits(),
+		prometheus.WithTranslationStrategy(otlptranslator.UnderscoreEscapingWithoutSuffixes),
 		prometheus.WithoutScopeInfo(),
 		prometheus.WithoutTargetInfo(),
 	)

@@ -631,7 +631,10 @@ func (la *lifecycleHookAnnotation) build(ann *annotated) (interface{}, error) {
 		resultTypes = append(resultTypes, _typeOfError)
 	}
 
-	hookInstaller, paramTypes, remapParams := la.buildHookInstaller(ann)
+	hookInstaller, paramTypes, remapParams, err := la.buildHookInstaller(ann)
+	if err != nil {
+		return nil, err
+	}
 
 	origFn := reflect.ValueOf(ann.Target)
 	newFnType := reflect.FuncOf(paramTypes, resultTypes, false)
@@ -662,12 +665,93 @@ var (
 	_typeOfContext   = reflect.TypeOf((*context.Context)(nil)).Elem()
 )
 
+// validateHookDeps validates the dependencies of a hook function and returns true if the dependencies are valid.
+func (la *lifecycleHookAnnotation) validateHookDeps(hookParamTypes []reflect.Type, paramTypes []reflect.Type, resultTypes []reflect.Type) (err error) {
+	type key struct {
+		t     reflect.Type
+		name  string
+		group string
+	}
+
+	formatLog := func(k key) error {
+		var tags []string
+		if len(k.name) > 0 {
+			tags = append(tags, fmt.Sprintf("name:\"%s\"", k.name))
+		}
+		if len(k.group) > 0 {
+			tags = append(tags, fmt.Sprintf("group:\"%s\"", k.group))
+		}
+		var formatted string
+		if len(tags) > 0 {
+			formatted = fmt.Sprintf("%s `%s`", k.t.String(), strings.Join(tags, " "))
+		} else {
+			formatted = k.t.String()
+		}
+		return fmt.Errorf("the %s hook function takes in a parameter of \"%s\", but the annotated function does not have parameters or results of that type", la.String(), formatted)
+	}
+	err = nil
+	seen := make(map[key]struct{})
+
+	for _, t := range paramTypes {
+		if !isIn(t) {
+			seen[key{t: t}] = struct{}{}
+			continue
+		}
+		for i := 1; i < t.NumField(); i++ {
+			field := t.Field(i)
+			seen[key{
+				t:     field.Type,
+				name:  field.Tag.Get("name"),
+				group: field.Tag.Get("group"),
+			}] = struct{}{}
+		}
+	}
+	for _, t := range resultTypes {
+		if !isOut(t) {
+			seen[key{t: t}] = struct{}{}
+			continue
+		}
+		for i := 1; i < t.NumField(); i++ {
+			field := t.Field(i)
+			seen[key{
+				t:     field.Type,
+				name:  field.Tag.Get("name"),
+				group: field.Tag.Get("group"),
+			}] = struct{}{}
+		}
+	}
+	for _, t := range hookParamTypes {
+		if !isIn(t) {
+			k := key{t: t}
+			if _, ok := seen[k]; !ok {
+				err = formatLog(k)
+				return
+			}
+			continue
+		}
+		for i := 1; i < t.NumField(); i++ {
+			field := t.Field(i)
+			k := key{
+				t:     field.Type,
+				name:  field.Tag.Get("name"),
+				group: field.Tag.Get("group"),
+			}
+			if _, ok := seen[k]; !ok {
+				err = formatLog(k)
+				return
+			}
+		}
+	}
+	return
+}
+
 // buildHookInstaller returns a function that appends a hook to Lifecycle when called,
 // along with the new parameter types and a function that maps arguments to the annotated constructor
 func (la *lifecycleHookAnnotation) buildHookInstaller(ann *annotated) (
 	hookInstaller reflect.Value,
 	paramTypes []reflect.Type,
 	remapParams func([]reflect.Value) []reflect.Value, // function to remap parameters to function being annotated
+	err error,
 ) {
 	paramTypes = ann.currentParamTypes()
 	paramTypes, remapParams = injectLifecycle(paramTypes)
@@ -693,6 +777,7 @@ func (la *lifecycleHookAnnotation) buildHookInstaller(ann *annotated) (
 			ctxPos = i
 			continue
 		}
+
 		if !isIn(t) {
 			invokeParamTypes = append(invokeParamTypes, origHookFnT.In(i))
 			continue
@@ -709,6 +794,9 @@ func (la *lifecycleHookAnnotation) buildHookInstaller(ann *annotated) (
 		}
 		invokeParamTypes = append(invokeParamTypes, reflect.StructOf(fields))
 
+	}
+	if err = la.validateHookDeps(invokeParamTypes, paramTypes, resultTypes); err != nil {
+		return
 	}
 	invokeFnT := reflect.FuncOf(invokeParamTypes, []reflect.Type{}, false)
 	invokeFn := reflect.MakeFunc(invokeFnT, func(args []reflect.Value) (results []reflect.Value) {
@@ -787,7 +875,7 @@ func (la *lifecycleHookAnnotation) buildHookInstaller(ann *annotated) (
 		}
 		return results
 	})
-	return hookInstaller, paramTypes, remapParams
+	return hookInstaller, paramTypes, remapParams, nil
 }
 
 var (
@@ -1097,7 +1185,19 @@ func OnStop(onStop interface{}) Annotation {
 
 type asAnnotation struct {
 	targets []interface{}
-	types   []reflect.Type
+	types   []asType
+}
+
+type asType struct {
+	self bool
+	typ  reflect.Type // May be nil if self is true.
+}
+
+func (a asType) String() string {
+	if a.self {
+		return "self"
+	}
+	return a.typ.String()
 }
 
 func isOut(t reflect.Type) bool {
@@ -1119,7 +1219,7 @@ var _ Annotation = (*asAnnotation)(nil)
 // bytes.NewBuffer (bytes.Buffer) should be provided as io.Writer type:
 //
 //	fx.Provide(
-//	  fx.Annotate(bytes.NewBuffer(...), fx.As(new(io.Writer)))
+//	  fx.Annotate(bytes.NewBuffer, fx.As(new(io.Writer)))
 //	)
 //
 // In other words, the code above is equivalent to:
@@ -1152,20 +1252,58 @@ var _ Annotation = (*asAnnotation)(nil)
 //	  return w, r
 //	}
 //
+// As entirely replaces the default return types of a function. In order
+// to maintain the original return types when using As, see [Self].
+//
 // As annotation cannot be used in a function that returns an [Out] struct as a return type.
 func As(interfaces ...interface{}) Annotation {
 	return &asAnnotation{targets: interfaces}
 }
 
+// Self returns a special value that can be passed to [As] to indicate
+// that a type should be provided as its original type, in addition to whatever other
+// types it gets provided as via other [As] annotations.
+//
+// For example,
+//
+//	fx.Provide(
+//	  fx.Annotate(
+//	    bytes.NewBuffer,
+//	    fx.As(new(io.Writer)),
+//	    fx.As(fx.Self()),
+//	  )
+//	)
+//
+// Is equivalent to,
+//
+//	fx.Provide(
+//	  bytes.NewBuffer,
+//	  func(b *bytes.Buffer) io.Writer {
+//	    return b
+//	  },
+//	)
+//
+// in that it provides the same *bytes.Buffer instance
+// as both a *bytes.Buffer and an io.Writer.
+func Self() any {
+	return &self{}
+}
+
+type self struct{}
+
 func (at *asAnnotation) apply(ann *annotated) error {
-	at.types = make([]reflect.Type, len(at.targets))
+	at.types = make([]asType, len(at.targets))
 	for i, typ := range at.targets {
+		if _, ok := typ.(*self); ok {
+			at.types[i] = asType{self: true}
+			continue
+		}
 		t := reflect.TypeOf(typ)
 		if t.Kind() != reflect.Ptr || t.Elem().Kind() != reflect.Interface {
 			return fmt.Errorf("fx.As: argument must be a pointer to an interface: got %v", t)
 		}
 		t = t.Elem()
-		at.types[i] = t
+		at.types[i] = asType{typ: t}
 	}
 
 	ann.As = append(ann.As, at.types)
@@ -1209,12 +1347,16 @@ func (at *asAnnotation) results(ann *annotated) (
 			Type: t,
 			Tag:  f.Tag,
 		}
-		if i < len(at.types) {
-			if !t.Implements(at.types[i]) {
-				return nil, nil, fmt.Errorf("invalid fx.As: %v does not implement %v", t, at.types[i])
-			}
-			field.Type = at.types[i]
+
+		if i >= len(at.types) || at.types[i].self {
+			fields = append(fields, field)
+			continue
 		}
+
+		if !t.Implements(at.types[i].typ) {
+			return nil, nil, fmt.Errorf("invalid fx.As: %v does not implement %v", t, at.types[i])
+		}
+		field.Type = at.types[i].typ
 		fields = append(fields, field)
 	}
 	resType := reflect.StructOf(fields)
@@ -1475,7 +1617,7 @@ type annotated struct {
 	Annotations []Annotation
 	ParamTags   []string
 	ResultTags  []string
-	As          [][]reflect.Type
+	As          [][]asType
 	From        []reflect.Type
 	FuncPtr     uintptr
 	Hooks       []*lifecycleHookAnnotation

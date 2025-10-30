@@ -45,6 +45,7 @@ func (f *Fixture) Up(fileName string) error {
 	case ".csv":
 		return f.UpCSV(fileName)
 	default:
+		//nolint:err113
 		return fmt.Errorf("unknown file extension: %s", ext)
 	}
 }

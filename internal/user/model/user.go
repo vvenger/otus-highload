@@ -24,7 +24,6 @@ type User struct {
 	City       string
 }
 
-//nolint:wrapcheck
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	return string(bytes), err

@@ -2,13 +2,15 @@ package validate
 
 import (
 	"fmt"
-	"github.com/ogen-go/ogen/ogenregex"
+	"net/http"
 	"strings"
+
+	"github.com/ogen-go/ogen/ogenregex"
 
 	"github.com/go-faster/errors"
 )
 
-// ErrFieldRequired reports that field is required, but not found.
+// ErrFieldRequired reports that a field is required, but not found.
 var ErrFieldRequired = errors.New("field required")
 
 // Error represents validation error.
@@ -63,9 +65,21 @@ func InvalidContentType(contentType string) error {
 // UnexpectedStatusCodeError reports that client got unexpected status code.
 type UnexpectedStatusCodeError struct {
 	StatusCode int
+	Payload    *http.Response
+}
+
+// UnexpectedStatusCodeWithResponse creates new UnexpectedStatusCode.
+func UnexpectedStatusCodeWithResponse(response *http.Response) error {
+	return &UnexpectedStatusCodeError{
+		StatusCode: response.StatusCode,
+		Payload:    response,
+	}
 }
 
 // UnexpectedStatusCode creates new UnexpectedStatusCode.
+//
+// Deprecated: client codes generated a while ago used this function.
+// Kept here solely for backward compatibility to them.
 func UnexpectedStatusCode(statusCode int) error {
 	return &UnexpectedStatusCodeError{
 		StatusCode: statusCode,

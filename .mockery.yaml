@@ -3,6 +3,7 @@ output: ./internal/mocks
 keeptree: true
 include-auto-generated: false
 with-expecter: true
+unroll-variadic: false
 exclude:
   - internal/app
   - internal/pkg

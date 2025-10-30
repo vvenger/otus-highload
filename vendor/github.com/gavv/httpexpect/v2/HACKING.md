@@ -3,16 +3,16 @@
 <!-- toc -->
 
 - [Working on a task](#working-on-a-task)
-  * [Choosing a task](#choosing-a-task)
-  * [Creating pull request](#creating-pull-request)
+  - [Choosing a task](#choosing-a-task)
+  - [Creating pull request](#creating-pull-request)
 - [Developer instructions](#developer-instructions)
-  * [Development dependencies](#development-dependencies)
-  * [Makefile targets](#makefile-targets)
+  - [Development dependencies](#development-dependencies)
+  - [Makefile targets](#makefile-targets)
 - [Code style](#code-style)
-  * [Comment formatting](#comment-formatting)
+  - [Comment formatting](#comment-formatting)
 - [Project internals](#project-internals)
-  * [Object tree](#object-tree)
-  * [Failure reporting](#failure-reporting)
+  - [Object tree](#object-tree)
+  - [Failure reporting](#failure-reporting)
 
 <!-- tocstop -->
 
@@ -22,7 +22,7 @@
 
 Choosing a task is easy:
 
-* Find a free task with **help wanted** or **good first issue** tag. The latter means that the task does not require deep knowldge of the project.
+* Find a free task with **help wanted** or **good first issue** tag. The latter means that the task does not require deep knowledge of the project.
 
 * **Leave a comment** in the task, indicating that you want to work on it. This allows to assign you to the task and to ensure that others wont work on it on the same time.
 
@@ -38,7 +38,7 @@ Please follow a few simple rules to ease the work of the reviewer:
 
 * When you submit changes after review, don't forget to **re-request review**.
 
-* When you adderess issues raised during review, **don't resolve discussions by yourself**. Instead, leave a comment or thumbs up on that discussion.
+* When you address issues raised during review, **don't resolve discussions by yourself**. Instead, leave a comment or thumbs up on that discussion.
 
 ## Developer instructions
 
@@ -46,7 +46,7 @@ Please follow a few simple rules to ease the work of the reviewer:
 
 For development, you need two additional dependencies:
 
-* [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
+* [golangci-lint](https://golangci-lint.run/welcome/install/#local-installation)
 
 * [stringer](https://github.com/golang/tools)
 
@@ -90,10 +90,10 @@ Run go mod tidy:
 make tidy
 ```
 
-Generate TOC in HACKING.md:
+Update markdown files:
 
 ```
-make toc
+make md
 ```
 
 ## Code style
