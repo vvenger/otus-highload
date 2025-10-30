@@ -1,46 +1,99 @@
-linters:
-  disable:
-    - godox
-    - funlen
-    - exhaustive
-  enable:
-    - forbidigo
-    - gosec
-    - wrapcheck
-  presets:
-    - bugs
-    - error
-    - complexity
-    - performance
-    - unused
-    - comment
-    - sql
-
-linters-settings:
-  wrapcheck:
-    ignoreSigRegexps:
-      - \.Wrap.*Error\(
-      - \.*errors.NewWithValue\(
-      - \.*errors.New\(
-  cyclop:
-    max-complexity: 15
-  errcheck:
-    exclude-functions:
-      - (net/http.ResponseWriter).Write
-  forbidigo:
-    forbid:
-      - p: ^fmt\.Print.*$
-        msg: Do not commit print statements.
-
-issues:
-  exclude-dirs:
-    - docker
-    - docs
-    - migrations
-    - vendor
-    # дериктории которые надо добавить.
-    - internal/mocks
-    - tests # интеграционные тесты.
-
+version: "2"
 run:
-  tests: false
+  tests: true
+linters:
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - contextcheck
+    - cyclop
+    - dupword
+    - durationcheck
+    - err113
+    - errchkjson
+    - errorlint
+    - errcheck
+    - fatcontext
+    - forbidigo
+    - gocheckcompilerdirectives
+    - gochecksumtype
+    - gocognit
+    - gocyclo
+    - godot
+    - gosec
+    - gosmopolitan
+    - loggercheck
+    - maintidx
+    - makezero
+    - misspell
+    - musttag
+    - nestif
+    - nilerr
+    - nilnesserr
+    - noctx
+    - perfsprint
+    - prealloc
+    - protogetter
+    - reassign
+    - recvcheck
+    - rowserrcheck
+    - spancheck
+    - sqlclosecheck
+    - testifylint
+    - unparam
+    - wrapcheck
+    - zerologlint
+    - nolintlint
+  disable:
+    - exhaustive
+    - funlen
+    - godox
+  settings:
+    cyclop:
+      max-complexity: 20
+    errcheck:
+      exclude-functions:
+        - (net/http.ResponseWriter).Write
+    forbidigo:
+      forbid:
+        - pattern: ^fmt\.Print.*$
+          msg: Do not commit print statements.
+    wrapcheck:
+      ignore-sig-regexps:
+        - \.Wrap.*Error\(
+        - \.*errors.NewWithValue\(
+        - \.*errors.New\(
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - docker
+      - docs
+      - migrations
+      - vendor
+      # дериктории которые надо добавить.
+      - internal/mocks
+      - e2e # интеграционные тесты.
+    rules:
+      - path: _test\.go
+        linters:
+          - dupword
+          - errcheck
+          - err113
+          - gocognit
+          - gosmopolitan
+          - godot
+          - maintidx
+formatters:
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

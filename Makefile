@@ -1,8 +1,8 @@
 LOCAL_BIN:=$(CURDIR)/bin
 
 install-deps:
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(LOCAL_BIN) v1.62.2
-	GOBIN=$(LOCAL_BIN) go install github.com/vektra/mockery/v2@v2.50.1
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(LOCAL_BIN) v2.6.0
+	GOBIN=$(LOCAL_BIN) go install github.com/vektra/mockery/v2@v2.53.5
 
 # ---------------
 # docker-compose
