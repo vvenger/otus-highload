@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/vvenger/otus-highload/internal/pkg/tx"
 	model "github.com/vvenger/otus-highload/internal/user/model"
 	"go.uber.org/fx"
 )
@@ -19,16 +20,19 @@ const (
 
 type UserStorageParams struct {
 	fx.In
-	DB *pgxpool.Pool
+	MasterDB  *pgxpool.Pool `name:"master_db"`
+	ReplicaDB *pgxpool.Pool `name:"replica_db"`
 }
 
 type UserStorage struct {
-	db *pgxpool.Pool
+	master  *pgxpool.Pool
+	replica *pgxpool.Pool
 }
 
 func NewUserStorage(params UserStorageParams) *UserStorage {
 	return &UserStorage{
-		db: params.DB,
+		master:  params.MasterDB,
+		replica: params.ReplicaDB,
 	}
 }
 
@@ -42,7 +46,7 @@ func (s *UserStorage) FindLogin(ctx context.Context, login string) (string, erro
 			id = $1`
 
 	var password string
-	if err := s.db.QueryRow(ctx, sql, login).Scan(&password); err != nil {
+	if err := s.replica.QueryRow(ctx, sql, login).Scan(&password); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return "", model.ErrNotFound
 		}
@@ -90,7 +94,9 @@ func (s *UserStorage) Register(ctx context.Context, user model.RegisterUser) (st
 		"city":        user.City,
 	}
 
-	if _, err := s.db.Exec(ctx, sql, args); err != nil {
+	db := tx.Extract(ctx, s.master)
+
+	if _, err := db.Exec(ctx, sql, args); err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == PgUniqueViolation {
 			return "", model.ErrConflict
@@ -121,7 +127,9 @@ func (s *UserStorage) User(ctx context.Context, id string) (model.User, error) {
 		biography *string
 	)
 
-	err := s.db.QueryRow(ctx, sql, id).Scan(
+	db := tx.Extract(ctx, s.replica)
+
+	err := db.QueryRow(ctx, sql, id).Scan(
 		&user.ID,
 		&user.FirstName,
 		&user.SecondName,
@@ -165,7 +173,7 @@ func (s *UserStorage) Search(ctx context.Context, filt model.SearchFilter) ([]mo
 		"second_name": filt.LastName + "%",
 	}
 
-	rows, err := s.db.Query(ctx, sql, args)
+	rows, err := s.replica.Query(ctx, sql, args)
 	if err != nil {
 		return nil, fmt.Errorf("could not search users: %w", err)
 	}

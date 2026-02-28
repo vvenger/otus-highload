@@ -15,7 +15,7 @@ up:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d
 
 down:
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) down
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) down -v --remove-orphans
 
 run:
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go run ./cmd/socialnetwork"
@@ -42,6 +42,22 @@ debug:
 
 shell:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app bash	
+
+# ---------------
+# load testing (jmeter)
+# ---------------
+
+jmeter/prepare:
+	./jmeter/prepare-data.sh
+
+jmeter/test:
+	./jmeter/run-test.sh $(or $(NAME),default)
+
+jmeter/test-master:
+	HOST=social-network-app-1 ./jmeter/run-test.sh master-only
+
+jmeter/test-replica:
+	HOST=social-network-app-1 ./jmeter/run-test.sh with-replicas
 
 # ---------------
 # golangci-lint

@@ -1,8 +1,11 @@
 version: "3.6"
 
 services:
+  # =============================================================================
+  # Application
+  # =============================================================================
   app:
-    build: 
+    build:
       context: ./dev
     ports:
       - 8000:8000
@@ -12,35 +15,214 @@ services:
       - ./..:/app
     environment:
       ENVIRONMENT: dev
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: main
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_MASTER_HOST: haproxy
+      DB_MASTER_PORT: 5432
+      DB_MASTER_NAME: main
+      DB_MASTER_USER: root
+      DB_MASTER_PASSWORD: root
+      # Replica (read-only)
+      DB_REPLICA_HOST: haproxy
+      DB_REPLICA_PORT: 5433
       TZ: Europe/Moscow
     depends_on:
-      - postgres          
+      haproxy:
+        condition: service_healthy
 
-  postgres:
-    image: postgres:14-bullseye
-    command: -c 'max_connections=200'
-    ports:
-      - 5432:5432    
+  # =============================================================================
+  # Distributed Configuration Store (etcd)
+  # =============================================================================
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.12
+    hostname: etcd
+    container_name: etcd
     environment:
-      POSTGRES_DB: main
-      POSTGRES_PASSWORD: root
-      POSTGRES_USER: root
-      TZ: Europe/Moscow
+      ETCD_ENABLE_V2: "true"
+      ETCD_NAME: etcd
+      ETCD_DATA_DIR: /etcd-data
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
+      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://etcd:2380
+      ETCD_INITIAL_CLUSTER: etcd=http://etcd:2380
+      ETCD_INITIAL_CLUSTER_STATE: new
+      ETCD_INITIAL_CLUSTER_TOKEN: etcd-cluster-token
+    volumes:
+      - etcd-data:/etcd-data
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
+  # =============================================================================
+  # Patroni PostgreSQL Cluster (3 nodes)
+  # =============================================================================
+  patroni-1:
+    build:
+      context: ./patroni
+    hostname: patroni-1
+    container_name: patroni-1
+    user: root
+    environment:
+      PATRONI_NAME: patroni-1
+      PATRONI_SCOPE: postgres-cluster
+      PATRONI_ETCD_HOSTS: etcd:2379
+      PATRONI_RESTAPI_LISTEN: 0.0.0.0:8008
+      PATRONI_RESTAPI_CONNECT_ADDRESS: patroni-1:8008
+      PATRONI_POSTGRESQL_LISTEN: 0.0.0.0:5432
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: patroni-1:5432
+      PATRONI_POSTGRESQL_DATA_DIR: /var/lib/postgresql/data
+      PATRONI_SUPERUSER_USERNAME: root
+      PATRONI_SUPERUSER_PASSWORD: root
+      PATRONI_REPLICATION_USERNAME: replicator
+      PATRONI_REPLICATION_PASSWORD: replicator
+      TZ: Europe/Moscow
+    volumes:
+      - ./patroni/patroni.template.yml:/etc/patroni/patroni.template.yml:ro
+      - patroni-1-data:/var/lib/postgresql/data
+    entrypoint: >
+      /bin/sh -c "
+        chown -R postgres:postgres /var/lib/postgresql/data &&
+        chmod 0700 /var/lib/postgresql/data &&
+        envsubst < /etc/patroni/patroni.template.yml > /etc/patroni/patroni.yml &&
+        exec gosu postgres patroni /etc/patroni/patroni.yml
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8008/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      etcd:
+        condition: service_healthy
+
+  patroni-2:
+    build:
+      context: ./patroni
+    hostname: patroni-2
+    container_name: patroni-2
+    user: root
+    environment:
+      PATRONI_NAME: patroni-2
+      PATRONI_SCOPE: postgres-cluster
+      PATRONI_ETCD_HOSTS: etcd:2379
+      PATRONI_RESTAPI_LISTEN: 0.0.0.0:8008
+      PATRONI_RESTAPI_CONNECT_ADDRESS: patroni-2:8008
+      PATRONI_POSTGRESQL_LISTEN: 0.0.0.0:5432
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: patroni-2:5432
+      PATRONI_POSTGRESQL_DATA_DIR: /var/lib/postgresql/data
+      PATRONI_SUPERUSER_USERNAME: root
+      PATRONI_SUPERUSER_PASSWORD: root
+      PATRONI_REPLICATION_USERNAME: replicator
+      PATRONI_REPLICATION_PASSWORD: replicator
+      TZ: Europe/Moscow
+    volumes:
+      - ./patroni/patroni.template.yml:/etc/patroni/patroni.template.yml:ro
+      - patroni-2-data:/var/lib/postgresql/data
+    entrypoint: >
+      /bin/sh -c "
+        chown -R postgres:postgres /var/lib/postgresql/data &&
+        chmod 0700 /var/lib/postgresql/data &&
+        envsubst < /etc/patroni/patroni.template.yml > /etc/patroni/patroni.yml &&
+        exec gosu postgres patroni /etc/patroni/patroni.yml
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8008/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      etcd:
+        condition: service_healthy
+
+  patroni-3:
+    build:
+      context: ./patroni
+    hostname: patroni-3
+    container_name: patroni-3
+    user: root
+    environment:
+      PATRONI_NAME: patroni-3
+      PATRONI_SCOPE: postgres-cluster
+      PATRONI_ETCD_HOSTS: etcd:2379
+      PATRONI_RESTAPI_LISTEN: 0.0.0.0:8008
+      PATRONI_RESTAPI_CONNECT_ADDRESS: patroni-3:8008
+      PATRONI_POSTGRESQL_LISTEN: 0.0.0.0:5432
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: patroni-3:5432
+      PATRONI_POSTGRESQL_DATA_DIR: /var/lib/postgresql/data
+      PATRONI_SUPERUSER_USERNAME: root
+      PATRONI_SUPERUSER_PASSWORD: root
+      PATRONI_REPLICATION_USERNAME: replicator
+      PATRONI_REPLICATION_PASSWORD: replicator
+      TZ: Europe/Moscow
+    volumes:
+      - ./patroni/patroni.template.yml:/etc/patroni/patroni.template.yml:ro
+      - patroni-3-data:/var/lib/postgresql/data
+    entrypoint: >
+      /bin/sh -c "
+        chown -R postgres:postgres /var/lib/postgresql/data &&
+        chmod 0700 /var/lib/postgresql/data &&
+        envsubst < /etc/patroni/patroni.template.yml > /etc/patroni/patroni.yml &&
+        exec gosu postgres patroni /etc/patroni/patroni.yml
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8008/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      etcd:
+        condition: service_healthy
+
+  # =============================================================================
+  # HAProxy - Load Balancer for PostgreSQL
+  # =============================================================================
+  haproxy:
+    image: haproxy:2.8-alpine
+    hostname: haproxy
+    container_name: haproxy
+    ports:
+      - 5432:5432 # Primary (RW)
+      - 5433:5433 # Replicas (RO)
+      - 7000:7000 # Stats UI
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    healthcheck:
+      test: ["CMD", "haproxy", "-c", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      patroni-1:
+        condition: service_healthy
+      patroni-2:
+        condition: service_healthy
+      patroni-3:
+        condition: service_healthy
+
+  # =============================================================================
+  # Redis
+  # =============================================================================
   redis:
     image: redis:5.0.7
 
+  # =============================================================================
+  # Database Admin Tools
+  # =============================================================================
   adminer:
     image: adminer:latest
     ports:
       - 8003:8080
     environment:
-      - ADMINER_DEFAULT_SERVER=postgres
+      - ADMINER_DEFAULT_SERVER=haproxy
+    depends_on:
+      haproxy:
+        condition: service_healthy
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -50,6 +232,16 @@ services:
     ports:
       - 8002:80
     logging:
-      driver: none      
+      driver: none
     depends_on:
-      - postgres      
+      haproxy:
+        condition: service_healthy
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  etcd-data:
+  patroni-1-data:
+  patroni-2-data:
+  patroni-3-data:

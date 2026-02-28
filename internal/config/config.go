@@ -9,9 +9,12 @@ import (
 )
 
 type Config struct {
-	App   AppConfig   `mapstructure:"app"`
-	Log   LogConfig   `mapstructure:"log"`
-	DB    DBConfig    `mapstructure:"db"`
+	App AppConfig `mapstructure:"app"`
+	Log LogConfig `mapstructure:"log"`
+	DB  struct {
+		Master  DBConfig     `mapstructure:"master"`
+		Replica DBPoolConfig `mapstructure:"replica"`
+	} `mapstructure:"db"`
 	Redis RedisConfig `mapstructure:"redis"`
 	Otlp  OtlpConfig  `mapstructure:"otlp"`
 }
@@ -40,15 +43,19 @@ type LogConfig struct {
 	Format string `mapstructure:"format"`
 }
 
-type DBConfig struct {
+type DBPoolConfig struct {
 	Host      string        `mapstructure:"host"`
 	Port      uint16        `mapstructure:"port"`
-	Database  string        `mapstructure:"database"`
-	User      string        `mapstructure:"user"`
-	Password  string        `mapstructure:"password"`
 	MaxConns  int32         `mapstructure:"max_conns"`
 	MinConns  int32         `mapstructure:"min_conns"`
 	QueryMode QueryExecMode `mapstructure:"exec_mode"`
+}
+
+type DBConfig struct {
+	DBPoolConfig `mapstructure:",squash"`
+	Database     string `mapstructure:"database"`
+	User         string `mapstructure:"user"`
+	Password     string `mapstructure:"password"`
 }
 
 type RedisConfig struct {
@@ -105,9 +112,13 @@ func newViperInstance() *viper.Viper {
 	v.SetDefault("log.level", "info")
 	v.SetDefault("log.format", "json")
 	// DB.
-	v.SetDefault("db.max_conns", 4)
-	v.SetDefault("db.min_conns", 1)
-	v.SetDefault("db.exec_mode", QueryExecModeSimple)
+	v.SetDefault("db.master.max_conns", 4)
+	v.SetDefault("db.master.min_conns", 1)
+	v.SetDefault("db.master.exec_mode", QueryExecModeSimple)
+	// DB.
+	v.SetDefault("db.replica.max_conns", 4)
+	v.SetDefault("db.replica.min_conns", 1)
+	v.SetDefault("db.replica.exec_mode", QueryExecModeSimple)
 	// OTLP.
 	v.SetDefault("otlp.metrics_port", 4318)
 

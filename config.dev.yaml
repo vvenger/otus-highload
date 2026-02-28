@@ -15,14 +15,21 @@ log:
   format: json
 
 db:
-  host: localhost
-  port: 5432
-  database: main
-  user: root
-  password: root
-  max_conns: 150
-  min_conns: 10
-  exec_mode: MODE_EXEC
+  master:
+    host: haproxy
+    port: 5432
+    database: main
+    user: root
+    password: root
+    max_conns: 8
+    min_conns: 4
+    exec_mode: MODE_EXEC
+  replica:
+    host: haproxy
+    port: 5433
+    max_conns: 20
+    min_conns: 4
+    exec_mode: MODE_EXEC
 
 otlp:
   metrics_port: 4318

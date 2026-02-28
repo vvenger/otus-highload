@@ -18,7 +18,7 @@ import (
 
 type FixtureParams struct {
 	fx.In
-	Db     *pgxpool.Pool
+	Db     *pgxpool.Pool `name:"master_db"`
 	Logger *zap.Logger
 }
 

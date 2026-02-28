@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-migrate -database "postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME?sslmode=disable" -path /app/migrations $@
+migrate -database "postgres://$DB_MASTER_USER:$DB_MASTER_PASSWORD@$DB_MASTER_HOST:$DB_MASTER_PORT/$DB_MASTER_NAME?sslmode=disable" -path /app/migrations $@

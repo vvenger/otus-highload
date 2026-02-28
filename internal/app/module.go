@@ -37,13 +37,26 @@ func LoggerModule() fx.Option {
 func DBModule() fx.Option {
 	opt := fx.Module("db",
 		fx.Provide(
-			NewDB,
+			fx.Annotate(
+				NewMasterDB,
+				fx.ResultTags(`name:"master_db"`),
+			),
+			fx.Annotate(
+				NewReplicaDB,
+				fx.ResultTags(`name:"replica_db"`),
+			),
+			NewTxManager,
 			NewFixture,
 		),
-		fx.Invoke(func(lc fx.Lifecycle, db *pgxpool.Pool) {
+		fx.Invoke(func(lc fx.Lifecycle, params struct {
+			fx.In
+			Master  *pgxpool.Pool `name:"master_db"`
+			Replica *pgxpool.Pool `name:"replica_db"`
+		}) {
 			lc.Append(fx.Hook{
 				OnStop: func(ctx context.Context) error {
-					db.Close()
+					params.Master.Close()
+					params.Replica.Close()
 					return nil
 				},
 			})
