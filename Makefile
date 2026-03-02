@@ -73,6 +73,16 @@ cover/html:
 	rm $(COVERAGEFILE)		
 
 # ---------------
+# jmeter
+# ---------------
+
+jmeter/prepare:
+	./jmeter/prepare-data.sh
+
+jmeter/test:
+	./jmeter/run-test.sh $(THREADS) $(NAME)
+
+# ---------------
 # mocks
 # ---------------
 
