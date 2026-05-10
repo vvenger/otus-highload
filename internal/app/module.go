@@ -2,20 +2,21 @@ package app
 
 import (
 	"context"
-	"errors"
 	"fmt"
+
+	"errors"
 	"log"
 	"net/http"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
+	"github.com/vvenger/otus-highload/internal/config"
+	"github.com/vvenger/otus-highload/internal/pkg/jwt"
 	"go.opentelemetry.io/otel/metric"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/fx"
-
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/vvenger/otus-highload/internal/config"
-	"github.com/vvenger/otus-highload/internal/pkg/jwt"
 )
 
 func ConfigModule() fx.Option {
@@ -38,6 +39,7 @@ func DBModule() fx.Option {
 	opt := fx.Module("db",
 		fx.Provide(
 			NewDB,
+			NewFixture,
 		),
 		fx.Invoke(func(lc fx.Lifecycle, db *pgxpool.Pool) {
 			lc.Append(fx.Hook{
@@ -50,6 +52,19 @@ func DBModule() fx.Option {
 	)
 
 	return opt
+}
+
+func RedisModule() fx.Option {
+	return fx.Module("redis",
+		fx.Provide(NewRedis),
+		fx.Invoke(func(lc fx.Lifecycle, rdb *redis.Client) {
+			lc.Append(fx.Hook{
+				OnStop: func(ctx context.Context) error {
+					return rdb.Close()
+				},
+			})
+		}),
+	)
 }
 
 func WebModule() fx.Option {

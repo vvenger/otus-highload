@@ -24,12 +24,16 @@ func AppModules() []fx.Option {
 		ConfigModule(),
 		LoggerModule(),
 		DBModule(),
+		RedisModule(),
 		WebModule(),
 		SystemModule(),
 		//
 		app.HttpService(),
 		//
 		app.User(),
+		app.Friend(),
+		app.Post(),
+		app.Feed(),
 	}
 }
 
@@ -57,4 +61,17 @@ func PopulateWith(option fx.Option, targets ...interface{}) (stop func(context.C
 	}
 
 	return
+}
+
+func LoadFixture(dir string) {
+	var f *Fixture
+	stop, err := Populate(&f)
+	if err != nil {
+		panic(err)
+	}
+	defer stop(context.Background())
+
+	if err := f.Up(dir); err != nil {
+		panic(err)
+	}
 }

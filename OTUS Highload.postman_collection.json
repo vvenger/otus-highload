@@ -6,76 +6,300 @@
 	},
 	"item": [
 		{
-			"name": "/user/register",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"first_name\": \"Имя\",\n  \"second_name\": \"Фамилия\",\n  \"birthdate\": \"2007-02-01\",\n  \"biography\": \"Хобби, интересы и т.п.\",\n  \"city\": \"Москва\",\n  \"password\": \"123456\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Auth",
+			"item": [
+				{
+					"name": "/user/register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var res = pm.response.json();",
+									"if (res) { pm.collectionVariables.set('userId', res); }"
+								]
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{baseURL}}/user/register",
-					"host": [
-						"{{baseURL}}"
 					],
-					"path": [
-						"user",
-						"register"
-					]
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"Имя\",\n  \"second_name\": \"Фамилия\",\n  \"birthdate\": \"2007-02-01\",\n  \"biography\": \"Хобби, интересы и т.п.\",\n  \"city\": \"Москва\",\n  \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/register",
+							"host": ["{{baseURL}}"],
+							"path": ["user", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var res = pm.response.json();",
+									"if (res && res.token) { pm.collectionVariables.set('token', res.token); }"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"{{userId}}\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/login",
+							"host": ["{{baseURL}}"],
+							"path": ["login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/get/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/user/get/{{userId}}",
+							"host": ["{{baseURL}}"],
+							"path": ["user", "get", "{{userId}}"]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "/login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"id\": \"{{userId}}\",\n    \"password\":\"123456\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+			"name": "Friend",
+			"item": [
+				{
+					"name": "/friend/set/{user_id}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/friend/set/{{friendId}}",
+							"host": ["{{baseURL}}"],
+							"path": ["friend", "set", "{{friendId}}"]
+						},
+						"description": "Добавить пользователя в друзья. friendId — UUID пользователя которого добавляем."
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseURL}}/login",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"login"
-					]
+				{
+					"name": "/friend/delete/{user_id}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/friend/delete/{{friendId}}",
+							"host": ["{{baseURL}}"],
+							"path": ["friend", "delete", "{{friendId}}"]
+						},
+						"description": "Удалить пользователя из друзей."
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "/user/get/{id}",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseURL}}/user/get/{{userId}}",
-					"host": [
-						"{{baseURL}}"
+			"name": "Post",
+			"item": [
+				{
+					"name": "/post/create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var res = pm.response.json();",
+									"if (res) { pm.collectionVariables.set('postId', res); }"
+								]
+							}
+						}
 					],
-					"path": [
-						"user",
-						"get",
-						"{{userId}}"
-					]
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"text\": \"Мой первый пост!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/post/create",
+							"host": ["{{baseURL}}"],
+							"path": ["post", "create"]
+						},
+						"description": "Создать пост. Возвращает UUID созданного поста, сохраняется в переменную postId."
+					},
+					"response": []
+				},
+				{
+					"name": "/post/update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{postId}}\",\n  \"text\": \"Обновлённый текст поста\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/post/update",
+							"host": ["{{baseURL}}"],
+							"path": ["post", "update"]
+						},
+						"description": "Обновить текст поста."
+					},
+					"response": []
+				},
+				{
+					"name": "/post/get/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/post/get/{{postId}}",
+							"host": ["{{baseURL}}"],
+							"path": ["post", "get", "{{postId}}"]
+						},
+						"description": "Получить пост по ID. Не требует авторизации."
+					},
+					"response": []
+				},
+				{
+					"name": "/post/delete/{id}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/post/delete/{{postId}}",
+							"host": ["{{baseURL}}"],
+							"path": ["post", "delete", "{{postId}}"]
+						},
+						"description": "Удалить пост по ID."
+					},
+					"response": []
+				},
+				{
+					"name": "/post/feed",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/post/feed?offset=0&limit=10",
+							"host": ["{{baseURL}}"],
+							"path": ["post", "feed"],
+							"query": [
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Смещение (default: 0)"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Количество постов (1–100, default: 10)"
+								}
+							]
+						},
+						"description": "Лента постов друзей. Первые 1000 записей из Redis-кэша, дальше — из БД."
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [
@@ -83,18 +307,14 @@
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
-				"exec": [
-					""
-				]
+				"exec": [""]
 			}
 		},
 		{
 			"listen": "test",
 			"script": {
 				"type": "text/javascript",
-				"exec": [
-					""
-				]
+				"exec": [""]
 			}
 		}
 	],
@@ -106,6 +326,21 @@
 		},
 		{
 			"key": "userId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "friendId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "postId",
 			"value": "",
 			"type": "default"
 		}

@@ -377,8 +377,8 @@ func decodePostDeleteIDPutParams(args [1]string, argsEscaped bool, r *http.Reque
 
 // PostFeedGetParams is parameters of GET /post/feed operation.
 type PostFeedGetParams struct {
-	Offset OptFloat64
-	Limit  OptFloat64
+	Offset OptInt
+	Limit  OptInt
 }
 
 func unpackPostFeedGetParams(packed middleware.Parameters) (params PostFeedGetParams) {
@@ -388,7 +388,7 @@ func unpackPostFeedGetParams(packed middleware.Parameters) (params PostFeedGetPa
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.Offset = v.(OptFloat64)
+			params.Offset = v.(OptInt)
 		}
 	}
 	{
@@ -397,7 +397,7 @@ func unpackPostFeedGetParams(packed middleware.Parameters) (params PostFeedGetPa
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.Limit = v.(OptFloat64)
+			params.Limit = v.(OptInt)
 		}
 	}
 	return params
@@ -407,7 +407,7 @@ func decodePostFeedGetParams(args [0]string, argsEscaped bool, r *http.Request) 
 	q := uri.NewQueryDecoder(r.URL.Query())
 	// Set default value for query: offset.
 	{
-		val := float64(0)
+		val := int(0)
 		params.Offset.SetTo(val)
 	}
 	// Decode query: offset.
@@ -420,14 +420,14 @@ func decodePostFeedGetParams(args [0]string, argsEscaped bool, r *http.Request) 
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOffsetVal float64
+				var paramsDotOffsetVal int
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
 						return err
 					}
 
-					c, err := conv.ToFloat64(val)
+					c, err := conv.ToInt(val)
 					if err != nil {
 						return err
 					}
@@ -445,7 +445,7 @@ func decodePostFeedGetParams(args [0]string, argsEscaped bool, r *http.Request) 
 			if err := func() error {
 				if value, ok := params.Offset.Get(); ok {
 					if err := func() error {
-						if err := (validate.Float{
+						if err := (validate.Int{
 							MinSet:        true,
 							Min:           0,
 							MaxSet:        false,
@@ -453,9 +453,9 @@ func decodePostFeedGetParams(args [0]string, argsEscaped bool, r *http.Request) 
 							MinExclusive:  false,
 							MaxExclusive:  false,
 							MultipleOfSet: false,
-							MultipleOf:    nil,
-						}).Validate(float64(value)); err != nil {
-							return errors.Wrap(err, "float")
+							MultipleOf:    0,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
 						}
 						return nil
 					}(); err != nil {
@@ -477,7 +477,7 @@ func decodePostFeedGetParams(args [0]string, argsEscaped bool, r *http.Request) 
 	}
 	// Set default value for query: limit.
 	{
-		val := float64(10)
+		val := int(10)
 		params.Limit.SetTo(val)
 	}
 	// Decode query: limit.
@@ -490,14 +490,14 @@ func decodePostFeedGetParams(args [0]string, argsEscaped bool, r *http.Request) 
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotLimitVal float64
+				var paramsDotLimitVal int
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
 						return err
 					}
 
-					c, err := conv.ToFloat64(val)
+					c, err := conv.ToInt(val)
 					if err != nil {
 						return err
 					}
@@ -515,17 +515,17 @@ func decodePostFeedGetParams(args [0]string, argsEscaped bool, r *http.Request) 
 			if err := func() error {
 				if value, ok := params.Limit.Get(); ok {
 					if err := func() error {
-						if err := (validate.Float{
+						if err := (validate.Int{
 							MinSet:        true,
 							Min:           1,
-							MaxSet:        false,
-							Max:           0,
+							MaxSet:        true,
+							Max:           100,
 							MinExclusive:  false,
 							MaxExclusive:  false,
 							MultipleOfSet: false,
-							MultipleOf:    nil,
-						}).Validate(float64(value)); err != nil {
-							return errors.Wrap(err, "float")
+							MultipleOf:    0,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
 						}
 						return nil
 					}(); err != nil {

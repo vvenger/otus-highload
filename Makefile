@@ -38,10 +38,17 @@ test/e2e:
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./e2e/..."		
 
 debug:
-	docker-compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "dlv debug --headless --listen=:2345 ./cmd/socialnetwork/main.go"	
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "dlv debug --headless --listen=:2345 ./cmd/socialnetwork/main.go"	
 
 shell:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app bash	
+
+
+generate/api:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "go generate ./..."
+
+generate/mocks:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "rm -rf ./internal/mocks/ && ./bin/mockery --all"
 
 
 # ---------------
@@ -73,9 +80,3 @@ cover/html:
 	go tool cover -html=$(COVERAGEFILE)
 	rm $(COVERAGEFILE)		
 
-# ---------------
-# mocks
-# ---------------
-
-mocks: 
-	rm -rf ./internal/mocks/ && ./bin/mockery --all

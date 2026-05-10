@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/vvenger/otus-highload/internal/app"
 	"github.com/vvenger/otus-highload/internal/config"
@@ -10,6 +11,11 @@ import (
 func main() {
 	if err := config.ParseArgs(); err != nil {
 		log.Fatal(err)
+	}
+
+	if v := os.Getenv(config.CmdFixturesPath); v != "" {
+		app.LoadFixture(v)
+		return
 	}
 
 	app.Run()
