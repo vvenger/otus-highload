@@ -1,6 +1,10 @@
 # otus-highload
 OTUS Highload Architect
 
+## Домашнее задание
+
+Подробнее `summary.md`
+
 ## Библиотеки
 
 - HTTP [ogen](https://github.com/ogen-go/ogen)

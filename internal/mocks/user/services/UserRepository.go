@@ -136,6 +136,65 @@ func (_c *UserRepository_Register_Call) RunAndReturn(run func(context.Context, m
 	return _c
 }
 
+// Search provides a mock function with given fields: ctx, filt
+func (_m *UserRepository) Search(ctx context.Context, filt model.SearchFilter) ([]model.User, error) {
+	ret := _m.Called(ctx, filt)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Search")
+	}
+
+	var r0 []model.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, model.SearchFilter) ([]model.User, error)); ok {
+		return rf(ctx, filt)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, model.SearchFilter) []model.User); ok {
+		r0 = rf(ctx, filt)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, model.SearchFilter) error); ok {
+		r1 = rf(ctx, filt)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UserRepository_Search_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Search'
+type UserRepository_Search_Call struct {
+	*mock.Call
+}
+
+// Search is a helper method to define mock.On call
+//   - ctx context.Context
+//   - filt model.SearchFilter
+func (_e *UserRepository_Expecter) Search(ctx interface{}, filt interface{}) *UserRepository_Search_Call {
+	return &UserRepository_Search_Call{Call: _e.mock.On("Search", ctx, filt)}
+}
+
+func (_c *UserRepository_Search_Call) Run(run func(ctx context.Context, filt model.SearchFilter)) *UserRepository_Search_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(model.SearchFilter))
+	})
+	return _c
+}
+
+func (_c *UserRepository_Search_Call) Return(_a0 []model.User, _a1 error) *UserRepository_Search_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserRepository_Search_Call) RunAndReturn(run func(context.Context, model.SearchFilter) ([]model.User, error)) *UserRepository_Search_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // User provides a mock function with given fields: ctx, id
 func (_m *UserRepository) User(ctx context.Context, id string) (model.User, error) {
 	ret := _m.Called(ctx, id)

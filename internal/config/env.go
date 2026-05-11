@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	CmdEnvironment  = "ENVIRONMENT"
-	CmdPath         = "CONFIG_PATH"
-	CmdLogLevel     = "LOG_LEVEL"
-	CmdLogFormat    = "LOG_FORMAT"
-	CmdFixturesPath = "FIXTURES_PATH"
+	CmdEnvironment = "ENVIRONMENT"
+	CmdPath        = "CONFIG_PATH"
+	CmdLogLevel    = "LOG_LEVEL"
+	CmdLogFormat   = "LOG_FORMAT"
+	CmdFixtures    = "FIXTURES"
 )
 
 const (

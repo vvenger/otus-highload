@@ -12,6 +12,11 @@ func ParseArgs() error {
 		return fmt.Errorf("could not parse args: %w", err)
 	}
 
+	if args.Fixtures != "" {
+		os.Setenv(CmdFixtures, args.Fixtures)
+		// Не выводим дебаг логи.
+		args.LogLevel = "info"
+	}
 	if args.Environment != "" {
 		os.Setenv(CmdEnvironment, args.Environment)
 	}
@@ -24,8 +29,8 @@ func ParseArgs() error {
 	if args.LogFormat != "" {
 		os.Setenv(CmdLogFormat, args.LogFormat)
 	}
-	if args.FixturesPath != "" {
-		os.Setenv(CmdFixturesPath, args.FixturesPath)
+	if args.Fixtures != "" {
+		os.Setenv(CmdFixtures, args.Fixtures)
 	}
 
 	return nil
@@ -33,11 +38,11 @@ func ParseArgs() error {
 
 // Command line arguments.
 type cmdArgs struct {
-	Environment  string
-	ConfigPath   string
-	LogLevel     string
-	LogFormat    string
-	FixturesPath string
+	Environment string
+	ConfigPath  string
+	LogLevel    string
+	LogFormat   string
+	Fixtures    string
 }
 
 func parseArgs(args []string) (cmdArgs, error) {
@@ -49,7 +54,7 @@ func parseArgs(args []string) (cmdArgs, error) {
 	fSet.StringVar(&res.LogLevel, "l", "", "Log Level: debug, info, warn, error")
 	fSet.StringVar(&res.LogFormat, "f", "", "Log Format: json or console")
 	fSet.StringVar(&res.Environment, "e", "", "Environment: dev, test or prod")
-	fSet.StringVar(&res.FixturesPath, "fixtures", "", "Path to fixtures directory")
+	fSet.StringVar(&res.Fixtures, "fixtures", "", "Fixtures: path to fixtures")
 
 	if err := fSet.Parse(args); err != nil {
 		return cmdArgs{}, fmt.Errorf("could not parse args: %w", err)

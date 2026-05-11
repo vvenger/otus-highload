@@ -143,3 +143,60 @@ func (s *UserStorage) User(ctx context.Context, id string) (model.User, error) {
 
 	return user, nil
 }
+
+func (s *UserStorage) Search(ctx context.Context, filt model.SearchFilter) ([]model.User, error) {
+	sql := `
+		SELECT 
+			id, 
+			first_name,
+			second_name,
+			birthdate,
+			biography,
+			city
+		FROM 
+			users
+		WHERE
+			first_name LIKE @first_name
+		AND second_name LIKE @second_name
+		ORDER BY id`
+
+	args := pgx.NamedArgs{
+		"first_name":  filt.FirstName + "%",
+		"second_name": filt.LastName + "%",
+	}
+
+	rows, err := s.db.Query(ctx, sql, args)
+	if err != nil {
+		return nil, fmt.Errorf("could not search users: %w", err)
+	}
+
+	var users []model.User
+	for rows.Next() {
+		var (
+			user      model.User
+			biography *string
+		)
+
+		if err := rows.Scan(
+			&user.ID,
+			&user.FirstName,
+			&user.SecondName,
+			&user.Birthdate,
+			&biography,
+			&user.City,
+		); err != nil {
+			return nil, fmt.Errorf("could not scan user: %w", err)
+		}
+		if biography != nil {
+			user.Biography = *biography
+		}
+
+		users = append(users, user)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("can't iterate: %w", err)
+	}
+
+	return users, nil
+}

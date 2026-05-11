@@ -13,7 +13,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if v := os.Getenv(config.CmdFixturesPath); v != "" {
+	if v := os.Getenv(config.CmdFixtures); v != "" {
 		app.LoadFixture(v)
 		return
 	}

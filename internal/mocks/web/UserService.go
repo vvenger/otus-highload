@@ -127,6 +127,65 @@ func (_c *UserService_Register_Call) RunAndReturn(run func(context.Context, user
 	return _c
 }
 
+// Search provides a mock function with given fields: ctx, filt
+func (_m *UserService) Search(ctx context.Context, filt user.SearchFilter) ([]user.User, error) {
+	ret := _m.Called(ctx, filt)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Search")
+	}
+
+	var r0 []user.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, user.SearchFilter) ([]user.User, error)); ok {
+		return rf(ctx, filt)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, user.SearchFilter) []user.User); ok {
+		r0 = rf(ctx, filt)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]user.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, user.SearchFilter) error); ok {
+		r1 = rf(ctx, filt)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UserService_Search_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Search'
+type UserService_Search_Call struct {
+	*mock.Call
+}
+
+// Search is a helper method to define mock.On call
+//   - ctx context.Context
+//   - filt user.SearchFilter
+func (_e *UserService_Expecter) Search(ctx interface{}, filt interface{}) *UserService_Search_Call {
+	return &UserService_Search_Call{Call: _e.mock.On("Search", ctx, filt)}
+}
+
+func (_c *UserService_Search_Call) Run(run func(ctx context.Context, filt user.SearchFilter)) *UserService_Search_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(user.SearchFilter))
+	})
+	return _c
+}
+
+func (_c *UserService_Search_Call) Return(_a0 []user.User, _a1 error) *UserService_Search_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserService_Search_Call) RunAndReturn(run func(context.Context, user.SearchFilter) ([]user.User, error)) *UserService_Search_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // User provides a mock function with given fields: ctx, id
 func (_m *UserService) User(ctx context.Context, id string) (user.User, error) {
 	ret := _m.Called(ctx, id)

@@ -13,6 +13,7 @@ COMPOSE_DEV=./docker/docker-compose.yaml
 
 up:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d
 
 down:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) down -v --remove-orphans
@@ -27,14 +28,16 @@ migration:
 	@read -p "Migration name: " migration; \
 		docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "/migrate_wr.sh create -ext sql -dir /app/migrations $$migration"
 
-
 test:
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./internal/..."	
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./internal/..."	
 
 logs:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100
 
 test/e2e:
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./e2e/..."		
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./e2e/..."		
 
 debug:

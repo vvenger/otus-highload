@@ -142,3 +142,40 @@ func (s *handler) UserGetIDGet(ctx context.Context, params api.UserGetIDGetParam
 		Biography:  optString(u.Biography),
 	}, nil
 }
+
+func (s *handler) UserSearchGet(ctx context.Context, params api.UserSearchGetParams) (api.UserSearchGetRes, error) {
+	users, err := s.user.Search(ctx, model.SearchFilter{
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
+	})
+	if err != nil {
+		logger.Ctx(ctx).Error(
+			"UserSearchGet",
+			zap.Any("filter", params),
+			zap.Error(err),
+		)
+
+		return &api.UserSearchGetInternalServerError{
+			Response: api.R5xx{
+				Code:      optErrorCode(ErrInternalServer),
+				Message:   ErrorMessage[ErrInternalServer],
+				RequestID: optString(requestid.Get(ctx)),
+			},
+			RetryAfter: api.NewOptInt(s.retryAfter),
+		}, nil
+	}
+
+	res := make(api.UserSearchGetOKApplicationJSON, 0, len(users))
+	for _, u := range users {
+		res = append(res, api.User{
+			ID:         api.NewOptUserId(api.UserId(u.ID)),
+			FirstName:  api.NewOptString(u.FirstName),
+			SecondName: api.NewOptString(u.SecondName),
+			Birthdate:  api.NewOptBirthDate(api.BirthDate(u.Birthdate)),
+			City:       api.NewOptString(u.City),
+			Biography:  optString(u.Biography),
+		})
+	}
+
+	return &res, nil
+}

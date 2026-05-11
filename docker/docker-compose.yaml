@@ -25,6 +25,7 @@ services:
 
   postgres:
     image: postgres:14-bullseye
+    command: -c 'max_connections=200'
     ports:
       - 5432:5432    
     environment:
@@ -43,14 +44,14 @@ services:
     environment:
       - ADMINER_DEFAULT_SERVER=postgres
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=root@mail.ru
-      - PGADMIN_DEFAULT_PASSWORD=root
-    ports:
-      - 8002:80
-    logging:
-      driver: none      
-    depends_on:
-      - postgres      
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=root@mail.ru
+  #     - PGADMIN_DEFAULT_PASSWORD=root
+  #   ports:
+  #     - 8002:80
+  #   logging:
+  #     driver: none      
+  #   depends_on:
+  #     - postgres      
