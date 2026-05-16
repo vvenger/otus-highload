@@ -2,9 +2,8 @@ package main
 
 import (
 	"log"
-	"os"
 
-	"github.com/vvenger/otus-highload/internal/socialnetwork/app"
+	chatapp "github.com/vvenger/otus-highload/internal/chat/app"
 	"github.com/vvenger/otus-highload/internal/config"
 )
 
@@ -13,10 +12,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if v := os.Getenv(config.CmdFixtures); v != "" {
-		app.LoadFixture(v)
-		return
-	}
-
-	app.Run()
+	chatapp.Run()
 }

@@ -13,42 +13,85 @@ COMPOSE_DEV=./docker/docker-compose.yaml
 
 up:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d
+
+up/socialnetwork:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d app postgres redis adminer
+
+up/chat:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d chat citus-coordinator citus-worker1 citus-worker2
 
 down:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) down -v --remove-orphans
 
+down/socialnetwork:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop app postgres redis adminer
+
+down/chat:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop chat citus-coordinator citus-worker1 citus-worker2
+
 run:
-	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go run ./cmd/socialnetwork"
+	@$(MAKE) -j2 run/socialnetwork run/chat
+
+run/socialnetwork:
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec -T app sh -c "go run ./cmd/socialnetwork"
+
+run/chat:
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec -T chat sh -c "go run ./cmd/chat"
+
+debug/socialnetwork:
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "dlv debug --headless --listen=:2345 --api-version=2 --build-flags='-buildvcs=false' ./cmd/socialnetwork"
+
+debug/chat:
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec chat sh -c "dlv debug --headless --listen=:2345 --api-version=2 --build-flags='-buildvcs=false' ./cmd/chat"
+
+logs/socialnetwork:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100 app
+
+logs/chat:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100 chat
+
+shell/socialnetwork:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app bash
+
+shell/chat:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec chat bash
+
+shell/citus:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec citus-coordinator psql -U root -d dialogs
 
 fixture:
-	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go run ./cmd/socialnetwork --fixtures ./fixtures"	
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go run ./cmd/socialnetwork --fixtures ./fixtures"
 
 migration:
 	@read -p "Migration name: " migration; \
-		docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "/migrate_wr.sh create -ext sql -dir /app/migrations $$migration"
+		docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "/migrate_wr.sh create -ext sql -dir /app/migrations/app $$migration"
+
+migrate/citus:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec chat sh -c "/migrate_wr.sh up"
 
 test:
-	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./internal/..."	
-	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./internal/..."	
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./internal/..."
 
 logs:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) logs -f --tail 100
 
 test/e2e:
-	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./e2e/..."		
-	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./e2e/..."		
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "go test ./e2e/..."
 
 debug:
-	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "dlv debug --headless --listen=:2345 ./cmd/socialnetwork/main.go"	
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "dlv debug --headless --listen=:2345 --api-version=2 --build-flags='-buildvcs=false' ./cmd/socialnetwork"
 
 shell:
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app bash	
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app bash
 
 
-generate/api:
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "go generate ./..."
+generate/api: generate/api/socialnetwork generate/api/chat
+
+generate/api/socialnetwork:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "go generate ./docs/gen.go"
+
+generate/api/chat:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "go generate ./docs/gen.chat.go"
 
 generate/mocks:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) exec app sh -c "rm -rf ./internal/mocks/ && ./bin/mockery --all"

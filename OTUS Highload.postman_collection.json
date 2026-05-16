@@ -300,6 +300,68 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Dialog",
+			"item": [
+				{
+					"name": "/dialog/{user_id}/send",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"text\": \"Привет!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{chatURL}}/dialog/{{dialogUserId}}/send",
+							"host": ["{{chatURL}}"],
+							"path": ["dialog", "{{dialogUserId}}", "send"]
+						},
+						"description": "Отправить сообщение пользователю. dialogUserId — UUID получателя."
+					},
+					"response": []
+				},
+				{
+					"name": "/dialog/{user_id}/list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{chatURL}}/dialog/{{dialogUserId}}/list",
+							"host": ["{{chatURL}}"],
+							"path": ["dialog", "{{dialogUserId}}", "list"]
+						},
+						"description": "Получить историю диалога с пользователем. dialogUserId — UUID собеседника."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -341,6 +403,16 @@
 		},
 		{
 			"key": "postId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "chatURL",
+			"value": "http://localhost:8001",
+			"type": "default"
+		},
+		{
+			"key": "dialogUserId",
 			"value": "",
 			"type": "default"
 		}

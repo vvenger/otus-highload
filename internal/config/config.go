@@ -94,7 +94,6 @@ func newViperInstance() *viper.Viper {
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	// APP.
-	v.SetDefault("app.name", "app")
 	v.SetDefault("app.shutdown_timeout_sec", 5)
 	v.SetDefault("app.token_expire_sec", 1440)
 	v.SetDefault("app.web_port", 8000)
