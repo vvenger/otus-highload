@@ -12,6 +12,7 @@ func HttpService() fx.Option {
 		fx.Provide(
 			fx.Annotate(web.NewHttpService,
 				fx.As(new(http.Handler)),
+				fx.ResultTags(`name:"http_server"`),
 			),
 		),
 	)

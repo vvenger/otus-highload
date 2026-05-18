@@ -16,12 +16,14 @@ import (
 
 //nolint:nilerr
 func (s *handler) LoginPost(ctx context.Context, req api.OptLoginPostReq) (api.LoginPostRes, error) {
-	login := string(req.Value.GetID())
+	rawLogin := string(req.Value.GetID())
 	pass := req.Value.GetPassword()
 
-	if _, err := uuid.Parse(login); err != nil {
+	parsedID, err := uuid.Parse(rawLogin)
+	if err != nil {
 		return &api.LoginPostNotFound{}, nil
 	}
+	login := parsedID.String()
 
 	if err := s.user.Login(ctx, login, pass); err != nil {
 		if errors.Is(err, model.ErrNotFound) {

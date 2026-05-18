@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	_ feed.FeedUpdater       = (*feed.FeedService)(nil)
-	_ friend.FeedInvalidator = (*feed.FeedService)(nil)
+	_ friend.FeedInvalidator = (*feed.FeedCache)(nil)
+	_ feed.FeedManager       = (*feed.FeedCache)(nil)
 	_ web.FeedService        = (*feed.FeedService)(nil)
 )
 
@@ -19,9 +19,11 @@ func Feed() fx.Option {
 	return fx.Module("feed",
 		fx.Provide(
 			feed.NewWorker,
-			fx.Annotate(feed.NewFeedService,
-				fx.As(new(feed.FeedUpdater)),
+			fx.Annotate(feed.NewFeedCache,
+				fx.As(new(feed.FeedManager)),
 				fx.As(new(friend.FeedInvalidator)),
+			),
+			fx.Annotate(feed.NewFeedService,
 				fx.As(new(web.FeedService)),
 			),
 		),

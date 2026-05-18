@@ -15,28 +15,34 @@ up:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d
 
 up/socialnetwork:
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d app postgres redis adminer
-
-up/chat:
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d chat citus-coordinator citus-worker1 citus-worker2
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up --build -d app postgres redis adminer nats
 
 down:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) down -v --remove-orphans
 
 down/socialnetwork:
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop app postgres redis adminer
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop app postgres redis adminer nats
 
 down/chat:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop chat citus-coordinator citus-worker1 citus-worker2
 
 run:
-	@$(MAKE) -j2 run/socialnetwork run/chat
+	@$(MAKE) -j2 run/socialnetwork run/wsnotifier
 
 run/socialnetwork:
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec -T app sh -c "go run ./cmd/socialnetwork"
 
 run/chat:
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec -T chat sh -c "go run ./cmd/chat"
+
+run/wsnotifier:
+	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec -T wsnotifier sh -c "go run ./cmd/wsnotifier"
+
+up/example:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) up -d example
+
+down/example:
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop example
 
 debug/socialnetwork:
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec app sh -c "dlv debug --headless --listen=:2345 --api-version=2 --build-flags='-buildvcs=false' ./cmd/socialnetwork"

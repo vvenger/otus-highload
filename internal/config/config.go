@@ -13,6 +13,7 @@ type Config struct {
 	Log   LogConfig   `mapstructure:"log"`
 	DB    DBConfig    `mapstructure:"db"`
 	Redis RedisConfig `mapstructure:"redis"`
+	Nats  NatsConfig  `mapstructure:"nats"`
 	Otlp  OtlpConfig  `mapstructure:"otlp"`
 }
 
@@ -52,6 +53,11 @@ type DBConfig struct {
 }
 
 type RedisConfig struct {
+	Host string `mapstructure:"host"`
+	Port int    `mapstructure:"port"`
+}
+
+type NatsConfig struct {
 	Host string `mapstructure:"host"`
 	Port int    `mapstructure:"port"`
 }

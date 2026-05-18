@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	nats "github.com/nats-io/nats.go"
 	"github.com/redis/go-redis/v9"
 	"github.com/vvenger/otus-highload/internal/config"
 	"github.com/vvenger/otus-highload/internal/pkg/jwt"
@@ -52,6 +53,23 @@ func DBModule() fx.Option {
 	)
 
 	return opt
+}
+
+func NatsModule() fx.Option {
+	return fx.Module("nats",
+		fx.Provide(
+			NewNats,
+		),
+		fx.Invoke(func(lc fx.Lifecycle, nc *nats.Conn) {
+			lc.Append(fx.Hook{
+				OnStop: func(_ context.Context) error {
+					nc.Drain() //nolint:errcheck
+					nc.Close()
+					return nil
+				},
+			})
+		}),
+	)
 }
 
 func RedisModule() fx.Option {

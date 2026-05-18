@@ -18,6 +18,10 @@ type DBParams struct {
 }
 
 func NewDB(params DBParams) (*pgxpool.Pool, error) {
+	if params.Config.DB.Host == "" {
+		return nil, nil
+	}
+
 	c := pgpool.Config{
 		Host:     params.Config.DB.Host,
 		Port:     params.Config.DB.Port,

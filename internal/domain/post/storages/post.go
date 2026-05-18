@@ -132,7 +132,7 @@ func (s *PostStorage) Posts(ctx context.Context, filter model.FeedFilter) ([]mod
 		).
 		From("posts").
 		OrderBy("created_at DESC").
-		Limit(uint64(filter.Limit)).
+		Limit(uint64(filter.Limit)). //nolint:gosec
 		PlaceholderFormat(squirrel.Dollar)
 
 	if len(filter.AuthorIDs) != 0 {
@@ -140,7 +140,7 @@ func (s *PostStorage) Posts(ctx context.Context, filter model.FeedFilter) ([]mod
 	}
 
 	if filter.Offset != 0 {
-		sq = sq.Offset(uint64(filter.Offset))
+		sq = sq.Offset(uint64(filter.Offset)) //nolint:gosec
 	}
 
 	sql, args, err := sq.ToSql()

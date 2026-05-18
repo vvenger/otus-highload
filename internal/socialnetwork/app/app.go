@@ -28,6 +28,7 @@ func AppModules() []fx.Option {
 	}
 }
 
+//nolint:wrapcheck
 func Populate(targets ...interface{}) (stop func(context.Context), err error) {
 	return app.PopulateWith(nil, AppModules(), targets...)
 }

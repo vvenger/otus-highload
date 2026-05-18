@@ -19,6 +19,7 @@ func AppModules() []fx.Option {
 		LoggerModule(),
 		DBModule(),
 		RedisModule(),
+		NatsModule(),
 		WebModule(),
 		SystemModule(),
 	}

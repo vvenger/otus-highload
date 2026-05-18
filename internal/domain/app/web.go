@@ -35,7 +35,7 @@ type WebServerParams struct {
 	Config         *config.Config
 	Logger         *zap.Logger
 	TracerProvider trace.TracerProvider
-	WebService     http.Handler
+	WebService     http.Handler `name:"http_server"`
 }
 
 func NewWebServer(p WebServerParams) *WebServer {

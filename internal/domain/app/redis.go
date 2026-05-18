@@ -14,6 +14,10 @@ type RedisParams struct {
 }
 
 func NewRedis(p RedisParams) *redis.Client {
+	if p.Config.Redis.Host == "" {
+		return nil
+	}
+
 	return redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d", p.Config.Redis.Host, p.Config.Redis.Port),
 	})

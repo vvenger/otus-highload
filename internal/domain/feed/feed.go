@@ -24,19 +24,19 @@ type cachePost struct {
 	CreatedAt string `json:"created_at"`
 }
 
-type RedisFeedCache struct {
+type FeedCache struct {
 	rdb *redis.Client
 }
 
-func NewRedisFeedCache(rdb *redis.Client) *RedisFeedCache {
-	return &RedisFeedCache{rdb: rdb}
+func NewFeedCache(rdb *redis.Client) *FeedCache {
+	return &FeedCache{rdb: rdb}
 }
 
 func feedKey(userID uuid.UUID) string {
 	return feedKeyPrefix + userID.String()
 }
 
-func (c *RedisFeedCache) GetFeed(ctx context.Context, filter model.FeedFilter) ([]model.Post, error) {
+func (c *FeedCache) GetFeed(ctx context.Context, filter model.FeedFilter) ([]model.Post, error) {
 	key := feedKey(filter.UserID)
 
 	exists, err := c.rdb.Exists(ctx, key).Result()
@@ -74,7 +74,7 @@ func (c *RedisFeedCache) GetFeed(ctx context.Context, filter model.FeedFilter) (
 	return posts, nil
 }
 
-func (c *RedisFeedCache) SetFeed(ctx context.Context, userID uuid.UUID, posts []model.Post) error {
+func (c *FeedCache) SetFeed(ctx context.Context, userID uuid.UUID, posts []model.Post) error {
 	key := feedKey(userID)
 
 	pipe := c.rdb.Pipeline()
@@ -102,7 +102,7 @@ func (c *RedisFeedCache) SetFeed(ctx context.Context, userID uuid.UUID, posts []
 	return nil
 }
 
-func (c *RedisFeedCache) PushPost(ctx context.Context, userID uuid.UUID, post model.Post) error {
+func (c *FeedCache) PushPost(ctx context.Context, userID uuid.UUID, post model.Post) error {
 	key := feedKey(userID)
 
 	data, err := json.Marshal(toCachePost(post))
@@ -121,7 +121,7 @@ func (c *RedisFeedCache) PushPost(ctx context.Context, userID uuid.UUID, post mo
 	return nil
 }
 
-func (c *RedisFeedCache) InvalidateFeed(ctx context.Context, userID uuid.UUID) error {
+func (c *FeedCache) InvalidateFeed(ctx context.Context, userID uuid.UUID) error {
 	if err := c.rdb.Del(ctx, feedKey(userID)).Err(); err != nil {
 		return fmt.Errorf("could not invalidate feed cache: %w", err)
 	}

@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/redis/go-redis/v9"
 	model "github.com/vvenger/otus-highload/internal/domain/post/model"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -16,22 +15,29 @@ type PostSvc interface {
 	Posts(ctx context.Context, filter model.FeedFilter) ([]model.Post, error)
 }
 
+type FeedManager interface {
+	GetFeed(ctx context.Context, filter model.FeedFilter) ([]model.Post, error)
+	SetFeed(ctx context.Context, userID uuid.UUID, posts []model.Post) error
+	PushPost(ctx context.Context, userID uuid.UUID, post model.Post) error
+	InvalidateFeed(ctx context.Context, userID uuid.UUID) error
+}
+
 type FeedServiceParams struct {
 	fx.In
-	Redis  *redis.Client
 	Logger *zap.Logger
 	Posts  PostSvc
+	Feed   FeedManager
 }
 
 type FeedService struct {
-	cache  *RedisFeedCache
+	cache  FeedManager
 	logger *zap.Logger
 	posts  PostSvc
 }
 
 func NewFeedService(p FeedServiceParams) *FeedService {
 	return &FeedService{
-		cache:  NewRedisFeedCache(p.Redis),
+		cache:  p.Feed,
 		logger: p.Logger.Named("feed"),
 		posts:  p.Posts,
 	}
@@ -75,14 +81,4 @@ func (s *FeedService) GetFeed(ctx context.Context, filter model.FeedFilter) ([]m
 	}
 
 	return dbPosts[offset:min(offset+filter.Limit, len(dbPosts))], nil
-}
-
-// PushPost добавляет пост в кэш ленты пользователя (вызывается воркером).
-func (s *FeedService) PushPost(ctx context.Context, userID uuid.UUID, post model.Post) error {
-	return s.cache.PushPost(ctx, userID, post)
-}
-
-// InvalidateFeed инвалидирует кэш ленты пользователя.
-func (s *FeedService) InvalidateFeed(ctx context.Context, userID uuid.UUID) error {
-	return s.cache.InvalidateFeed(ctx, userID)
 }
