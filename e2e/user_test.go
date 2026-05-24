@@ -8,10 +8,10 @@ import (
 	httpexpect "github.com/gavv/httpexpect/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/stretchr/testify/suite"
-	"github.com/vvenger/otus-highload/internal/app"
-	model "github.com/vvenger/otus-highload/internal/user/model"
-	user "github.com/vvenger/otus-highload/internal/user/services"
-	"github.com/vvenger/otus-highload/internal/web"
+	"github.com/vvenger/otus-highload/internal/socialnetwork/app"
+	model "github.com/vvenger/otus-highload/internal/domain/user/model"
+	user "github.com/vvenger/otus-highload/internal/domain/user/services"
+	"github.com/vvenger/otus-highload/internal/socialnetwork/web"
 )
 
 type UserSuite struct {

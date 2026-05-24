@@ -13,6 +13,7 @@ type Config struct {
 	Log   LogConfig   `mapstructure:"log"`
 	DB    DBConfig    `mapstructure:"db"`
 	Redis RedisConfig `mapstructure:"redis"`
+	Nats  NatsConfig  `mapstructure:"nats"`
 	Otlp  OtlpConfig  `mapstructure:"otlp"`
 }
 
@@ -56,6 +57,11 @@ type RedisConfig struct {
 	Port int    `mapstructure:"port"`
 }
 
+type NatsConfig struct {
+	Host string `mapstructure:"host"`
+	Port int    `mapstructure:"port"`
+}
+
 type OtlpConfig struct {
 	MetricsPort int    `mapstructure:"metrics_port"`
 	TracesURL   string `mapstructure:"traces_url"`
@@ -94,7 +100,6 @@ func newViperInstance() *viper.Viper {
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	// APP.
-	v.SetDefault("app.name", "app")
 	v.SetDefault("app.shutdown_timeout_sec", 5)
 	v.SetDefault("app.token_expire_sec", 1440)
 	v.SetDefault("app.web_port", 8000)

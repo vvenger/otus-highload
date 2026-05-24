@@ -1,0 +1,28 @@
+app:
+  name: chat
+  shutdown_timeout_sec: 5
+  web:
+    port: 8001
+    read_timeout_sec: 5
+    write_timeout_sec: 30
+    retry_after_sec: 5
+  token:
+    secret: secret
+    expire_sec: 43200
+
+log:
+  level: debug
+  format: console
+
+db:
+  host: citus-coordinator
+  port: 5433
+  database: dialogs
+  user: root
+  password: root
+  exec_mode: MODE_SIMPLE
+
+otlp:
+  metrics_port: 4319
+  traces_url: http://localhost:4317
+  traces_enabled: false

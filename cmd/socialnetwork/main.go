@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/vvenger/otus-highload/internal/app"
+	"github.com/vvenger/otus-highload/internal/socialnetwork/app"
 	"github.com/vvenger/otus-highload/internal/config"
 )
 
