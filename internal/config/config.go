@@ -9,12 +9,13 @@ import (
 )
 
 type Config struct {
-	App   AppConfig   `mapstructure:"app"`
-	Log   LogConfig   `mapstructure:"log"`
-	DB    DBConfig    `mapstructure:"db"`
-	Redis RedisConfig `mapstructure:"redis"`
-	Nats  NatsConfig  `mapstructure:"nats"`
-	Otlp  OtlpConfig  `mapstructure:"otlp"`
+	App       AppConfig       `mapstructure:"app"`
+	Log       LogConfig       `mapstructure:"log"`
+	DB        DBConfig        `mapstructure:"db"`
+	Redis     RedisConfig     `mapstructure:"redis"`
+	Nats      NatsConfig      `mapstructure:"nats"`
+	Otlp      OtlpConfig      `mapstructure:"otlp"`
+	Tarantool TarantoolConfig `mapstructure:"tarantool"`
 }
 
 type AppConfig struct {
@@ -66,6 +67,11 @@ type OtlpConfig struct {
 	MetricsPort int    `mapstructure:"metrics_port"`
 	TracesURL   string `mapstructure:"traces_url"`
 	Enabled     bool   `mapstructure:"traces_enabled"`
+}
+
+type TarantoolConfig struct {
+	Host string `mapstructure:"host"`
+	Port int    `mapstructure:"port"`
 }
 
 func New() (*Config, error) {

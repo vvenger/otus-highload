@@ -24,10 +24,10 @@ down/socialnetwork:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop app postgres redis adminer nats
 
 down/chat:
-	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop chat citus-coordinator citus-worker1 citus-worker2
+	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop chat tarantool
 
 run:
-	@$(MAKE) -j2 run/socialnetwork run/wsnotifier
+	@$(MAKE) -j3 run/socialnetwork run/chat run/wsnotifier
 
 run/socialnetwork:
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec -T app sh -c "go run ./cmd/socialnetwork"

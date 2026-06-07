@@ -82,29 +82,13 @@ services:
     environment:
       - ADMINER_DEFAULT_SERVER=postgres
 
-  citus-worker1:
-    image: citusdata/citus:13.0
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: dialogs
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root -d dialogs"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-  citus-worker2:
-    image: citusdata/citus:13.0
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: dialogs
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root -d dialogs"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+  tarantool:
+    image: tarantool/tarantool:2.11
+    command: tarantool /opt/tarantool/app.lua
+    ports:
+      - "3301:3301"
+    volumes:
+      - ./tarantool/init.lua:/opt/tarantool/app.lua
 
   chat:
     build:
@@ -117,31 +101,12 @@ services:
     environment:
       ENVIRONMENT: dev
       CONFIG_PATH: /app/cmd/chat
-      DIALOG_DB_HOST: citus-coordinator
-      DIALOG_DB_PORT: 5432
-      DIALOG_DB_NAME: dialogs
-      DIALOG_DB_USER: root
-      DIALOG_DB_PASSWORD: root
+      TARANTOOL_HOST: tarantool
+      TARANTOOL_PORT: 3301
       TZ: Europe/Moscow
     depends_on:
-      citus-coordinator:
-        condition: service_started
+      - tarantool
 
-  citus-coordinator:
-    image: citusdata/citus:13.0
-    ports:
-      - 5433:5432
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: dialogs
-    volumes:
-      - ./citus/init.sql:/docker-entrypoint-initdb.d/10_init.sql
-    depends_on:
-      citus-worker1:
-        condition: service_healthy
-      citus-worker2:
-        condition: service_healthy
 
   # pgadmin:
   #   image: dpage/pgadmin4:latest

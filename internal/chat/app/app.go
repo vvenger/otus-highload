@@ -19,6 +19,7 @@ func NewApp() *fx.App {
 
 func AppModules() []fx.Option {
 	return []fx.Option{
+		TarantoolModule(),
 		module.HttpService(),
 		//
 		module.Dialog(),
@@ -38,3 +39,5 @@ func PopulateWith(option fx.Option, targets ...interface{}) (stop func(context.C
 func LoadFixture(dir string) {
 	app.LoadFixture(AppModules(), dir)
 }
+
+// TarantoolModule(),

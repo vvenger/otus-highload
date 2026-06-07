@@ -1,48 +1,61 @@
-# Homework 6: Очереди и отложенное выполнение
+# Homework 7: In-Memory СУБД (Tarantool) для диалогов
+
+## Обзор
+
+Перенос хранения диалогов из распределённой SQL-БД (Citus) в In-Memory СУБД Tarantool.
+Логика операций `Send` / `List` реализована в виде Lua UDF в Tarantool — Go-сервис вызывает только именованные функции через драйвер.
+Lua script - `docker/tarantool/init.lua`
 
 ## Архитектура
 
-Реализована асинхронная доставка новых постов подписчикам через очередь сообщений NATS JetStream. Создание поста возвращает ответ немедленно, а fanout по подписчикам выполняется отложенно двумя независимыми воркерами. Для push-уведомлений в браузер введён отдельный сервис `wsnotifier`.
-
-### Флоу
-
 ```
-POST /post/create
-  → PostService.Create() → PostgreSQL
-  → JetStream.Publish("feed.fanout")  - pull очередь
-        ↓                            ↓
-    feed-cache                  post-notifier 
-        ↓                            ↓
-      Redis                Core NATS Publish("ws.feed.<userID>")
-                                 (pub/sub)
-                                     ↓
-                                  WebSocket
+chat (порт 8001)
+  → conn.Call("dialog_send", ...) → Tarantool
+  → conn.Call("dialog_list", ...) → Tarantool
+                                       ↓
+                                  space messages
+                                  index: dialog (by dialog_id)
 ```
 
-Каждый инстанс wsnotifier подписан только на пользователей своих активных WebSocket-соединений — горизонтальное масштабирование возможно без дополнительной координации.
+## Результаты нагрузочного тестирования
 
-### Очередь и воркеры
+Тест: `POST /dialog/{user_id}/send`, 10 потоков, 30 сек.
 
-Очередь построена на **NATS JetStream** — два независимых durable pull-консьюмера читают каждый fanout-батч параллельно (сообщение из 100 друзей). Далее один воркер обновляет в **Redis** кэш ленты, другой воркер публикует в **Core NATS** сообщение для каждого подписчика (pub/sub).
+### До: Citus (PostgreSQL шардирование)
 
-| Консьюмер       | Сервис        | Что делает                                                      |
-| --------------- | ------------- | --------------------------------------------------------------- |
-| `feed-cache`    | socialnetwork | Пушит пост в Redis-кэш ленты каждого подписчика                 |
-| `post-notifier` | wsnotifier    | Роутит событие через Core NATS на открытые WebSocket-соединения |
+| Метрика  | Значение |
+| -------- | -------- |
+| Requests | 132 343  |
+| RPS      | 4 489    |
+| Avg      | 1 ms     |
+| p50      | 2 ms     |
+| p95      | 3 ms     |
+| p99      | 5 ms     |
+| Max      | 58 ms    |
+| Errors   | 0        |
 
+### После: Tarantool
 
-Автор поста включается в `follower_ids`, чтобы видеть свой пост в реальном времени.
+| Метрика  | Значение |
+| -------- | -------- |
+| Requests | 209 642  |
+| RPS      | 6 981    |
+| Avg      | 1 ms     |
+| Max      | 250 ms   |
+| Errors   | 0        |
 
-## Инфраструктура
+### Сравнение
 
-| Сервис     | Описание                            | Порт |
-| ---------- | ----------------------------------- | ---- |
-| app        | socialnetwork (Go)                  | 8000 |
-| wsnotifier | WebSocket-сервер + NATS-роутер (Go) | 8002 |
-| nats       | NATS 2.10 с JetStream               | 4222 |
-| example    | nginx со статическим HTML-клиентом  | 8100 |
+| Метрика | Citus  | Tarantool | Δ    |
+| ------- | ------ | --------- | ---- |
+| RPS     | 4 407  | 6 981     | +58% |
+| Avg     | 2 ms   | 1 ms      | -50% |
+| Max     | 294 ms | 250 ms    | -15% |
+| Errors  | 0      | 0         | —    |
 
-## Как тестировать
+---
+
+## Как воспроизвести результаты
 
 ### 1. Поднять окружение
 
@@ -50,39 +63,39 @@ POST /post/create
 make up
 ```
 
-### 2. Запустить приложения
+### 2. Загрузить фикстуры
 
 ```bash
-make run     
+make fixture
 ```
 
-### 3. Тестовые данные
-
-В корне проекта postman коллекция. Зарегистрировать несколько пользователей и подружить их.
-
-#### Проверка через browser
-
-```
-http://localhost:8100/feed.html
-```
-
-Ввести User ID и пароль. После входа автоматически устанавливается WebSocket-соединение.
-
-#### Проверка через websocat
+### 3. Запустить приложения
 
 ```bash
-# Получить токен
-TOKEN=$(curl -s -X POST http://localhost:8000/login \
-  -H 'Content-Type: application/json' \
-  -d '{"id":"<user_id>","password":"<password>"}' | jq -r '.token')
-
-# Подписаться на ленту пользователя
-TOKEN="<jwt-token>"
-tail -f /dev/null | websocat "ws://localhost:8002/post/feed/posted" \
-  -H "Authorization: Bearer $TOKEN"
+make run
 ```
 
-### 4. Создать пост
+### 4. Сгенерировать тестовых пользователей
 
-Через postman создать пост. Он должен появиться в браузере или в терминале через ≤ 5 секунд (интервал JetStream fetch).
+```bash
+bash jmeter/prepare-data.sh
+```
+
+### 5. Запустить нагрузочный тест (Tarantool)
+
+```bash
+bash jmeter/run-test.sh after
+```
+
+### Как получить результат Citus
+
+Для воспроизведения результата с шардированием, необходимо переключиться на ветку [homework5](https://github.com/vvenger/otus-highload/tree/homework5) (шардирование через Citus) и запустить тот же тест. JMeter-сценарий идентичен.
+
+```bash
+make down
+git checkout homework5
+make up && make fixture 
+make run
+bash jmeter/run-test.sh before
+```
 

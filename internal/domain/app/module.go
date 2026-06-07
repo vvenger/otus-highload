@@ -43,6 +43,9 @@ func DBModule() fx.Option {
 			NewFixture,
 		),
 		fx.Invoke(func(lc fx.Lifecycle, db *pgxpool.Pool) {
+			if db == nil {
+				return
+			}
 			lc.Append(fx.Hook{
 				OnStop: func(ctx context.Context) error {
 					db.Close()

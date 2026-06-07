@@ -3,48 +3,34 @@ package dialog
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/tarantool/go-tarantool/v2"
+
 	model "github.com/vvenger/otus-highload/internal/domain/dialog/model"
 )
 
 type MessageStorage struct {
-	db *pgxpool.Pool
+	conn *tarantool.Connection
 }
 
-func NewMessageStorage(db *pgxpool.Pool) *MessageStorage {
-	return &MessageStorage{
-		db: db,
-	}
+func NewMessageStorage(conn *tarantool.Connection) *MessageStorage {
+	return &MessageStorage{conn: conn}
 }
 
 func (s *MessageStorage) Send(ctx context.Context, req model.SendMessage) error {
 	dialogID := model.DialogID(req.FromUserID, req.ToUserID)
 
-	sql := `
-		INSERT INTO messages (
-			dialog_id, 
-			from_user_id, 
-			to_user_id, 
-			text
-		) 
-		VALUES (
-			@dialog_id, 
-			@from_user_id, 
-			@to_user_id, 
-			@text
-		)`
-
-	args := pgx.NamedArgs{
-		"dialog_id":    dialogID,
-		"from_user_id": req.FromUserID,
-		"to_user_id":   req.ToUserID,
-		"text":         req.Text,
+	args := []any{
+		dialogID.String(),
+		req.FromUserID.String(),
+		req.ToUserID.String(),
+		req.Text,
 	}
 
-	if _, err := s.db.Exec(ctx, sql, args); err != nil {
+	fut := s.conn.Do(tarantool.NewCallRequest("dialog_send").Args(args).Context(ctx))
+	if _, err := fut.Get(); err != nil {
 		return fmt.Errorf("could not send message: %w", err)
 	}
 
@@ -54,45 +40,73 @@ func (s *MessageStorage) Send(ctx context.Context, req model.SendMessage) error 
 func (s *MessageStorage) List(ctx context.Context, fromUserID, toUserID uuid.UUID) ([]model.Message, error) {
 	dialogID := model.DialogID(fromUserID, toUserID)
 
-	sql := `
-		SELECT 
-			id, 
-			dialog_id, 
-			from_user_id, 
-			to_user_id, 
-			text, 
-			created_at
-		FROM 
-			messages
-		WHERE 
-			dialog_id = $1
-		ORDER BY created_at`
+	args := []any{dialogID.String()}
 
-	rows, err := s.db.Query(ctx, sql, dialogID)
+	fut := s.conn.Do(tarantool.NewCallRequest("dialog_list").Args(args).Context(ctx))
+	data, err := fut.Get()
 	if err != nil {
 		return nil, fmt.Errorf("could not list messages: %w", err)
 	}
-	defer rows.Close()
 
-	var messages []model.Message
-	for rows.Next() {
-		var m model.Message
-		if err := rows.Scan(
-			&m.ID,
-			&m.DialogID,
-			&m.FromUserID,
-			&m.ToUserID,
-			&m.Text,
-			&m.CreatedAt,
-		); err != nil {
-			return nil, fmt.Errorf("could not scan row: %w", err)
+	if len(data) != 1 {
+		return nil, fmt.Errorf("messages list: %w", model.ErrUnexpectedResponse)
+	}
+
+	rows, ok := data[0].([]any)
+	if !ok || len(rows) == 0 {
+		return nil, nil
+	}
+
+	messages := make([]model.Message, 0, len(rows))
+	for _, row := range rows {
+		m, err := decodeMessage(row)
+		if err != nil {
+			return nil, fmt.Errorf("could not decode message: %w", err)
 		}
+
 		messages = append(messages, m)
 	}
 
-	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("could not iterate rows: %w", err)
+	return messages, nil
+}
+
+func decodeMessage(row any) (model.Message, error) {
+	const messageFields = 6
+
+	tuple, ok := row.([]any)
+	if !ok || len(tuple) < messageFields {
+		return model.Message{}, fmt.Errorf("invalid message tuple: %w", model.ErrUnexpectedResponse)
 	}
 
-	return messages, nil
+	id, err := uuid.Parse(tuple[0].(string))
+	if err != nil {
+		return model.Message{}, fmt.Errorf("invalid id: %w", err)
+	}
+
+	dialogID, err := uuid.Parse(tuple[1].(string))
+	if err != nil {
+		return model.Message{}, fmt.Errorf("invalid dialog_id: %w", err)
+	}
+
+	fromUserID, err := uuid.Parse(tuple[2].(string))
+	if err != nil {
+		return model.Message{}, fmt.Errorf("invalid from_user_id: %w", err)
+	}
+
+	toUserID, err := uuid.Parse(tuple[3].(string))
+	if err != nil {
+		return model.Message{}, fmt.Errorf("invalid to_user_id: %w", err)
+	}
+
+	text, _ := tuple[4].(string)
+	createdAtSec, _ := tuple[5].(float64)
+
+	return model.Message{
+		ID:         id,
+		DialogID:   dialogID,
+		FromUserID: fromUserID,
+		ToUserID:   toUserID,
+		Text:       text,
+		CreatedAt:  time.Unix(int64(createdAtSec), 0),
+	}, nil
 }

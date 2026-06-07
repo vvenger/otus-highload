@@ -14,17 +14,11 @@ log:
   level: info
   format: json
 
-db:
-  host: citus-coordinator
-  port: 5432
-  database: dialogs
-  user: root
-  password: root
-  max_conns: 50
-  min_conns: 5
-  exec_mode: MODE_SIMPLE
-
 otlp:
   metrics_port: 4319
   traces_url: http://localhost:4317
   traces_enabled: false
+
+tarantool:
+  host: tarantool
+  port: 3301

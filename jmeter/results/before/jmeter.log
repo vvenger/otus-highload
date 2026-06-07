@@ -1,0 +1,111 @@
+2026-05-24 21:09:38,680 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2026-05-24 21:09:38,699 INFO o.a.j.JMeter: Loading user properties from: /home/user/apache-jmeter-5.6.3/bin/user.properties
+2026-05-24 21:09:38,701 INFO o.a.j.JMeter: Loading system properties from: /home/user/apache-jmeter-5.6.3/bin/system.properties
+2026-05-24 21:09:38,702 INFO o.a.j.JMeter: Setting JMeter property: THREADS=10
+2026-05-24 21:09:38,702 INFO o.a.j.JMeter: Setting JMeter property: DURATION=30
+2026-05-24 21:09:38,702 INFO o.a.j.JMeter: Setting JMeter property: SN_HOST=localhost
+2026-05-24 21:09:38,702 INFO o.a.j.JMeter: Setting JMeter property: SN_PORT=8000
+2026-05-24 21:09:38,702 INFO o.a.j.JMeter: Setting JMeter property: CHAT_HOST=localhost
+2026-05-24 21:09:38,702 INFO o.a.j.JMeter: Setting JMeter property: CHAT_PORT=8001
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: Version 5.6.3
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: java.version=21.0.10
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: os.name=Linux
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: os.arch=amd64
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: os.version=6.8.0-117-generic
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: file.encoding=UTF-8
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: java.awt.headless=true
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: Max memory     =1073741824
+2026-05-24 21:09:38,710 INFO o.a.j.JMeter: Available Processors =6
+2026-05-24 21:09:38,721 INFO o.a.j.JMeter: Default Locale=English (EN)
+2026-05-24 21:09:38,721 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2026-05-24 21:09:38,721 INFO o.a.j.JMeter: JMeterHome=/home/user/apache-jmeter-5.6.3
+2026-05-24 21:09:38,721 INFO o.a.j.JMeter: user.dir  =/home/user/projects/otus-highload
+2026-05-24 21:09:38,721 INFO o.a.j.JMeter: PWD       =/home/user/projects/otus-highload
+2026-05-24 21:09:38,721 INFO o.a.j.JMeter: IP: 127.0.1.1 Name: DUbuntu22-GO FullName: DUbuntu22-GO
+2026-05-24 21:09:38,738 INFO o.a.j.s.FileServer: Default base='/home/user/projects/otus-highload'
+2026-05-24 21:09:38,740 INFO o.a.j.s.FileServer: Set new base='/home/user/projects/otus-highload/jmeter'
+2026-05-24 21:09:38,898 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2026-05-24 21:09:38,923 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2026-05-24 21:09:38,925 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2026-05-24 21:09:38,928 INFO o.a.j.s.SaveService: Loading file: /home/user/projects/otus-highload/jmeter/dialog_load_test.jmx
+2026-05-24 21:09:38,968 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-05-24 21:09:38,968 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-05-24 21:09:38,968 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-05-24 21:09:38,968 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-05-24 21:09:38,968 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2026-05-24 21:09:38,968 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2026-05-24 21:09:38,996 INFO o.a.j.JMeter: Creating summariser <summary>
+2026-05-24 21:09:39,006 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2026-05-24 21:09:39,007 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2026-05-24 21:09:39,007 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2026-05-24 21:09:39,011 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2026-05-24 21:09:39,011 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2026-05-24 21:09:39,082 INFO o.a.j.JMeter: Running test (1779646179082)
+2026-05-24 21:09:39,105 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : Load: 10 senders × 100 recipients
+2026-05-24 21:09:39,105 INFO o.a.j.e.StandardJMeterEngine: Starting 10 threads for group Load: 10 senders × 100 recipients.
+2026-05-24 21:09:39,105 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2026-05-24 21:09:39,105 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=10 ramp-up=5 delayedStart=false
+2026-05-24 21:09:39,114 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2026-05-24 21:09:39,114 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2026-05-24 21:09:39,157 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-1
+2026-05-24 21:09:39,158 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@161482480
+2026-05-24 21:09:39,185 INFO o.a.j.p.h.s.HTTPHCAbstractImpl: Local host = DUbuntu22-GO
+2026-05-24 21:09:39,191 INFO o.a.j.p.h.s.HTTPHC4Impl: HTTP request retry count = 0
+2026-05-24 21:09:39,192 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2026-05-24 21:09:39,192 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to UTF-8
+2026-05-24 21:09:39,192 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2026-05-24 21:09:39,192 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2026-05-24 21:09:39,654 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-2
+2026-05-24 21:09:39,655 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@1617234372
+2026-05-24 21:09:40,153 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-3
+2026-05-24 21:09:40,153 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@881504788
+2026-05-24 21:09:40,654 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-4
+2026-05-24 21:09:40,654 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@1386625793
+2026-05-24 21:09:41,153 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-5
+2026-05-24 21:09:41,153 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@867845483
+2026-05-24 21:09:41,652 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-6
+2026-05-24 21:09:41,653 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@1514224004
+2026-05-24 21:09:42,149 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-7
+2026-05-24 21:09:42,150 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@1892688058
+2026-05-24 21:09:42,649 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-8
+2026-05-24 21:09:42,650 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@1195342068
+2026-05-24 21:09:43,148 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-9
+2026-05-24 21:09:43,149 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@58060530
+2026-05-24 21:09:43,654 INFO o.a.j.t.JMeterThread: Thread started: Load: 10 senders × 100 recipients 1-10
+2026-05-24 21:09:43,655 INFO o.a.j.s.FileServer: Stored: data/dialog_users.csv Alias: data/dialog_users.csv@1266105698
+2026-05-24 21:10:00,011 INFO o.a.j.r.Summariser: summary +  90687 in 00:00:21 = 4335.4/s Avg:     1 Min:     0 Max:   294 Err:     0 (0.00%) Active: 10 Started: 10 Finished: 0
+2026-05-24 21:10:09,107 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-1
+2026-05-24 21:10:09,107 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-1
+2026-05-24 21:10:09,110 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-2
+2026-05-24 21:10:09,110 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-2
+2026-05-24 21:10:09,111 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-3
+2026-05-24 21:10:09,111 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-5
+2026-05-24 21:10:09,111 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-3
+2026-05-24 21:10:09,111 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-5
+2026-05-24 21:10:09,112 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-6
+2026-05-24 21:10:09,112 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-6
+2026-05-24 21:10:09,113 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-7
+2026-05-24 21:10:09,113 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-4
+2026-05-24 21:10:09,113 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-7
+2026-05-24 21:10:09,113 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-4
+2026-05-24 21:10:09,113 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-10
+2026-05-24 21:10:09,113 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-10
+2026-05-24 21:10:09,113 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-8
+2026-05-24 21:10:09,113 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Load: 10 senders × 100 recipients 1-9
+2026-05-24 21:10:09,114 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-9
+2026-05-24 21:10:09,114 INFO o.a.j.t.JMeterThread: Thread finished: Load: 10 senders × 100 recipients 1-8
+2026-05-24 21:10:09,114 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2026-05-24 21:10:09,114 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@1195342068
+2026-05-24 21:10:09,114 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@1266105698
+2026-05-24 21:10:09,115 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@161482480
+2026-05-24 21:10:09,115 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@881504788
+2026-05-24 21:10:09,115 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@1514224004
+2026-05-24 21:10:09,115 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@1386625793
+2026-05-24 21:10:09,115 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@1892688058
+2026-05-24 21:10:09,115 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@58060530
+2026-05-24 21:10:09,115 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@1617234372
+2026-05-24 21:10:09,115 INFO o.a.j.s.FileServer: Close: data/dialog_users.csv@867845483
+2026-05-24 21:10:09,115 INFO o.a.j.r.Summariser: summary +  41676 in 00:00:09 = 4572.2/s Avg:     2 Min:     0 Max:    19 Err:     0 (0.00%) Active: 0 Started: 10 Finished: 10
+2026-05-24 21:10:09,116 INFO o.a.j.r.Summariser: summary = 132363 in 00:00:30 = 4407.3/s Avg:     2 Min:     0 Max:   294 Err:     0 (0.00%)
