@@ -11,22 +11,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	nats "github.com/nats-io/nats.go"
 	"github.com/redis/go-redis/v9"
-	"github.com/vvenger/otus-highload/internal/config"
-	"github.com/vvenger/otus-highload/internal/pkg/jwt"
 	"go.opentelemetry.io/otel/metric"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/fx"
 )
-
-func ConfigModule() fx.Option {
-	opt := fx.Module("config",
-		fx.Provide(config.New),
-	)
-
-	return opt
-}
 
 func LoggerModule() fx.Option {
 	opt := fx.Module("logger",
@@ -89,7 +79,7 @@ func WebModule() fx.Option {
 	opt := fx.Module("web",
 		fx.Provide(
 			NewWebServer,
-			jwt.New,
+			NewJWT,
 		),
 		fx.Invoke(func(lc fx.Lifecycle, srv *WebServer) {
 			lc.Append(fx.Hook{

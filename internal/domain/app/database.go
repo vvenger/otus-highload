@@ -13,27 +13,27 @@ import (
 
 type DBParams struct {
 	fx.In
-	Config *config.Config
+	Config config.DBConfig
 	Logger *zap.Logger
 }
 
 func NewDB(params DBParams) (*pgxpool.Pool, error) {
-	if params.Config.DB.Host == "" {
+	if params.Config.Host == "" {
 		return nil, nil
 	}
 
 	c := pgpool.Config{
-		Host:     params.Config.DB.Host,
-		Port:     params.Config.DB.Port,
-		Database: params.Config.DB.Database,
-		User:     params.Config.DB.User,
-		Password: params.Config.DB.Password,
-		MaxConns: params.Config.DB.MaxConns,
-		MinConns: params.Config.DB.MinConns,
+		Host:     params.Config.Host,
+		Port:     params.Config.Port,
+		Database: params.Config.Database,
+		User:     params.Config.User,
+		Password: params.Config.Password,
+		MaxConns: params.Config.MaxConns,
+		MinConns: params.Config.MinConns,
 		Logger:   params.Logger,
 	}
 
-	switch params.Config.DB.QueryMode {
+	switch params.Config.QueryMode {
 	case config.QueryExecModeSimple:
 		c.ExecMode = pgx.QueryExecModeSimpleProtocol
 	case config.QueryExecModeExec:

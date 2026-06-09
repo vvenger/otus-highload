@@ -5,8 +5,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/vvenger/otus-highload/internal/config"
-	"go.uber.org/fx"
 )
 
 type Manager interface {
@@ -15,8 +13,8 @@ type Manager interface {
 }
 
 type JWTParams struct {
-	fx.In
-	Config *config.Config
+	Secret    string
+	ExpMinute int
 }
 
 type managerImp struct {
@@ -26,8 +24,8 @@ type managerImp struct {
 
 func New(p JWTParams) Manager {
 	return &managerImp{
-		secret: p.Config.App.Token.Secret,
-		expire: time.Duration(p.Config.App.Token.Expire) * time.Minute,
+		secret: p.Secret,
+		expire: time.Duration(p.ExpMinute) * time.Minute,
 	}
 }
 

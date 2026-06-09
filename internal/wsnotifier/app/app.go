@@ -3,33 +3,36 @@ package app
 import (
 	"context"
 
-	"github.com/vvenger/otus-highload/internal/domain/app"
+	domainapp "github.com/vvenger/otus-highload/internal/domain/app"
 	"github.com/vvenger/otus-highload/internal/wsnotifier/app/module"
 	"go.uber.org/fx"
 )
 
 func Run() {
-	srv := NewApp()
+	srv := fx.New(AppModules()...)
 	srv.Run()
-}
-
-func NewApp() *fx.App {
-	return app.NewApp(AppModules()...)
 }
 
 func AppModules() []fx.Option {
 	return []fx.Option{
+		domainapp.LoggerModule(),
+		domainapp.NatsModule(),
+		domainapp.WebModule(),
+		domainapp.SystemModule(),
+		//
+		module.Config(),
 		module.HttpService(),
+		//
 		module.Notifier(),
 	}
 }
 
 //nolint:wrapcheck
 func Populate(targets ...interface{}) (stop func(context.Context), err error) {
-	return app.PopulateWith(nil, AppModules(), targets...)
+	return domainapp.PopulateWith(nil, AppModules(), targets...)
 }
 
 func PopulateWith(option fx.Option, targets ...interface{}) (stop func(context.Context), err error) {
-	stop, err = app.PopulateWith(option, AppModules(), targets...)
+	stop, err = domainapp.PopulateWith(option, AppModules(), targets...)
 	return
 }

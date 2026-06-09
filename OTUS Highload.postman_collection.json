@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "05a9a1b6-769f-4543-881f-242634301ec8",
+		"_postman_id": "e07e13a9-212a-4da8-ae3a-d9e608021843",
 		"name": "OTUS Highload",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -14,11 +14,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"var res = pm.response.json();",
-									"if (res) { pm.collectionVariables.set('userId', res); }"
-								]
+									"if (res) { pm.collectionVariables.set('userId', res.user_id); }"
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -36,8 +36,13 @@
 						},
 						"url": {
 							"raw": "{{baseURL}}/user/register",
-							"host": ["{{baseURL}}"],
-							"path": ["user", "register"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"register"
+							]
 						}
 					},
 					"response": []
@@ -70,8 +75,12 @@
 						},
 						"url": {
 							"raw": "{{baseURL}}/login",
-							"host": ["{{baseURL}}"],
-							"path": ["login"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"login"
+							]
 						}
 					},
 					"response": []
@@ -83,8 +92,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseURL}}/user/get/{{userId}}",
-							"host": ["{{baseURL}}"],
-							"path": ["user", "get", "{{userId}}"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"get",
+								"{{userId}}"
+							]
 						}
 					},
 					"response": []
@@ -111,8 +126,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseURL}}/friend/set/{{friendId}}",
-							"host": ["{{baseURL}}"],
-							"path": ["friend", "set", "{{friendId}}"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"friend",
+								"set",
+								"{{friendId}}"
+							]
 						},
 						"description": "Добавить пользователя в друзья. friendId — UUID пользователя которого добавляем."
 					},
@@ -135,8 +156,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseURL}}/friend/delete/{{friendId}}",
-							"host": ["{{baseURL}}"],
-							"path": ["friend", "delete", "{{friendId}}"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"friend",
+								"delete",
+								"{{friendId}}"
+							]
 						},
 						"description": "Удалить пользователя из друзей."
 					},
@@ -185,8 +212,13 @@
 						},
 						"url": {
 							"raw": "{{baseURL}}/post/create",
-							"host": ["{{baseURL}}"],
-							"path": ["post", "create"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"post",
+								"create"
+							]
 						},
 						"description": "Создать пост. Возвращает UUID созданного поста, сохраняется в переменную postId."
 					},
@@ -218,8 +250,13 @@
 						},
 						"url": {
 							"raw": "{{baseURL}}/post/update",
-							"host": ["{{baseURL}}"],
-							"path": ["post", "update"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"post",
+								"update"
+							]
 						},
 						"description": "Обновить текст поста."
 					},
@@ -232,8 +269,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseURL}}/post/get/{{postId}}",
-							"host": ["{{baseURL}}"],
-							"path": ["post", "get", "{{postId}}"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"post",
+								"get",
+								"{{postId}}"
+							]
 						},
 						"description": "Получить пост по ID. Не требует авторизации."
 					},
@@ -256,8 +299,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseURL}}/post/delete/{{postId}}",
-							"host": ["{{baseURL}}"],
-							"path": ["post", "delete", "{{postId}}"]
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"post",
+								"delete",
+								"{{postId}}"
+							]
 						},
 						"description": "Удалить пост по ID."
 					},
@@ -280,8 +329,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseURL}}/post/feed?offset=0&limit=10",
-							"host": ["{{baseURL}}"],
-							"path": ["post", "feed"],
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"post",
+								"feed"
+							],
 							"query": [
 								{
 									"key": "offset",
@@ -318,7 +372,13 @@
 							]
 						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "X-Request-Id",
+								"value": "",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"text\": \"Привет!\"\n}",
@@ -329,9 +389,21 @@
 							}
 						},
 						"url": {
-							"raw": "{{chatURL}}/dialog/{{dialogUserId}}/send",
-							"host": ["{{chatURL}}"],
-							"path": ["dialog", "{{dialogUserId}}", "send"]
+							"raw": "{{dialogBaseURL}}/dialog/:userId/send",
+							"host": [
+								"{{dialogBaseURL}}"
+							],
+							"path": [
+								"dialog",
+								":userId",
+								"send"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
 						},
 						"description": "Отправить сообщение пользователю. dialogUserId — UUID получателя."
 					},
@@ -351,17 +423,36 @@
 							]
 						},
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "X-Request-Id",
+								"value": "",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "{{chatURL}}/dialog/{{dialogUserId}}/list",
-							"host": ["{{chatURL}}"],
-							"path": ["dialog", "{{dialogUserId}}", "list"]
+							"raw": "{{dialogBaseURL}}/dialog/:userId/list",
+							"host": [
+								"{{dialogBaseURL}}"
+							],
+							"path": [
+								"dialog",
+								":userId",
+								"list"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
 						},
 						"description": "Получить историю диалога с пользователем. dialogUserId — UUID собеседника."
 					},
 					"response": []
 				}
-			]
+			],
+			"description": "Сервис диалогов. Сервер выбирается через переменную dialogBaseURL:\n- http://localhost:8001 — напрямую в chat-сервис\n- http://localhost:8000 — через монолит (обратная совместимость)"
 		}
 	],
 	"event": [
@@ -369,14 +460,18 @@
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
-				"exec": [""]
+				"exec": [
+					""
+				]
 			}
 		},
 		{
 			"listen": "test",
 			"script": {
 				"type": "text/javascript",
-				"exec": [""]
+				"exec": [
+					""
+				]
 			}
 		}
 	],
@@ -407,14 +502,15 @@
 			"type": "default"
 		},
 		{
-			"key": "chatURL",
+			"key": "dialogBaseURL",
 			"value": "http://localhost:8001",
 			"type": "default"
 		},
 		{
-			"key": "dialogUserId",
-			"value": "",
-			"type": "default"
+			"key": "dialogBaseURL",
+			"value": "http://localhost:8000",
+			"type": "default",
+			"disabled": true
 		}
 	]
 }

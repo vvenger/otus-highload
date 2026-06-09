@@ -10,15 +10,15 @@ import (
 
 type NatsParams struct {
 	fx.In
-	Config *config.Config
+	Config config.NatsConfig
 }
 
 func NewNats(p NatsParams) (*nats.Conn, nats.JetStreamContext, error) {
-	if p.Config.Nats.Host == "" {
+	if p.Config.Host == "" {
 		return nil, nil, nil
 	}
 
-	url := fmt.Sprintf("nats://%s:%d", p.Config.Nats.Host, p.Config.Nats.Port)
+	url := fmt.Sprintf("nats://%s:%d", p.Config.Host, p.Config.Port)
 
 	nc, err := nats.Connect(url)
 	if err != nil {

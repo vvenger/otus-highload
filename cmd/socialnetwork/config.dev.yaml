@@ -36,3 +36,7 @@ redis:
 nats:
   host: localhost
   port: 4222
+
+chat:
+  url: http://chat:8001
+  timeout_sec: 5

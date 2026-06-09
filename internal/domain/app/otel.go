@@ -26,7 +26,8 @@ var (
 
 type TraceParams struct {
 	fx.In
-	Config *config.Config
+	App  config.AppConfig
+	Otlp config.OtlpConfig
 }
 
 type TracerProvider struct {
@@ -35,16 +36,16 @@ type TracerProvider struct {
 }
 
 func NewTracerProvider(params TraceParams) (*TracerProvider, error) {
-	if !params.Config.Otlp.Enabled {
+	if !params.Otlp.Enabled {
 		return &TracerProvider{
 			TracerProvider:  tracer.NewNoopTracerProvider(),
-			ShutdownTimeout: time.Duration(params.Config.App.Shutdown) * time.Second,
+			ShutdownTimeout: time.Duration(params.App.Shutdown) * time.Second,
 		}, nil
 	}
 
 	p := tracer.Config{
-		URL:      params.Config.Otlp.TracesURL,
-		Service:  params.Config.App.Name,
+		URL:      params.Otlp.TracesURL,
+		Service:  params.App.Name,
 		Version:  BuildVersion,
 		Instance: uuid.New().String(),
 	}
@@ -56,13 +57,13 @@ func NewTracerProvider(params TraceParams) (*TracerProvider, error) {
 
 	return &TracerProvider{
 		TracerProvider:  tp,
-		ShutdownTimeout: time.Duration(params.Config.App.Shutdown) * time.Second,
+		ShutdownTimeout: time.Duration(params.App.Shutdown) * time.Second,
 	}, nil
 }
 
 type MeterParams struct {
 	fx.In
-	Config   *config.Config
+	App      config.AppConfig
 	Registry *promclient.Registry
 }
 
@@ -93,6 +94,6 @@ func NewMeterProvider(p MeterParams) (metric.MeterProvider, error) {
 
 	return &MeterProvider{
 		MeterProvider:   provider,
-		ShutdownTimeout: time.Duration(p.Config.App.Shutdown) * time.Second,
+		ShutdownTimeout: time.Duration(p.App.Shutdown) * time.Second,
 	}, nil
 }

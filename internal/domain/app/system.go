@@ -15,7 +15,8 @@ import (
 
 type SystemParams struct {
 	fx.In
-	Config     *config.Config
+	App        config.AppConfig
+	Otlp       config.OtlpConfig
 	Prometheus *prometheus.Registry
 }
 
@@ -43,9 +44,9 @@ func NewSystemService(p SystemParams) *SystemService {
 	//nolint:gosec
 	return &SystemService{
 		Server: &http.Server{
-			Addr:    fmt.Sprintf(":%d", p.Config.Otlp.MetricsPort),
+			Addr:    fmt.Sprintf(":%d", p.Otlp.MetricsPort),
 			Handler: mux,
 		},
-		ShutdownTimeout: time.Duration(p.Config.App.Shutdown) * time.Second,
+		ShutdownTimeout: time.Duration(p.App.Shutdown) * time.Second,
 	}
 }

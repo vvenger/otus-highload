@@ -1,21 +1,11 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
 	"github.com/spf13/viper"
 )
-
-type Config struct {
-	App   AppConfig   `mapstructure:"app"`
-	Log   LogConfig   `mapstructure:"log"`
-	DB    DBConfig    `mapstructure:"db"`
-	Redis RedisConfig `mapstructure:"redis"`
-	Nats  NatsConfig  `mapstructure:"nats"`
-	Otlp  OtlpConfig  `mapstructure:"otlp"`
-}
 
 type AppConfig struct {
 	Name     string         `mapstructure:"name"`
@@ -68,24 +58,9 @@ type OtlpConfig struct {
 	Enabled     bool   `mapstructure:"traces_enabled"`
 }
 
-func New() (*Config, error) {
-	v := newViperInstance()
-
-	v.AutomaticEnv()
-
-	if err := v.ReadInConfig(); err != nil {
-		return &Config{}, fmt.Errorf("can't read config: %w", err)
-	}
-
-	var cfg Config
-	if err := v.Unmarshal(&cfg); err != nil {
-		return nil, fmt.Errorf("can't unmarshal config: %w", err)
-	}
-
-	return &cfg, nil
-}
-
-func newViperInstance() *viper.Viper {
+// NewViper returns a viper instance pre-configured with path, env, and key replacer.
+// Each service calls this and adds its own defaults before ReadInConfig.
+func NewViper() *viper.Viper {
 	v := viper.New()
 
 	cfgPath := os.Getenv(CmdPath)
@@ -96,25 +71,8 @@ func newViperInstance() *viper.Viper {
 	v.AddConfigPath(cfgPath)
 	v.SetConfigType("yaml")
 	v.SetConfigName("config." + GetEnvironment())
-
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-
-	// APP.
-	v.SetDefault("app.shutdown_timeout_sec", 5)
-	v.SetDefault("app.token_expire_sec", 1440)
-	v.SetDefault("app.web_port", 8000)
-	v.SetDefault("app.web_read_timeout_sec", 5)
-	v.SetDefault("app.web_write_timeout_sec", 5)
-	v.SetDefault("app.retry_after_sec", 5)
-	// Log.
-	v.SetDefault("log.level", "info")
-	v.SetDefault("log.format", "json")
-	// DB.
-	v.SetDefault("db.max_conns", 4)
-	v.SetDefault("db.min_conns", 1)
-	v.SetDefault("db.exec_mode", QueryExecModeSimple)
-	// OTLP.
-	v.SetDefault("otlp.metrics_port", 4318)
+	v.AutomaticEnv()
 
 	return v
 }

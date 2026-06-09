@@ -4,21 +4,23 @@ import (
 	"context"
 
 	"github.com/vvenger/otus-highload/internal/chat/app/module"
-	"github.com/vvenger/otus-highload/internal/domain/app"
+	domainapp "github.com/vvenger/otus-highload/internal/domain/app"
 	"go.uber.org/fx"
 )
 
 func Run() {
-	srv := NewApp()
+	srv := fx.New(AppModules()...)
 	srv.Run()
-}
-
-func NewApp() *fx.App {
-	return app.NewApp(AppModules()...)
 }
 
 func AppModules() []fx.Option {
 	return []fx.Option{
+		domainapp.LoggerModule(),
+		domainapp.DBModule(),
+		domainapp.WebModule(),
+		domainapp.SystemModule(),
+		//
+		module.Config(),
 		module.HttpService(),
 		//
 		module.Dialog(),
@@ -27,14 +29,14 @@ func AppModules() []fx.Option {
 
 //nolint:wrapcheck
 func Populate(targets ...interface{}) (stop func(context.Context), err error) {
-	return app.PopulateWith(nil, AppModules(), targets...)
+	return domainapp.PopulateWith(nil, AppModules(), targets...)
 }
 
 func PopulateWith(option fx.Option, targets ...interface{}) (stop func(context.Context), err error) {
-	stop, err = app.PopulateWith(option, AppModules(), targets...)
+	stop, err = domainapp.PopulateWith(option, AppModules(), targets...)
 	return
 }
 
 func LoadFixture(dir string) {
-	app.LoadFixture(AppModules(), dir)
+	domainapp.LoadFixture(AppModules(), dir)
 }

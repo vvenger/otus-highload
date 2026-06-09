@@ -64,7 +64,7 @@ type ServiceParams struct {
 	PostService    PostService
 	FriendService  FriendService
 	FeedService    FeedService
-	Config         *config.Config
+	Config         config.AppConfig
 }
 
 type HttpService struct {
@@ -78,7 +78,7 @@ func NewHttpService(p ServiceParams) (*HttpService, error) {
 		friend:     p.FriendService,
 		feed:       p.FeedService,
 		sec:        p.JWTService,
-		retryAfter: p.Config.App.Web.RetryAfter,
+		retryAfter: p.Config.Web.RetryAfter,
 	}
 
 	sec := &securityHandler{

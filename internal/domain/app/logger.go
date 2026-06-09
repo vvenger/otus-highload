@@ -12,7 +12,7 @@ import (
 
 type LoggerParams struct {
 	fx.In
-	Config *config.Config
+	Config config.LogConfig
 }
 
 func NewLogger(params LoggerParams) (*zap.Logger, error) {
@@ -23,10 +23,10 @@ func NewLogger(params LoggerParams) (*zap.Logger, error) {
 		loggerConfig = zap.NewDevelopmentConfig()
 	}
 
-	loggerConfig.Encoding = params.Config.Log.Format
+	loggerConfig.Encoding = params.Config.Format
 
-	if params.Config.Log.Level != "" {
-		level, err := zap.ParseAtomicLevel(params.Config.Log.Level)
+	if params.Config.Level != "" {
+		level, err := zap.ParseAtomicLevel(params.Config.Level)
 		if err != nil {
 			return nil, fmt.Errorf("can't parse log level: %w", err)
 		}

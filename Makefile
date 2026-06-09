@@ -27,7 +27,7 @@ down/chat:
 	docker compose -p ${PROJECT_NAME} -f $(COMPOSE_DEV) stop chat citus-coordinator citus-worker1 citus-worker2
 
 run:
-	@$(MAKE) -j2 run/socialnetwork run/wsnotifier
+	@$(MAKE) -j3 run/socialnetwork run/wsnotifier run/chat
 
 run/socialnetwork:
 	docker compose -p ${PROJECT_NAME} -f ${COMPOSE_DEV} exec -T app sh -c "go run ./cmd/socialnetwork"

@@ -7,30 +7,11 @@ import (
 	"go.uber.org/fx"
 )
 
-func NewApp(modules ...fx.Option) *fx.App {
-	modules = append(AppModules(), modules...)
-
-	return fx.New(modules...)
-}
-
-func AppModules() []fx.Option {
-	return []fx.Option{
-		ConfigModule(),
-		LoggerModule(),
-		DBModule(),
-		RedisModule(),
-		NatsModule(),
-		WebModule(),
-		SystemModule(),
-	}
-}
-
 func Populate(modules []fx.Option, targets ...interface{}) (stop func(context.Context), err error) {
 	return PopulateWith(nil, modules, targets...)
 }
 
 func PopulateWith(option fx.Option, modules []fx.Option, targets ...interface{}) (stop func(context.Context), err error) {
-	modules = append(AppModules(), modules...)
 	modules = append(modules, fx.Populate(targets...))
 	if option != nil {
 		modules = append(modules, option)

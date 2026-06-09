@@ -117,11 +117,11 @@ services:
     environment:
       ENVIRONMENT: dev
       CONFIG_PATH: /app/cmd/chat
-      DIALOG_DB_HOST: citus-coordinator
-      DIALOG_DB_PORT: 5432
-      DIALOG_DB_NAME: dialogs
-      DIALOG_DB_USER: root
-      DIALOG_DB_PASSWORD: root
+      DB_HOST: citus-coordinator
+      DB_PORT: 5432
+      DB_NAME: dialogs
+      DB_USER: root
+      DB_PASSWORD: root
       TZ: Europe/Moscow
     depends_on:
       citus-coordinator:

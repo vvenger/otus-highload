@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "socialnetwork",
+            "name": "docker-socialnetwork",
             "type": "go",
             "request": "attach",
             "mode": "remote",
@@ -12,7 +12,7 @@
             "debugAdapter": "legacy"
         },
         {
-            "name": "chat",
+            "name": "docker-chat",
             "type": "go",
             "request": "attach",
             "mode": "remote",

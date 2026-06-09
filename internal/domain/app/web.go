@@ -22,7 +22,7 @@ var (
 
 const (
 	otelRequestIDKey = "trace_id"
-	otelHttpProvader = "http"
+	logRequestIDKey  = "request_id"
 )
 
 type WebServer struct {
@@ -32,7 +32,7 @@ type WebServer struct {
 
 type WebServerParams struct {
 	fx.In
-	Config         *config.Config
+	App            config.AppConfig
 	Logger         *zap.Logger
 	TracerProvider trace.TracerProvider
 	WebService     http.Handler `name:"http_server"`
@@ -43,12 +43,12 @@ func NewWebServer(p WebServerParams) *WebServer {
 
 	return &WebServer{
 		Server: &http.Server{
-			Addr:         fmt.Sprintf(":%d", p.Config.App.Web.Port),
-			ReadTimeout:  time.Duration(p.Config.App.Web.ReadTimeout) * time.Second,
-			WriteTimeout: time.Duration(p.Config.App.Web.WriteTimeout) * time.Second,
+			Addr:         fmt.Sprintf(":%d", p.App.Web.Port),
+			ReadTimeout:  time.Duration(p.App.Web.ReadTimeout) * time.Second,
+			WriteTimeout: time.Duration(p.App.Web.WriteTimeout) * time.Second,
 			Handler:      otelhttp.NewHandler(route, "http"),
 		},
-		ShutdownTimeout: time.Duration(p.Config.App.Shutdown) * time.Second,
+		ShutdownTimeout: time.Duration(p.App.Shutdown) * time.Second,
 	}
 }
 
@@ -60,10 +60,18 @@ func RecoveryMiddleware(log *zap.Logger, tp trace.TracerProvider) func(http.Hand
 			ctx, span := tr.Start(r.Context(), "HandleRequest")
 			defer span.End()
 
-			ctx, reqId := requestid.New(ctx, span.SpanContext())
+			zapTrace := zap.Skip()
+			if span.SpanContext().HasTraceID() {
+				zapTrace = zap.String(otelRequestIDKey, span.SpanContext().TraceID().String())
+			}
+
+			ctx, reqId := requestid.WithValue(ctx, r.Header.Get(requestid.HeaderRequestID))
+
+			w.Header().Set(requestid.HeaderRequestID, reqId)
 
 			l := log.With(
-				zap.String(otelRequestIDKey, reqId),
+				zapTrace,
+				zap.String(logRequestIDKey, reqId),
 			)
 
 			l.Debug("request",

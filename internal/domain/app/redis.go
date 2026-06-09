@@ -10,15 +10,15 @@ import (
 
 type RedisParams struct {
 	fx.In
-	Config *config.Config
+	Config config.RedisConfig
 }
 
 func NewRedis(p RedisParams) *redis.Client {
-	if p.Config.Redis.Host == "" {
+	if p.Config.Host == "" {
 		return nil
 	}
 
 	return redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:%d", p.Config.Redis.Host, p.Config.Redis.Port),
+		Addr: fmt.Sprintf("%s:%d", p.Config.Host, p.Config.Port),
 	})
 }

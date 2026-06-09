@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-migrate -database "postgres://$DIALOG_DB_USER:$DIALOG_DB_PASSWORD@$DIALOG_DB_HOST:$DIALOG_DB_PORT/$DIALOG_DB_NAME?sslmode=disable" -path /app/migrations/citus $@
+migrate -database "postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME?sslmode=disable" -path /app/migrations/citus $@
