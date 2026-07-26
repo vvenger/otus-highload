@@ -1,18 +1,30 @@
 version: "3.6"
 
 services:
-  # =============================================================================
-  # Application
-  # =============================================================================
-  app:
+  migrate:
     build:
       context: ./dev
-    ports:
-      - 8000:8000
-      - 4318:4318
-      - 2345:2345
     volumes:
       - ./..:/app
+    environment:
+      ENVIRONMENT: dev
+      DB_MASTER_HOST: haproxy
+      DB_MASTER_PORT: 5432
+      DB_MASTER_NAME: main
+      DB_MASTER_USER: root
+      DB_MASTER_PASSWORD: root
+      TZ: Europe/Moscow
+    depends_on:
+      haproxy:
+        condition: service_healthy
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/app/Dockerfile
+    image: otus-highload-app:local
+    deploy:
+      replicas: 2
     environment:
       ENVIRONMENT: dev
       DB_MASTER_HOST: haproxy
@@ -27,6 +39,22 @@ services:
     depends_on:
       haproxy:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # =============================================================================
+  # nginx - Load Balancer for application instances
+  # =============================================================================
+  nginx:
+    image: nginx:1.27-alpine
+    hostname: nginx
+    container_name: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
 
   # =============================================================================
   # Distributed Configuration Store (etcd)

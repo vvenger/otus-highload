@@ -1,0 +1,6 @@
+Server postgres_primary/patroni-1 is DOWN, reason: Layer7 wrong status, code: 503, info: "Service Unavailable", check duration: 1ms. 2 active and 0 backup servers left. 0 sessions active, 0 requeued, 0 remaining in queue.
+[WARNING]  (8) : Server postgres_primary/patroni-1 is DOWN, reason: Layer7 wrong status, code: 503, info: "Service Unavailable", check duration: 1ms. 2 active and 0 backup servers left. 0 sessions active, 0 requeued, 0 remaining in queue.
+Server postgres_replicas/patroni-1 is DOWN, reason: Layer4 timeout, check duration: 3001ms. 1 active and 0 backup servers left. 13 sessions active, 0 requeued, 0 remaining in queue.
+[WARNING]  (8) : Server postgres_replicas/patroni-1 is DOWN, reason: Layer4 timeout, check duration: 3001ms. 1 active and 0 backup servers left. 13 sessions active, 0 requeued, 0 remaining in queue.
+[WARNING]  (8) : Server postgres_replicas/patroni-1 is UP, reason: Layer7 check passed, code: 200, check duration: 2ms. 2 active and 0 backup servers online. 0 sessions requeued, 0 total in queue.
+Server postgres_replicas/patroni-1 is UP, reason: Layer7 check passed, code: 200, check duration: 2ms. 2 active and 0 backup servers online. 0 sessions requeued, 0 total in queue.

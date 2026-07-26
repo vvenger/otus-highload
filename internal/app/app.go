@@ -8,6 +8,9 @@ import (
 
 	app "github.com/vvenger/otus-highload/internal/app/module"
 	"go.uber.org/fx"
+	"go.uber.org/fx/fxevent"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func Run() {
@@ -18,7 +21,15 @@ func Run() {
 func NewApp() *fx.App {
 	modules := AppModules()
 
-	return fx.New(modules...)
+	return fx.New(
+		fx.Options(modules...),
+		fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
+			return &fxevent.ZapLogger{
+				Logger: log.WithOptions(zap.IncreaseLevel(zapcore.ErrorLevel)),
+			}
+		}),
+	)
+
 }
 
 func AppModules() []fx.Option {

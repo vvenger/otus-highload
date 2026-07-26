@@ -1,222 +1,131 @@
-# Homework 3: Репликация PostgreSQL
+# Homework 9: Отказоустойчивость приложений
 
-## Стенд
+## Цель
 
-- Docker Compose: `docker/docker-compose.yaml`
-- Go-приложение 
-- Patroni кластер + HAProxy + etcd
-- 1 мастер + 2 реплики (потоковая репликация)
-- HAProxy: порт 5432 → мастер (RW), порт 5433 → реплики (RO)
+Уменьшить число точек отказа: несколько слейвов PostgreSQL за HAProxy,
+несколько инстансов приложения за nginx.
+
+---
+
+## Архитектура
+
+```
+Клиент
+  │
+  ▼
+nginx :8080                 
+  ├── app (реплика 1) :8000
+  └── app (реплика 2) :8000     
+        │ write (5432)          │ read (5433)
+        ▼                       ▼
+   HAProxy :5432           HAProxy :5433
+        │                       │ round-robin
+        ▼                       ├── реплика (Sync Standby)
+   Patroni Leader               └── реплика (Replica)
+        │ потоковая репликация + авто-failover (etcd)
+        ├──► реплика 1
+        └──► реплика 2
+```
+
+- **PostgreSQL**: Patroni-кластер (1 лидер + 2 реплики) на etcd, потоковая
+  репликация, автоматический failover при потере лидера.
+- **Приложение**: масштабируемый сервис `app`, поднимается в N инстансах `make up APP_INSTANCES=N`, по умолчанию 2. Отдельные пулы на чтение (`DB_REPLICA` → `haproxy:5433`) и запись (`DB_MASTER` → `haproxy:5432`).
+- **nginx**: резолвит upstream (app) через встроенный Docker DNS (127.0.0.11); при 
+  обрыве соединения запрос ретраится (proxy_next_upstream) на следующую попытку 
+  резолва.
+- **HAProxy**: отвечает за маршрутизацию к Patroni через REST API (GET /primary и GET /replica), не решает кто лидер; запросы к репликам распределяются по алгоритму round-robin; при отказе TCP-подключения к ноде PostgreSQL повторяет попытку connect на другую ноду.
 
 ---
 
 ## JMeter тест-плана 
 
 - Тест-план `jmeter/test-plan.jmx` с двумя Thread Group:
-  - `GET /user/get/{id}` — поиск пользователя по ID
-  - `GET /user/search` — поиск по имени и фамилии
-- Параметры: 50 потоков, ramp-up 10s, duration 60s, think time 100ms
-- Тестовые данные берутся из CSV-файлов (`jmeter/data/user_ids.csv`, `jmeter/data/search_params.csv`). Нужно сгенерировать после поднятия кластера. 
+  - `GET /user/get/{id}` — поиск пользователя по ID (10 000 случайных id)
+  - `GET /user/search` — поиск по имени и фамилии (10 000 пар имя/фамилия)
+- Параметры: 50 потоков на thread группу (сумарно 100), ramp-up 5s, duration 90s
+- Данные в БД: ~1 000 000 пользователей (`make fixture`), id для JMeter —
+  `bash jmeter/prepare-data.sh` (выгружает актуальные id из БД).
 
 ---
 
-## Настройка Patroni кластера
+## Результаты нагрузочного тестирования
 
-**Конфигурация** (`docker/patroni/patroni.template.yml`):
-- 1 мастер + 2 реплики, потоковая репликация
-- `wal_level: replica`, `hot_standby: on`
-- `max_wal_senders: 10`, `max_replication_slots: 10`
+Все три теста — единый последовательный сценарий: слейв, убитый в Этапе №2,
+**не восстанавливается** перед Этапом №3 (Этап №3 стартует уже в деградированном
+по БД состоянии — 1 лидер + 1 реплика вместо 1+2 — и дополнительно теряет
+инстанс приложения).
 
-**Проверка кластера:**
-```bash
-docker compose -p social-network -f docker/docker-compose.yaml exec -T patroni-1 \
-  gosu postgres patronictl -c /etc/patroni/patroni.yml list
-```
+| Этап            | Запросов | Ошибки     | RPS   |
+| --------------- | -------- | ---------- | ----- |
+| №1 Baseline     | 27 131   | 0 (0.00%)  | 300.6 |
+| №2 Kill слейв   | 24 596   | 13 (0.05%) | 272.8 |
+| №3 Kill инстанс | 16 384   | 0 (0.00%)  | 181.3 |
 
-```
-| Member    | Role    | State     | TL | Lag |
-| patroni-1 | Leader  | running   |  1 |     |
-| patroni-2 | Replica | streaming |  1 |   0 |
-| patroni-3 | Replica | streaming |  1 |   0 |
-```
----
+#### Этап №1. Baseline (нагрузка через nginx, 2 инстанса app, 1 лидер + 2 реплики)
 
-## Этап №1. Чтение с мастера
+| Запрос             | Запросов | Ошибки    | RPS   | Avg   | p95    | p99    |
+| ------------------ | -------- | --------- | ----- | ----- | ------ | ------ |
+| GET /user/get/{id} | 21 486   | 0 (0.00%) | 238.9 | 103ms | 274ms  | 343ms  |
+| GET /user/search   | 5 645    | 0 (0.00%) | 62.5  | 676ms | 1360ms | 1530ms |
+| **Total**          | 27 131   | 0 (0.00%) | 300.6 | 222ms | 1072ms | 1388ms |
 
-**Шаги:**
+подробнее: `jmeter/results/test1-baseline/summary.md`
 
-1. В docker-compose установить параметр `DB_REPLICA_PORT=5432` и в config.dev.yaml параметр `db.replica.port: 5432`
-2. Поднят кластер
+#### Этап №2. Kill-слейв PostgreSQL (нагрузка через nginx, 2 инстанса app, 1 лидер + 1 реплика)
+
+| Запрос             | Запросов | Ошибки     | RPS   | Avg   | p95    | p99    |
+| ------------------ | -------- | ---------- | ----- | ----- | ------ | ------ |
+| GET /user/get/{id} | 18 765   | 2 (0.01%)  | 208.6 | 132ms | 312ms  | 383ms  |
+| GET /user/search   | 5 831    | 11 (0.19%) | 64.7  | 652ms | 1063ms | 1227ms |
+| **Total**          | 24 596   | 13 (0.05%) | 272.8 | 255ms | 877ms  | 1083ms |
+
+После ~10s нагрузки конфигурации прошлого теста `docker kill -9 patroni-1` 
+
+Лог HAProxy и app `logs/test2`
+
+подробнее: `jmeter/results/test2-kill-replica/summary.md`
+
+#### Этап №3. Kill-инстанс бэкенда (нагрузка через nginx, 1 инстанс app, 1 лидер + 1 реплика)
+| Запрос             | Запросов | Ошибки    | RPS   | Avg   | p95   | p99    |
+| ------------------ | -------- | --------- | ----- | ----- | ----- | ------ |
+| GET /user/get/{id} | 10 515   | 0 (0.00%) | 116.6 | 316ms | 476ms | 1002ms |
+| GET /user/search   | 5 869    | 0 (0.00%) | 64.9  | 647ms | 942ms | 1233ms |
+| **Total**          | 16 384   | 0 (0.00%) | 181.3 | 435ms | 842ms | 1060ms |
+
+После ~10s нагрузки конфигурации прошлого теста `docker kill -9 social-network-app-1`
+
+Лог `logs/test3` -  0 ошибок на клиенте, строки error/warn в логах nginx показывают 
+механизм ретрая на живой инстанс.
+
+подробнее: `jmeter/results/test3-kill-app/summary.md`
+
+#### Воспроизведение
+
+1. Поднятие окружения
 ```bash
 make up
 ```
-3. Загрузка тестовых данных
+2. Добавление тестовых данных (~1 000 000 записей)
 ```bash
-make fixture   # ~1М пользователей
+make fixture
 ```
-4. Подготовка тестовых данных для JMeter (10000 записей). Файлы `jmeter/data/user_ids.csv`, `jmeter/data/search_params.csv`
+3. Подготовка тестовых данных для JMeter
 ```bash
-bash jmeter/prepare-data.sh
+make jmeter/prepare
 ```
-5. Запуск приложения:
+4. Этап №1 — baseline
 ```bash
-make run
+make jmeter/test NAME=test1-baseline THREADS=50 RAMP_UP=5 DURATION=90
 ```
-6. Запуск теста
+5. Этап №2 — запустить тест и убить реплику
 ```bash
-bash jmeter/run-test.sh master-only
+make jmeter/test NAME=test2-kill-replica THREADS=50 RAMP_UP=5 DURATION=90
+# в другом терминале: docker kill --signal=9 patroni-1
 ```
-
-**Результат:**
-
-| Метрика        | Значение    |
-| -------------- | ----------- |
-| Throughput     | 161.5 req/s |
-| Avg Latency    | 463 ms      |
-| Min Latency    | 0 ms        |
-| Max Latency    | 1611 ms     |
-| Errors         | 0 (0.00%)   |
-| Всего запросов | 9816        |
-
-Подробности: `jmeter/results/master-only/summary.md`
-
----
-
-## Этап №2. Чтение с реплики
-
-**Шаги:**
-
-1. Остановить кластер
+6. Этап №3 — слейв не восстанавливаем, запускаем тест и убиваем инстанс app
 ```bash
-make down #остановка кластера
-```
-2. Внести изменения `Настройка Patroni кластера`
-3. В docker-compose установить параметр `DB_REPLICA_PORT=5433` и в config.dev.yaml параметр `db.replica.port: 5433`
-4. Выполнить `шаги 2-5 из Этапа №1` для поднятия кластера и формирования тестовых данных.
-5. Запуск теста
-```bash
-bash jmeter/run-test.sh replica-only
+make jmeter/test NAME=test3-kill-app THREADS=50 RAMP_UP=5 DURATION=90
+# в другом терминале: docker kill --signal=9 social-network-app-1
 ```
 
-**Результат:**
-
-| Метрика        | Значение    |
-| -------------- | ----------- |
-| Throughput     | 140.3 req/s |
-| Avg Latency    | 546 ms      |
-| Min Latency    | 0 ms        |
-| Max Latency    | 1953 ms     |
-| Errors         | 0 (0.00%)   |
-| Всего запросов | 8564        |
-
-Подробности: `jmeter/results/replica-only/summary.md`
-
----
-
-## Этап №3. Кворумная синхронная репликация
-
-**Шаги:**
-
-1. Остановить кластер
-```bash
-make down #остановка кластера
-```
-
-2. Добавлен параметр в `docker/patroni/patroni.template.yml`:
-```yaml
-bootstrap:
-  dcs:
-    synchronous_mode: true
-```
-
-3. Проверка активации синхронного режима:
-```bash
-docker compose -p social-network -f docker/docker-compose.yaml exec -T patroni-1 \
-  gosu postgres patronictl -c /etc/patroni/patroni.yml list
-```
-
-4. Выполнить `шаги 2-5 из Этапа №1` для поднятия кластера и формирования тестовых данных.
-   
-5. Запуск теста
-```bash
-bash jmeter/run-test.sh sync-replica
-```
-
-**Результат:**
-
-| Метрика        | Значение    |
-| -------------- | ----------- |
-| Throughput     | 137.8 req/s |
-| Avg Latency    | 559 ms      |
-| Min Latency    | 0 ms        |
-| Max Latency    | 1956 ms     |
-| Errors         | 0 (0.00%)   |
-| Всего запросов | 8391        |
-
-Подробности: `jmeter/results/sync-replica/summary.md`
-
----
-
-## Этап №4. Отказоустойчивость
-
-**Шаги:**
-
-1. Перезапустить кластер
-```bash
-make down
-make up
-```
-
-2. Создать тестовую таблицу:
-```bash
-docker compose -p social-network -f docker/docker-compose.yaml exec -T \
-  -e PGPASSWORD=root patroni-1 gosu postgres \
-  psql -h haproxy -p 5432 -U root -d main \
-  -c "CREATE TABLE failover_test (id SERIAL PRIMARY KEY, created_at TIMESTAMPTZ DEFAULT now());"
-```
-
-3. Находим master чтобы на нем запустить непрерывную вставку данных:
-```bash
-docker compose -p social-network -f docker/docker-compose.yaml exec -T patroni-1 \
-  gosu postgres patronictl -c /etc/patroni/patroni.yml list
-```
-4. Запустить непрерывную нагрузка на запись (~40 INSERT/с):
-```bash
-NODE_NAME=patroni-3 bash jmeter/write-load.sh
-```
-
-5. Убит текущий мастер (`patroni-3`):
-```bash
-docker stop -t 0 patroni-3
-```
-
-6. Через ~35 секунд (ttl=30s) Patroni промоутил Sync Standby:
-```bash
-docker compose -p social-network -f docker/docker-compose.yaml exec -T patroni-1   gosu postgres patronictl -c /etc/patroni/patroni.yml list
-```
-
-```
-| Member    | Role         | State     | TL |
-| patroni-1 | Sync Standby | streaming |  2 |
-| patroni-2 | Leader       | running   |  2 |
-```
-
-5. Останавливаем нагрузку, подсчёт результатов:
-```sql
-SELECT count(*), max(id), min(id) FROM failover_test;
--- count=1816, max=1819, min=1
-```
-
-**Результат:**
-
-| Метрика                                            | Значение    |
-| -------------------------------------------------- | ----------- |
-| Записей в БД                                       | 1816        |
-| Последний sequence                                 | 1819        |
-| Прерванных транзакций                              | 3           |
-| **Потерь закоммиченных транзакций (data loss)**    | **0**       |
-| **Недоступность на запись (write unavailability)** | **~35 сек** |
-| Время failover                                     | ~35 сек     |
-
-Подробности: `jmeter/results/failover/summary.md`
 

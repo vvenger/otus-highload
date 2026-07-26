@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
 
-migrate_wr() {
-    /migrate_wr.sh down
-    /migrate_wr.sh up
-}
+set -euo pipefail
 
-migrate_wr
-
-while [ $? -ne 0 ]; do
+until /migrate_wr.sh up; do
+    echo "migrate: waiting for database..." >&2
     sleep 1
-    migrate_wr
 done
-
-tail -f /dev/null

@@ -1,0 +1,9 @@
+# Контекст сборки app-образа — оставляем только исходники, vendor и конфиги.
+.git
+bin
+fixtures
+jmeter
+tasks
+docker
+e2e
+*.md

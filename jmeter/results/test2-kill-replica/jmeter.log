@@ -1,0 +1,424 @@
+2026-07-26 15:55:03,026 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2026-07-26 15:55:03,041 INFO o.a.j.JMeter: Loading user properties from: /opt/apache-jmeter-5.5/bin/user.properties
+2026-07-26 15:55:03,041 INFO o.a.j.JMeter: Loading system properties from: /opt/apache-jmeter-5.5/bin/system.properties
+2026-07-26 15:55:03,042 INFO o.a.j.JMeter: Setting System property: log4j2.formatMsgNoLookups=true
+2026-07-26 15:55:03,042 INFO o.a.j.JMeter: Setting JMeter property: host=nginx
+2026-07-26 15:55:03,042 INFO o.a.j.JMeter: Setting JMeter property: port=80
+2026-07-26 15:55:03,042 INFO o.a.j.JMeter: Setting JMeter property: threads=50
+2026-07-26 15:55:03,042 INFO o.a.j.JMeter: Setting JMeter property: rampup=5
+2026-07-26 15:55:03,042 INFO o.a.j.JMeter: Setting JMeter property: duration=90
+2026-07-26 15:55:03,042 INFO o.a.j.JMeter: Setting JMeter property: resultfile=/jmeter/results/test2-kill-replica/results.jtl
+2026-07-26 15:55:03,042 INFO o.a.j.JMeter: Setting JMeter property: jmeter.reportgenerator.temp_dir=/jmeter/results/test2-kill-replica/tmp
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: Copyright (c) 1998-2022 The Apache Software Foundation
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: Version 5.5
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: java.version=1.8.0_275
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: os.name=Linux
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: os.arch=amd64
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: os.version=6.8.0-124-generic
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: file.encoding=UTF-8
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: java.awt.headless=true
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: Max memory     =7239368704
+2026-07-26 15:55:03,048 INFO o.a.j.JMeter: Available Processors =6
+2026-07-26 15:55:03,053 INFO o.a.j.JMeter: Default Locale=English (EN)
+2026-07-26 15:55:03,054 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2026-07-26 15:55:03,054 INFO o.a.j.JMeter: JMeterHome=/opt/apache-jmeter-5.5
+2026-07-26 15:55:03,054 INFO o.a.j.JMeter: user.dir  =/opt/apache-jmeter-5.5
+2026-07-26 15:55:03,054 INFO o.a.j.JMeter: PWD       =/opt/apache-jmeter-5.5
+2026-07-26 15:55:03,054 INFO o.a.j.JMeter: IP: 172.18.0.13 Name: cbca123ac81c FullName: cbca123ac81c
+2026-07-26 15:55:03,070 INFO o.a.j.JMeter: Setting property 'jmeter.reportgenerator.outputdir' to:'/jmeter/results/test2-kill-replica/report'
+2026-07-26 15:55:03,072 INFO o.a.j.s.FileServer: Default base='/opt/apache-jmeter-5.5'
+2026-07-26 15:55:03,072 INFO o.a.j.s.FileServer: Set new base='/jmeter'
+2026-07-26 15:55:03,157 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2026-07-26 15:55:03,170 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2026-07-26 15:55:03,173 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2026-07-26 15:55:03,177 INFO o.a.j.s.SaveService: Loading file: /jmeter/test-plan.jmx
+2026-07-26 15:55:03,213 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-07-26 15:55:03,213 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-07-26 15:55:03,213 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-07-26 15:55:03,213 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-07-26 15:55:03,213 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2026-07-26 15:55:03,213 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2026-07-26 15:55:03,408 INFO o.a.j.JMeter: Creating summariser <summary>
+2026-07-26 15:55:03,411 INFO o.a.j.r.d.ReportGenerator: ReportGenerator will use for Parsing the separator: ','
+2026-07-26 15:55:03,411 INFO o.a.j.r.d.ReportGenerator: Will generate report at end of test from  results file: /jmeter/results/test2-kill-replica/results.jtl
+2026-07-26 15:55:03,411 INFO o.a.j.r.d.ReportGenerator: Reading report generator properties from: /opt/apache-jmeter-5.5/bin/reportgenerator.properties
+2026-07-26 15:55:03,412 INFO o.a.j.r.d.ReportGenerator: Merging with JMeter properties
+2026-07-26 15:55:03,416 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.apdex_per_transaction' not found, using default value 'null' instead.
+2026-07-26 15:55:03,417 INFO o.a.j.r.c.ReportGeneratorConfiguration: apdex_per_transaction is empty, not APDEX per transaction customization
+2026-07-26 15:55:03,417 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.sample_filter' not found, using default value 'null' instead.
+2026-07-26 15:55:03,417 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.report_title' not found, using default value 'null' instead.
+2026-07-26 15:55:03,417 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.start_date' not found, using default value 'null' instead.
+2026-07-26 15:55:03,417 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.end_date' not found, using default value 'null' instead.
+2026-07-26 15:55:03,417 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.date_format' not found, using default value 'null' instead.
+2026-07-26 15:55:03,417 INFO o.a.j.r.c.ReportGeneratorConfiguration: Will use date range start date: null, end date: null
+2026-07-26 15:55:03,420 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.totalTPS.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,420 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.activeThreadsOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,420 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.timeVsThreads.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,420 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimeDistribution.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,421 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.transactionsPerSecond.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,421 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentiles.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,421 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentilesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,421 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,421 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.connectTimeOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,421 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.latenciesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-07-26 15:55:03,422 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.filters_only_sample_series' not found, using default value 'true' instead.
+2026-07-26 15:55:03,422 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.series_filter' not found, using default value '' instead.
+2026-07-26 15:55:03,422 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.show_controllers_only' not found, using default value 'false' instead.
+2026-07-26 15:55:03,422 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.filters_only_sample_series' not found, using default value 'true' instead.
+2026-07-26 15:55:03,422 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.series_filter' not found, using default value '' instead.
+2026-07-26 15:55:03,422 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.show_controllers_only' not found, using default value 'false' instead.
+2026-07-26 15:55:03,427 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2026-07-26 15:55:03,428 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2026-07-26 15:55:03,428 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2026-07-26 15:55:03,431 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2026-07-26 15:55:03,431 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2026-07-26 15:55:03,596 INFO o.a.j.JMeter: Running test (1785074103596)
+2026-07-26 15:55:03,650 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : GET /user/get/{id}
+2026-07-26 15:55:03,650 INFO o.a.j.e.StandardJMeterEngine: Starting 50 threads for group GET /user/get/{id}.
+2026-07-26 15:55:03,650 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2026-07-26 15:55:03,650 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=50 ramp-up=5 delayedStart=false
+2026-07-26 15:55:03,678 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2026-07-26 15:55:03,678 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : GET /user/search
+2026-07-26 15:55:03,678 INFO o.a.j.e.StandardJMeterEngine: Starting 50 threads for group GET /user/search.
+2026-07-26 15:55:03,678 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2026-07-26 15:55:03,678 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=50 ramp-up=5 delayedStart=false
+2026-07-26 15:55:03,711 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2026-07-26 15:55:03,711 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2026-07-26 15:55:03,731 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-1
+2026-07-26 15:55:03,732 INFO o.a.j.s.FileServer: Stored: /jmeter/data/search_params.csv
+2026-07-26 15:55:03,733 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-1
+2026-07-26 15:55:03,737 INFO o.a.j.s.FileServer: Stored: /jmeter/data/user_ids.csv
+2026-07-26 15:55:03,812 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-2
+2026-07-26 15:55:03,816 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-2
+2026-07-26 15:55:03,856 INFO o.a.j.p.h.s.HTTPHCAbstractImpl: Local host = cbca123ac81c
+2026-07-26 15:55:03,860 INFO o.a.j.p.h.s.HTTPHC4Impl: HTTP request retry count = 0
+2026-07-26 15:55:03,862 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2026-07-26 15:55:03,862 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to ISO-8859-1
+2026-07-26 15:55:03,862 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2026-07-26 15:55:03,862 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2026-07-26 15:55:03,919 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-3
+2026-07-26 15:55:03,924 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-3
+2026-07-26 15:55:03,956 INFO o.a.j.r.Summariser: summary +      1 in 00:00:00 =    2.8/s Avg:    34 Min:    34 Max:    34 Err:     0 (0.00%) Active: 6 Started: 6 Finished: 0
+2026-07-26 15:55:04,017 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-4
+2026-07-26 15:55:04,017 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-4
+2026-07-26 15:55:04,060 INFO o.a.j.u.JsseSSLManager: Using default SSL protocol: TLS
+2026-07-26 15:55:04,061 INFO o.a.j.u.JsseSSLManager: SSL session context: per-thread
+2026-07-26 15:55:04,114 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-5
+2026-07-26 15:55:04,120 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-5
+2026-07-26 15:55:04,218 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-6
+2026-07-26 15:55:04,218 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-6
+2026-07-26 15:55:04,317 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-7
+2026-07-26 15:55:04,324 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-7
+2026-07-26 15:55:04,415 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-8
+2026-07-26 15:55:04,416 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-8
+2026-07-26 15:55:04,515 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-9
+2026-07-26 15:55:04,528 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-9
+2026-07-26 15:55:04,614 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-10
+2026-07-26 15:55:04,619 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-10
+2026-07-26 15:55:04,714 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-11
+2026-07-26 15:55:04,714 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-11
+2026-07-26 15:55:04,810 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-12
+2026-07-26 15:55:04,824 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-12
+2026-07-26 15:55:04,913 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-13
+2026-07-26 15:55:04,918 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-13
+2026-07-26 15:55:05,020 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-14
+2026-07-26 15:55:05,027 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-14
+2026-07-26 15:55:05,111 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-15
+2026-07-26 15:55:05,119 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-15
+2026-07-26 15:55:05,217 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-16
+2026-07-26 15:55:05,219 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-16
+2026-07-26 15:55:05,316 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-17
+2026-07-26 15:55:05,317 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-17
+2026-07-26 15:55:05,411 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-18
+2026-07-26 15:55:05,417 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-18
+2026-07-26 15:55:05,509 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-19
+2026-07-26 15:55:05,516 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-19
+2026-07-26 15:55:05,615 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-20
+2026-07-26 15:55:05,626 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-20
+2026-07-26 15:55:05,714 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-21
+2026-07-26 15:55:05,724 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-21
+2026-07-26 15:55:05,814 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-22
+2026-07-26 15:55:05,814 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-22
+2026-07-26 15:55:05,912 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-23
+2026-07-26 15:55:05,913 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-23
+2026-07-26 15:55:06,005 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-24
+2026-07-26 15:55:06,012 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-24
+2026-07-26 15:55:06,105 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-25
+2026-07-26 15:55:06,106 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-25
+2026-07-26 15:55:06,201 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-26
+2026-07-26 15:55:06,209 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-26
+2026-07-26 15:55:06,306 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-27
+2026-07-26 15:55:06,316 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-27
+2026-07-26 15:55:06,406 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-28
+2026-07-26 15:55:06,407 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-28
+2026-07-26 15:55:06,502 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-29
+2026-07-26 15:55:06,514 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-29
+2026-07-26 15:55:06,603 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-30
+2026-07-26 15:55:06,612 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-30
+2026-07-26 15:55:06,706 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-31
+2026-07-26 15:55:06,710 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-31
+2026-07-26 15:55:06,804 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-32
+2026-07-26 15:55:06,812 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-32
+2026-07-26 15:55:06,902 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-33
+2026-07-26 15:55:06,913 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-33
+2026-07-26 15:55:07,003 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-34
+2026-07-26 15:55:07,007 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-34
+2026-07-26 15:55:07,101 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-35
+2026-07-26 15:55:07,111 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-35
+2026-07-26 15:55:07,201 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-36
+2026-07-26 15:55:07,209 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-36
+2026-07-26 15:55:07,299 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-37
+2026-07-26 15:55:07,306 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-37
+2026-07-26 15:55:07,397 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-38
+2026-07-26 15:55:07,401 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-38
+2026-07-26 15:55:07,495 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-39
+2026-07-26 15:55:07,505 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-39
+2026-07-26 15:55:07,598 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-40
+2026-07-26 15:55:07,615 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-40
+2026-07-26 15:55:07,694 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-41
+2026-07-26 15:55:07,698 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-41
+2026-07-26 15:55:07,793 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-42
+2026-07-26 15:55:07,805 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-42
+2026-07-26 15:55:07,889 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-43
+2026-07-26 15:55:07,903 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-43
+2026-07-26 15:55:07,989 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-44
+2026-07-26 15:55:08,006 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-44
+2026-07-26 15:55:08,090 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-45
+2026-07-26 15:55:08,096 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-45
+2026-07-26 15:55:08,191 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-46
+2026-07-26 15:55:08,207 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-46
+2026-07-26 15:55:08,291 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-47
+2026-07-26 15:55:08,291 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-47
+2026-07-26 15:55:08,390 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-48
+2026-07-26 15:55:08,406 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-48
+2026-07-26 15:55:08,487 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-49
+2026-07-26 15:55:08,509 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-49
+2026-07-26 15:55:08,588 INFO o.a.j.t.JMeterThread: Thread started: GET /user/search 2-50
+2026-07-26 15:55:08,591 INFO o.a.j.t.JMeterThread: Thread started: GET /user/get/{id} 1-50
+2026-07-26 15:55:30,000 INFO o.a.j.r.Summariser: summary +   6870 in 00:00:26 =  263.7/s Avg:   231 Min:     0 Max:  1385 Err:    10 (0.15%) Active: 100 Started: 100 Finished: 0
+2026-07-26 15:55:30,001 INFO o.a.j.r.Summariser: summary =   6871 in 00:00:26 =  260.2/s Avg:   231 Min:     0 Max:  1385 Err:    10 (0.15%)
+2026-07-26 15:56:00,003 INFO o.a.j.r.Summariser: summary +   7506 in 00:00:30 =  250.2/s Avg:   306 Min:     0 Max: 38254 Err:     3 (0.04%) Active: 100 Started: 100 Finished: 0
+2026-07-26 15:56:00,008 INFO o.a.j.r.Summariser: summary =  14377 in 00:00:56 =  254.9/s Avg:   270 Min:     0 Max: 38254 Err:    13 (0.09%)
+2026-07-26 15:56:30,020 INFO o.a.j.r.Summariser: summary +   9054 in 00:00:30 =  301.6/s Avg:   232 Min:     0 Max:  1490 Err:     0 (0.00%) Active: 100 Started: 100 Finished: 0
+2026-07-26 15:56:30,021 INFO o.a.j.r.Summariser: summary =  23431 in 00:01:26 =  271.1/s Avg:   256 Min:     0 Max: 38254 Err:    13 (0.06%)
+2026-07-26 15:56:33,564 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-9
+2026-07-26 15:56:33,570 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-11
+2026-07-26 15:56:33,570 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-17
+2026-07-26 15:56:33,570 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-3
+2026-07-26 15:56:33,571 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-10
+2026-07-26 15:56:33,571 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-26
+2026-07-26 15:56:33,574 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-34
+2026-07-26 15:56:33,574 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-38
+2026-07-26 15:56:33,589 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-32
+2026-07-26 15:56:33,592 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-8
+2026-07-26 15:56:33,592 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-37
+2026-07-26 15:56:33,591 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-4
+2026-07-26 15:56:33,589 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-6
+2026-07-26 15:56:33,592 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-29
+2026-07-26 15:56:33,596 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-25
+2026-07-26 15:56:33,596 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-41
+2026-07-26 15:56:33,596 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-42
+2026-07-26 15:56:33,597 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-7
+2026-07-26 15:56:33,604 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-2
+2026-07-26 15:56:33,609 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-24
+2026-07-26 15:56:33,642 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-43
+2026-07-26 15:56:33,657 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-7
+2026-07-26 15:56:33,657 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-7
+2026-07-26 15:56:33,661 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-47
+2026-07-26 15:56:33,664 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-31
+2026-07-26 15:56:33,665 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-46
+2026-07-26 15:56:33,665 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-33
+2026-07-26 15:56:33,668 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-43
+2026-07-26 15:56:33,684 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-47
+2026-07-26 15:56:33,739 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-13
+2026-07-26 15:56:33,740 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-13
+2026-07-26 15:56:33,740 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-36
+2026-07-26 15:56:33,740 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-36
+2026-07-26 15:56:33,741 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-5
+2026-07-26 15:56:33,741 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-5
+2026-07-26 15:56:33,741 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-22
+2026-07-26 15:56:33,741 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-22
+2026-07-26 15:56:33,742 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-20
+2026-07-26 15:56:33,743 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-13
+2026-07-26 15:56:33,743 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-13
+2026-07-26 15:56:33,742 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-20
+2026-07-26 15:56:33,744 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-30
+2026-07-26 15:56:33,744 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-30
+2026-07-26 15:56:33,746 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-19
+2026-07-26 15:56:33,746 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-19
+2026-07-26 15:56:33,750 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-41
+2026-07-26 15:56:33,750 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-41
+2026-07-26 15:56:33,753 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-45
+2026-07-26 15:56:33,753 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-45
+2026-07-26 15:56:33,756 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-27
+2026-07-26 15:56:33,756 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-27
+2026-07-26 15:56:33,757 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-6
+2026-07-26 15:56:33,757 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-6
+2026-07-26 15:56:33,758 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-1
+2026-07-26 15:56:33,758 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-1
+2026-07-26 15:56:33,761 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-37
+2026-07-26 15:56:33,761 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-37
+2026-07-26 15:56:33,762 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-10
+2026-07-26 15:56:33,762 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-10
+2026-07-26 15:56:33,770 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-36
+2026-07-26 15:56:33,770 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-36
+2026-07-26 15:56:33,771 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-32
+2026-07-26 15:56:33,771 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-32
+2026-07-26 15:56:33,772 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-21
+2026-07-26 15:56:33,772 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-21
+2026-07-26 15:56:33,772 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-50
+2026-07-26 15:56:33,773 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-50
+2026-07-26 15:56:33,773 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-44
+2026-07-26 15:56:33,773 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-44
+2026-07-26 15:56:33,773 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-42
+2026-07-26 15:56:33,774 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-42
+2026-07-26 15:56:33,774 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-48
+2026-07-26 15:56:33,774 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-48
+2026-07-26 15:56:33,774 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-14
+2026-07-26 15:56:33,774 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-14
+2026-07-26 15:56:33,776 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-28
+2026-07-26 15:56:33,776 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-35
+2026-07-26 15:56:33,776 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-28
+2026-07-26 15:56:33,776 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-35
+2026-07-26 15:56:33,778 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-16
+2026-07-26 15:56:33,778 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-16
+2026-07-26 15:56:33,778 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-35
+2026-07-26 15:56:33,778 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-35
+2026-07-26 15:56:33,779 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-18
+2026-07-26 15:56:33,779 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-18
+2026-07-26 15:56:33,786 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-39
+2026-07-26 15:56:33,786 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-39
+2026-07-26 15:56:33,797 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-40
+2026-07-26 15:56:33,798 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-40
+2026-07-26 15:56:33,801 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-34
+2026-07-26 15:56:33,801 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-34
+2026-07-26 15:56:33,801 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-49
+2026-07-26 15:56:33,801 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-49
+2026-07-26 15:56:33,808 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-9
+2026-07-26 15:56:33,808 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-9
+2026-07-26 15:56:33,823 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-8
+2026-07-26 15:56:33,823 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-8
+2026-07-26 15:56:33,829 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-18
+2026-07-26 15:56:33,829 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-18
+2026-07-26 15:56:33,832 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-33
+2026-07-26 15:56:33,834 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-33
+2026-07-26 15:56:33,839 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-19
+2026-07-26 15:56:33,840 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-19
+2026-07-26 15:56:33,840 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-15
+2026-07-26 15:56:33,841 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-15
+2026-07-26 15:56:33,845 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-40
+2026-07-26 15:56:33,845 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-40
+2026-07-26 15:56:33,847 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-12
+2026-07-26 15:56:33,847 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-12
+2026-07-26 15:56:33,847 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-49
+2026-07-26 15:56:33,847 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-49
+2026-07-26 15:56:33,848 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/get/{id} 1-23
+2026-07-26 15:56:33,848 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/get/{id} 1-23
+2026-07-26 15:56:33,859 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-25
+2026-07-26 15:56:33,859 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-25
+2026-07-26 15:56:33,884 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-2
+2026-07-26 15:56:33,884 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-2
+2026-07-26 15:56:33,900 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-21
+2026-07-26 15:56:33,901 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-21
+2026-07-26 15:56:33,917 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-20
+2026-07-26 15:56:33,917 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-20
+2026-07-26 15:56:33,923 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-17
+2026-07-26 15:56:33,924 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-17
+2026-07-26 15:56:33,931 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-28
+2026-07-26 15:56:33,931 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-28
+2026-07-26 15:56:33,932 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-15
+2026-07-26 15:56:33,932 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-15
+2026-07-26 15:56:33,945 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-23
+2026-07-26 15:56:33,946 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-23
+2026-07-26 15:56:33,947 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-31
+2026-07-26 15:56:33,947 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-31
+2026-07-26 15:56:33,949 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-24
+2026-07-26 15:56:33,949 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-24
+2026-07-26 15:56:33,967 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-11
+2026-07-26 15:56:33,968 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-16
+2026-07-26 15:56:33,968 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-11
+2026-07-26 15:56:33,968 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-16
+2026-07-26 15:56:33,971 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-39
+2026-07-26 15:56:33,971 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-39
+2026-07-26 15:56:33,975 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-3
+2026-07-26 15:56:33,975 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-3
+2026-07-26 15:56:33,976 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-44
+2026-07-26 15:56:33,976 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-44
+2026-07-26 15:56:33,978 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-38
+2026-07-26 15:56:33,978 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-38
+2026-07-26 15:56:33,980 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-1
+2026-07-26 15:56:33,981 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-1
+2026-07-26 15:56:33,984 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-29
+2026-07-26 15:56:33,985 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-29
+2026-07-26 15:56:33,995 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-12
+2026-07-26 15:56:33,997 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-22
+2026-07-26 15:56:33,997 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-22
+2026-07-26 15:56:33,997 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-12
+2026-07-26 15:56:34,003 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-45
+2026-07-26 15:56:34,003 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-45
+2026-07-26 15:56:34,005 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-14
+2026-07-26 15:56:34,005 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-14
+2026-07-26 15:56:34,007 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-50
+2026-07-26 15:56:34,007 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-50
+2026-07-26 15:56:34,022 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-26
+2026-07-26 15:56:34,022 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-26
+2026-07-26 15:56:34,026 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-5
+2026-07-26 15:56:34,026 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-5
+2026-07-26 15:56:34,034 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-4
+2026-07-26 15:56:34,034 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-4
+2026-07-26 15:56:34,034 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-27
+2026-07-26 15:56:34,034 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-27
+2026-07-26 15:56:34,037 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-30
+2026-07-26 15:56:34,037 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-30
+2026-07-26 15:56:34,057 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-48
+2026-07-26 15:56:34,057 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-48
+2026-07-26 15:56:34,067 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: GET /user/search 2-46
+2026-07-26 15:56:34,067 INFO o.a.j.t.JMeterThread: Thread finished: GET /user/search 2-46
+2026-07-26 15:56:34,067 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2026-07-26 15:56:34,067 INFO o.a.j.s.FileServer: Close: /jmeter/data/user_ids.csv
+2026-07-26 15:56:34,067 INFO o.a.j.s.FileServer: Close: /jmeter/data/search_params.csv
+2026-07-26 15:56:34,068 INFO o.a.j.r.Summariser: summary +   1159 in 00:00:04 =  286.3/s Avg:   243 Min:     0 Max:  1271 Err:     0 (0.00%) Active: 0 Started: 100 Finished: 100
+2026-07-26 15:56:34,068 INFO o.a.j.r.Summariser: summary =  24590 in 00:01:30 =  271.8/s Avg:   255 Min:     0 Max: 38254 Err:    13 (0.05%)
+2026-07-26 15:56:34,068 INFO o.a.j.JMeter: Generating Dashboard
+2026-07-26 15:56:34,068 INFO o.a.j.r.d.ReportGenerator: Flushing result collector before report Generation
+2026-07-26 15:56:34,079 INFO o.a.j.r.p.NormalizerSampleConsumer: Using format, 'ms', to parse timeStamp field
+2026-07-26 15:56:34,839 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): beginDate produced 0 samples
+2026-07-26 15:56:34,839 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): endDate produced 0 samples
+2026-07-26 15:56:34,842 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ApdexSummaryConsumer#stopProducing(): apdexSummary produced 0 samples
+2026-07-26 15:56:34,842 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.RequestsSummaryConsumer#stopProducing(): requestsSummary produced 0 samples
+2026-07-26 15:56:34,851 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.StatisticsSummaryConsumer#stopProducing(): statisticsSummary produced 0 samples
+2026-07-26 15:56:34,855 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.Top5ErrorsBySamplerConsumer#stopProducing(): top5ErrorsBySampler produced 0 samples
+2026-07-26 15:56:34,855 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ErrorsSummaryConsumer#stopProducing(): errorsSummary produced 0 samples
+2026-07-26 15:56:34,855 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.HitsPerSecondGraphConsumer#stopProducing(): hitsPerSecond produced 0 samples
+2026-07-26 15:56:34,961 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyVSRequestGraphConsumer#stopProducing(): latencyVsRequest produced 0 samples
+2026-07-26 15:56:34,963 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.SyntheticResponseTimeDistributionGraphConsumer#stopProducing(): syntheticResponseTimeDistribution produced 0 samples
+2026-07-26 15:56:34,963 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.BytesThroughputGraphConsumer#stopProducing(): bytesThroughputOverTime produced 0 samples
+2026-07-26 15:56:34,963 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.CodesPerSecondGraphConsumer#stopProducing(): codesPerSecond produced 0 samples
+2026-07-26 15:56:35,020 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeVSRequestGraphConsumer#stopProducing(): responseTimeVsRequest produced 0 samples
+2026-07-26 15:56:35,022 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): startIntervalControlerFilter produced 172172 samples
+2026-07-26 15:56:35,022 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TotalTPSGraphConsumer#stopProducing(): totalTPS produced 0 samples
+2026-07-26 15:56:35,022 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ActiveThreadsGraphConsumer#stopProducing(): activeThreadsOverTime produced 0 samples
+2026-07-26 15:56:35,022 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TimeVSThreadGraphConsumer#stopProducing(): timeVsThreads produced 0 samples
+2026-07-26 15:56:35,022 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeDistributionGraphConsumer#stopProducing(): responseTimeDistribution produced 0 samples
+2026-07-26 15:56:35,022 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TransactionsPerSecondGraphConsumer#stopProducing(): transactionsPerSecond produced 0 samples
+2026-07-26 15:56:35,022 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesGraphConsumer#stopProducing(): responseTimePercentiles produced 0 samples
+2026-07-26 15:56:35,027 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesOverTimeGraphConsumer#stopProducing(): responseTimePercentilesOverTime produced 0 samples
+2026-07-26 15:56:35,028 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeOverTimeGraphConsumer#stopProducing(): responseTimesOverTime produced 0 samples
+2026-07-26 15:56:35,028 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ConnectTimeOverTimeGraphConsumer#stopProducing(): connectTimeOverTime produced 0 samples
+2026-07-26 15:56:35,028 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyOverTimeGraphConsumer#stopProducing(): latenciesOverTime produced 0 samples
+2026-07-26 15:56:35,028 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): nameFilter produced 368940 samples
+2026-07-26 15:56:35,028 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): dateRangeFilter produced 73788 samples
+2026-07-26 15:56:35,028 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.NormalizerSampleConsumer#stopProducing(): normalizer produced 24596 samples
+2026-07-26 15:56:35,029 INFO o.a.j.r.p.CsvFileSampleSource: produce(): 24596 samples produced in 919ms on channel 0
+2026-07-26 15:56:35,029 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'json' of className:'org.apache.jmeter.report.dashboard.JsonExporter'
+2026-07-26 15:56:35,140 INFO o.a.j.r.d.JsonExporter: Found data for consumer statisticsSummary in context
+2026-07-26 15:56:35,141 INFO o.a.j.r.d.JsonExporter: Creating statistics for overall
+2026-07-26 15:56:35,141 INFO o.a.j.r.d.JsonExporter: Creating statistics for other transactions
+2026-07-26 15:56:35,142 INFO o.a.j.r.d.JsonExporter: Checking output folder
+2026-07-26 15:56:35,142 INFO o.a.j.r.d.JsonExporter: Writing statistics JSON to /jmeter/results/test2-kill-replica/report/statistics.json
+2026-07-26 15:56:35,176 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'html' of className:'org.apache.jmeter.report.dashboard.HtmlTemplateExporter'
+2026-07-26 15:56:35,178 INFO o.a.j.r.d.HtmlTemplateExporter: Will generate dashboard in folder: /jmeter/results/test2-kill-replica/report
+2026-07-26 15:56:35,245 INFO o.a.j.r.d.HtmlTemplateExporter: Report will be generated in: /jmeter/results/test2-kill-replica/report, creating folder structure
+2026-07-26 15:56:35,249 INFO o.a.j.r.d.TemplateVisitor: Copying folder from '/opt/apache-jmeter-5.5/bin/report-template' to '/jmeter/results/test2-kill-replica/report', got message: /jmeter/results/test2-kill-replica/report, found non empty folder with following content [/jmeter/results/test2-kill-replica/report/statistics.json], will be ignored
+2026-07-26 15:56:35,384 INFO o.a.j.JMeter: Dashboard generated

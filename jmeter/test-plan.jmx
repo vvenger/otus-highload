@@ -39,7 +39,7 @@
 
       <!-- CSV Data Set for user IDs -->
       <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="User IDs CSV" enabled="true">
-        <stringProp name="filename">/jmeter/data/user_ids.csv</stringProp>
+        <stringProp name="filename">${__P(datadir,/jmeter/data)}/user_ids.csv</stringProp>
         <stringProp name="fileEncoding">UTF-8</stringProp>
         <stringProp name="variableNames">USER_ID</stringProp>
         <boolProp name="ignoreFirstLine">true</boolProp>
@@ -53,7 +53,7 @@
 
       <!-- CSV Data Set for search parameters -->
       <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Search Params CSV" enabled="true">
-        <stringProp name="filename">/jmeter/data/search_params.csv</stringProp>
+        <stringProp name="filename">${__P(datadir,/jmeter/data)}/search_params.csv</stringProp>
         <stringProp name="fileEncoding">UTF-8</stringProp>
         <stringProp name="variableNames">FIRST_NAME,LAST_NAME</stringProp>
         <boolProp name="ignoreFirstLine">true</boolProp>
@@ -214,7 +214,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">/jmeter/results/results.jtl</stringProp>
+        <stringProp name="filename">${__P(resultfile,/jmeter/results/results.jtl)}</stringProp>
       </ResultCollector>
       <hashTree/>
 
