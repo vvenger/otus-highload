@@ -69,7 +69,7 @@ nginx :8080
 | GET /user/search   | 5 645    | 0 (0.00%) | 62.5  | 676ms | 1360ms | 1530ms |
 | **Total**          | 27 131   | 0 (0.00%) | 300.6 | 222ms | 1072ms | 1388ms |
 
-подробнее: `jmeter/results/test1-baseline/summary.md`
+подробнее: [`jmeter/results/test1-baseline/summary.md`](jmeter/results/test1-baseline/summary.md)
 
 #### Этап №2. Kill-слейв PostgreSQL (нагрузка через nginx, 2 инстанса app, 1 лидер + 1 реплика)
 
@@ -83,7 +83,7 @@ nginx :8080
 
 Лог HAProxy и app `logs/test2`
 
-подробнее: `jmeter/results/test2-kill-replica/summary.md`
+подробнее: [`jmeter/results/test2-kill-replica/summary.md`](jmeter/results/test2-kill-replica/summary.md)
 
 #### Этап №3. Kill-инстанс бэкенда (нагрузка через nginx, 1 инстанс app, 1 лидер + 1 реплика)
 | Запрос             | Запросов | Ошибки    | RPS   | Avg   | p95   | p99    |
@@ -97,7 +97,7 @@ nginx :8080
 Лог `logs/test3` -  0 ошибок на клиенте, строки error/warn в логах nginx показывают 
 механизм ретрая на живой инстанс.
 
-подробнее: `jmeter/results/test3-kill-app/summary.md`
+подробнее: [`jmeter/results/test3-kill-app/summary.md`](jmeter/results/test3-kill-app/summary.md)
 
 #### Воспроизведение
 
